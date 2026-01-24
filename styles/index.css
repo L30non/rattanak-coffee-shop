@@ -1,0 +1,14 @@
+@import "./tailwind.css";
+@import "./theme.css";
+
+/* Global clickable element styles */
+button,
+[role="button"],
+a,
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+select,
+.clickable {
+  cursor: pointer;
+}
