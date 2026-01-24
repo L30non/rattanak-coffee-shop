@@ -1,10 +1,16 @@
-import { ShoppingBag, Trash2, Minus, Plus } from 'lucide-react';
-import { Button } from '@/app/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
-import { Separator } from '@/app/components/ui/separator';
-import { useStore } from '@/app/store/useStore';
-import { ImageWithFallback } from '@/app/components/figma/ImageWithFallback';
-import { toast } from 'sonner';
+import { ShoppingBag, Trash2, Minus, Plus } from "lucide-react";
+import { Button } from "@/app/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/app/components/ui/card";
+import { Separator } from "@/app/components/ui/separator";
+import { useStore } from "@/app/store/useStore";
+import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
+import { getImageUrl } from "@/utils/supabase/client";
+import { toast } from "sonner";
 
 interface CartProps {
   onNavigate: (view: string) => void;
@@ -16,18 +22,21 @@ export function Cart({ onNavigate }: CartProps) {
   const updateCartQuantity = useStore((state) => state.updateCartQuantity);
   const user = useStore((state) => state.user);
 
-  const subtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const subtotal = cart.reduce(
+    (sum, item) => sum + item.product.price * item.quantity,
+    0,
+  );
   const shipping = subtotal > 100 ? 0 : 10;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
 
   const handleCheckout = () => {
     if (!user) {
-      toast.error('Please login to checkout');
-      onNavigate('login');
+      toast.error("Please login to checkout");
+      onNavigate("login");
       return;
     }
-    onNavigate('checkout');
+    onNavigate("checkout");
   };
 
   const handleRemove = (productId: string, productName: string) => {
@@ -46,7 +55,7 @@ export function Cart({ onNavigate }: CartProps) {
               Add some products to get started!
             </p>
             <Button
-              onClick={() => onNavigate('products')}
+              onClick={() => onNavigate("products")}
               className="bg-amber-700 hover:bg-amber-800"
             >
               Continue Shopping
@@ -65,19 +74,21 @@ export function Cart({ onNavigate }: CartProps) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
-            {cart.map(item => (
+            {cart.map((item) => (
               <Card key={item.product.id}>
                 <CardContent className="p-4">
                   <div className="flex gap-4">
                     {/* Product Image */}
                     <div
-                      className="w-24 h-24 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 cursor-pointer"
+                      className="w-24 h-24 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 cursor-pointer relative"
                       onClick={() => onNavigate(`product-${item.product.id}`)}
                     >
                       <ImageWithFallback
-                        src={item.product.image}
+                        src={getImageUrl(item.product.image)}
                         alt={item.product.name}
-                        className="w-full h-full object-cover"
+                        fill
+                        sizes="96px"
+                        className="object-cover"
                       />
                     </div>
 
@@ -102,7 +113,9 @@ export function Cart({ onNavigate }: CartProps) {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleRemove(item.product.id, item.product.name)}
+                        onClick={() =>
+                          handleRemove(item.product.id, item.product.name)
+                        }
                       >
                         <Trash2 className="h-4 w-4 text-red-500" />
                       </Button>
@@ -113,19 +126,27 @@ export function Cart({ onNavigate }: CartProps) {
                           size="icon"
                           className="h-8 w-8"
                           onClick={() =>
-                            updateCartQuantity(item.product.id, item.quantity - 1)
+                            updateCartQuantity(
+                              item.product.id,
+                              item.quantity - 1,
+                            )
                           }
                           disabled={item.quantity <= 1}
                         >
                           <Minus className="h-3 w-3" />
                         </Button>
-                        <span className="px-3 text-sm font-medium">{item.quantity}</span>
+                        <span className="px-3 text-sm font-medium">
+                          {item.quantity}
+                        </span>
                         <Button
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8"
                           onClick={() =>
-                            updateCartQuantity(item.product.id, item.quantity + 1)
+                            updateCartQuantity(
+                              item.product.id,
+                              item.quantity + 1,
+                            )
                           }
                           disabled={item.quantity >= item.product.stock}
                         >
@@ -159,7 +180,7 @@ export function Cart({ onNavigate }: CartProps) {
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Shipping</span>
                     <span className="font-medium">
-                      {shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}
+                      {shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}
                     </span>
                   </div>
 
@@ -192,7 +213,7 @@ export function Cart({ onNavigate }: CartProps) {
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={() => onNavigate('products')}
+                    onClick={() => onNavigate("products")}
                   >
                     Continue Shopping
                   </Button>

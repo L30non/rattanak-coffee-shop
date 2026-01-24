@@ -3,6 +3,7 @@ import { Button } from "@/app/components/ui/button";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { useProducts } from "@/app/hooks/useProducts";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
+import { getImageUrl } from "@/utils/supabase/client";
 
 interface HomePageProps {
   onNavigate: (view: string) => void;
@@ -133,11 +134,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 onClick={() => onNavigate(`product-${product.id}`)}
               >
                 <CardContent className="p-0">
-                  <div className="aspect-square overflow-hidden bg-gray-100">
+                  <div className="aspect-square overflow-hidden bg-gray-100 relative">
                     <ImageWithFallback
-                      src={product.image || ""}
+                      src={getImageUrl(product.image)}
                       alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                   <div className="p-4">

@@ -38,7 +38,7 @@ export function Account({ onNavigate }: AccountProps) {
     );
   }
 
-  const userOrders = orders.filter((order) => true); // In real app, filter by user ID
+  const userOrders = orders.filter(() => true); // In real app, filter by user ID
 
   const getStatusColor = (status: string) => {
     switch (status) {

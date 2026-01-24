@@ -1,60 +1,68 @@
-import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { createBrowserClient } from "@supabase/ssr";
 
-const supabaseUrl = "https://amsvlqivarurifjhboef.supabase.co";
-const supabaseKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFtc3ZscWl2YXJ1cmlmamhib2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5OTcyNDQsImV4cCI6MjA4MjU3MzI0NH0.8gUoh_l8MavbWlxQvyGkbWgSTCLq96_jvVdKgeD1jAE";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY;
 
-// Simple client for API routes (server-side)
-export const supabase = createSupabaseClient(supabaseUrl, supabaseKey);
-
-interface CookieOptions {
-  maxAge?: number;
-  path?: string;
-  domain?: string;
-  secure?: boolean;
-  sameSite?: "strict" | "lax" | "none";
-}
-
-// Singleton browser client for auth
+// Singleton browser client for client-side usage
 let browserClient: ReturnType<typeof createBrowserClient> | null = null;
 
 export const createClient = () => {
-  if (browserClient) return browserClient;
-
-  browserClient = createBrowserClient(supabaseUrl, supabaseKey, {
-    cookies: {
-      get(name: string) {
-        if (typeof document !== "undefined") {
-          const value = document.cookie
-            .split("; ")
-            .find((row) => row.startsWith(`${name}=`))
-            ?.split("=")[1];
-          return value ? decodeURIComponent(value) : null;
-        }
-        return null;
-      },
-      set(name: string, value: string, options: CookieOptions) {
-        if (typeof document !== "undefined") {
-          let cookie = `${name}=${encodeURIComponent(value)}`;
-          if (options?.maxAge) cookie += `; max-age=${options.maxAge}`;
-          if (options?.path) cookie += `; path=${options.path}`;
-          if (options?.domain) cookie += `; domain=${options.domain}`;
-          if (options?.secure) cookie += "; secure";
-          if (options?.sameSite) cookie += `; samesite=${options.sameSite}`;
-          document.cookie = cookie;
-        }
-      },
-      remove(name: string, options: CookieOptions) {
-        if (typeof document !== "undefined") {
-          let cookie = `${name}=; max-age=0`;
-          if (options?.path) cookie += `; path=${options.path}`;
-          if (options?.domain) cookie += `; domain=${options.domain}`;
-          document.cookie = cookie;
-        }
-      },
-    },
-  });
-
+  if (!browserClient) {
+    browserClient = createBrowserClient(supabaseUrl!, supabaseKey!);
+  }
   return browserClient;
+};
+
+// Reset client (useful for sign out)
+export const resetBrowserClient = () => {
+  browserClient = null;
+};
+
+// Export a singleton instance for convenience
+export const supabase = createClient();
+
+// Storage helper functions
+export const uploadImage = async (
+  file: File,
+): Promise<{ path: string | null; error: string | null }> => {
+  try {
+    const client = createClient();
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = `products/${fileName}`;
+
+    const { error: uploadError } = await client.storage
+      .from("Images")
+      .upload(filePath, file);
+
+    if (uploadError) {
+      return { path: null, error: uploadError.message };
+    }
+
+    return { path: filePath, error: null };
+  } catch (err) {
+    return {
+      path: null,
+      error: err instanceof Error ? err.message : "Upload failed",
+    };
+  }
+};
+
+export const getImageUrl = (path: string | null | undefined): string | null => {
+  if (!path || path.trim() === "") return null;
+
+  // If it's already a full URL, return as-is
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+
+  // If it's a local public path (e.g., /images/...), return as-is
+  if (path.startsWith("/")) {
+    return path;
+  }
+
+  // Otherwise, it's a Supabase Storage path - get public URL
+  const client = createClient();
+  const { data } = client.storage.from("Images").getPublicUrl(path);
+  return data?.publicUrl || null;
 };

@@ -14,6 +14,7 @@ import { Badge } from "@/app/components/ui/badge";
 import { useStore } from "@/app/store/useStore";
 import { useProduct } from "@/app/hooks/useProducts";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
+import { getImageUrl } from "@/utils/supabase/client";
 import { toast } from "sonner";
 
 interface ProductDetailProps {
@@ -77,11 +78,14 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
           <div>
             <Card className="overflow-hidden">
               <CardContent className="p-0">
-                <div className="aspect-square bg-gray-100">
+                <div className="aspect-square bg-gray-100 relative">
                   <ImageWithFallback
-                    src={product.image || ""}
+                    src={getImageUrl(product.image)}
                     alt={product.name}
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover"
+                    priority
                   />
                 </div>
               </CardContent>

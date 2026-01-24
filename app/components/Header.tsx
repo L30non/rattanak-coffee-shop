@@ -20,6 +20,14 @@ export function Header({
   const cart = useStore((state) => state.cart);
   const { user, signOut } = useAuth();
 
+  const handleSearchChange = (value: string) => {
+    onSearchChange(value);
+    // Navigate to products page when searching from home
+    if (value && currentView === "home") {
+      onNavigate("products");
+    }
+  };
+
   const handleLogout = async () => {
     const result = await signOut();
     if (result.success) {
@@ -93,7 +101,7 @@ export function Header({
                 <input
                   type="text"
                   placeholder="Search products..."
-                  onChange={(e) => onSearchChange(e.target.value)}
+                  onChange={(e) => handleSearchChange(e.target.value)}
                   className="pl-8 pr-4 py-2 border rounded-md text-sm w-64 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
@@ -165,7 +173,7 @@ export function Header({
                     <input
                       type="text"
                       placeholder="Search products..."
-                      onChange={(e) => onSearchChange(e.target.value)}
+                      onChange={(e) => handleSearchChange(e.target.value)}
                       className="w-full pl-8 pr-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
                     />
                   </div>

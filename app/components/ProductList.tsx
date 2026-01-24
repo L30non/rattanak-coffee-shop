@@ -15,6 +15,7 @@ import { useProducts } from "@/app/hooks/useProducts";
 import type { Product } from "@/app/store/useStore";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { toast } from "sonner";
+import { getImageUrl } from "@/utils/supabase/client";
 
 interface ProductListProps {
   category?: "machines" | "beans" | "accessories" | "ingredients" | "all";
@@ -169,17 +170,19 @@ export function ProductList({
                 <CardContent className="p-0">
                   <div className="aspect-square overflow-hidden bg-gray-100 relative">
                     <ImageWithFallback
-                      src={product.image || ""}
+                      src={getImageUrl(product.image)}
                       alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-cover group-hover:scale-110 transition-transform duration-300"
                     />
                     {product.stock < 10 && product.stock > 0 && (
-                      <Badge className="absolute top-2 right-2 bg-orange-500">
+                      <Badge className="absolute top-2 right-2 bg-orange-500 z-10">
                         Low Stock
                       </Badge>
                     )}
                     {product.stock === 0 && (
-                      <Badge className="absolute top-2 right-2 bg-red-500">
+                      <Badge className="absolute top-2 right-2 bg-red-500 z-10">
                         Out of Stock
                       </Badge>
                     )}

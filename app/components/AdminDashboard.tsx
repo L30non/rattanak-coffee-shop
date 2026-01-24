@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Image from "next/image";
 import {
   Package,
   ShoppingBag,
@@ -6,6 +7,7 @@ import {
   Plus,
   Edit,
   Trash2,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import {
@@ -56,6 +58,7 @@ import {
 } from "@/app/hooks/useProducts";
 import type { Product } from "@/app/store/useStore";
 import { toast } from "sonner";
+import { uploadImage, getImageUrl } from "@/utils/supabase/client";
 
 interface AdminDashboardProps {
   onNavigate: (view: string) => void;
@@ -74,6 +77,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: "",
     category: "beans" as "machines" | "beans" | "accessories" | "ingredients",
@@ -85,6 +89,44 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
     origin: "",
     weight: "",
   });
+
+  const handleImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    isEdit: boolean = false,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image size must be less than 5MB");
+      return;
+    }
+
+    setIsUploading(true);
+    const { path, error } = await uploadImage(file);
+    setIsUploading(false);
+
+    if (error) {
+      toast.error(`Upload failed: ${error}`);
+      return;
+    }
+
+    if (path) {
+      if (isEdit && editingProduct) {
+        setEditingProduct({ ...editingProduct, image: path });
+      } else {
+        setNewProduct({ ...newProduct, image: path });
+      }
+      toast.success("Image uploaded successfully");
+    }
+  };
 
   if (!user || !user.is_admin) {
     return (
@@ -386,18 +428,50 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                         </div>
 
                         <div>
-                          <Label htmlFor="image">Image URL</Label>
-                          <Input
-                            id="image"
-                            value={newProduct.image || ""}
-                            onChange={(e) =>
-                              setNewProduct({
-                                ...newProduct,
-                                image: e.target.value || null,
-                              })
-                            }
-                            placeholder="https://..."
-                          />
+                          <Label htmlFor="image">Product Image</Label>
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Input
+                                id="imageUpload"
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => handleImageUpload(e, false)}
+                                disabled={isUploading}
+                                className="flex-1"
+                              />
+                              {isUploading && (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              )}
+                            </div>
+                            {newProduct.image && (
+                              <div className="flex items-center gap-2">
+                                <div className="relative h-16 w-16 rounded overflow-hidden">
+                                  <Image
+                                    src={getImageUrl(newProduct.image) || ""}
+                                    alt="Preview"
+                                    fill
+                                    className="object-cover"
+                                  />
+                                </div>
+                                <span className="text-sm text-gray-500 truncate flex-1">
+                                  {newProduct.image}
+                                </span>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() =>
+                                    setNewProduct({
+                                      ...newProduct,
+                                      image: null,
+                                    })
+                                  }
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            )}
+                          </div>
                         </div>
 
                         <div className="grid grid-cols-3 gap-4">
@@ -702,6 +776,53 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                     }
                     required
                   />
+                </div>
+
+                <div>
+                  <Label htmlFor="edit-image">Product Image</Label>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Input
+                        id="edit-imageUpload"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e, true)}
+                        disabled={isUploading}
+                        className="flex-1"
+                      />
+                      {isUploading && (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      )}
+                    </div>
+                    {editingProduct.image && (
+                      <div className="flex items-center gap-2">
+                        <div className="relative h-16 w-16 rounded overflow-hidden">
+                          <Image
+                            src={getImageUrl(editingProduct.image) || ""}
+                            alt="Preview"
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <span className="text-sm text-gray-500 truncate flex-1">
+                          {editingProduct.image}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() =>
+                            setEditingProduct({
+                              ...editingProduct,
+                              image: null,
+                            })
+                          }
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <Button
