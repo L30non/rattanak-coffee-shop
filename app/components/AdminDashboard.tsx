@@ -8,6 +8,8 @@ import {
   Edit,
   Trash2,
   Loader2,
+  QrCode,
+  Truck,
 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import {
@@ -665,8 +667,21 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                             </div>
                             <div>
                               <span className="font-medium">Payment:</span>
-                              <p className="text-gray-600 capitalize">
-                                {order.payment_method}
+                              <p className="text-gray-600 flex items-center gap-1">
+                                {order.payment_method === "bakong" ? (
+                                  <>
+                                    <QrCode className="h-4 w-4" /> Bakong (KHQR)
+                                  </>
+                                ) : order.payment_method === "cash" ? (
+                                  <>
+                                    <Truck className="h-4 w-4" /> Cash on
+                                    Delivery
+                                  </>
+                                ) : (
+                                  <span className="capitalize">
+                                    {order.payment_method}
+                                  </span>
+                                )}
                               </p>
                             </div>
                           </div>

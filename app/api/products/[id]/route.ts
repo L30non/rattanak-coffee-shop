@@ -1,15 +1,14 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/server";
 import type { Product } from "@/app/store/useStore";
-
-const supabase = createClient();
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const supabase = await createClient();
     const { id } = await params;
 
     const { data, error } = await supabase
@@ -36,6 +35,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const supabase = await createClient();
     const { id } = await params;
     const body: Partial<Product> = await request.json();
 
@@ -64,6 +64,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const supabase = await createClient();
     const { id } = await params;
 
     const { error } = await supabase.from("products").delete().eq("id", id);

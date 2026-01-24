@@ -30,13 +30,15 @@ export interface User {
   created_at: string;
 }
 
+export type PaymentMethod = "bakong" | "cash";
+
 export interface Order {
   id: string;
   user_id: string;
   status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
   total: number;
   shipping_address: string;
-  payment_method: string;
+  payment_method: PaymentMethod;
   date: string; // Order date (when the order was placed)
   created_at: string;
   updated_at: string;

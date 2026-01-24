@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/server";
 import type { Order } from "@/app/store/useStore";
-
-const supabase = createClient();
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = await createClient();
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("user_id");
 
@@ -42,6 +41,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = await createClient();
     const body: Omit<Order, "id" | "created_at"> & {
       items?: Array<{ product_id: string; quantity: number; price: number }>;
     } = await request.json();

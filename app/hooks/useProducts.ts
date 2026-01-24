@@ -110,11 +110,22 @@ export const useOrder = (id: string) => {
   });
 };
 
+export interface CreateOrderInput {
+  user_id: string;
+  status: Order["status"];
+  total: number;
+  shipping_address: string;
+  payment_method: Order["payment_method"];
+  date: string;
+  updated_at: string;
+  items?: Array<{ product_id: string; quantity: number; price: number }>;
+}
+
 export const useCreateOrder = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (newOrder: Omit<Order, "id" | "created_at">) => {
+    mutationFn: async (newOrder: CreateOrderInput) => {
       const response = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

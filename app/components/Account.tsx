@@ -1,4 +1,4 @@
-import { Package, User, Clock } from "lucide-react";
+import { Package, User, Clock, QrCode, Truck } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import {
   Card,
@@ -158,8 +158,16 @@ export function Account({ onNavigate }: AccountProps) {
 
                           <div className="text-sm text-gray-600">
                             <p className="font-medium mb-1">Payment Method:</p>
-                            <p className="capitalize">
-                              {order.payment_method.replace("-", " ")}
+                            <p className="flex items-center gap-1">
+                              {order.payment_method === "bakong" ? (
+                                <>
+                                  <QrCode className="h-4 w-4" /> Bakong (KHQR)
+                                </>
+                              ) : (
+                                <>
+                                  <Truck className="h-4 w-4" /> Cash on Delivery
+                                </>
+                              )}
                             </p>
                           </div>
                         </div>
