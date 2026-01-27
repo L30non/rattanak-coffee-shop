@@ -4,11 +4,14 @@ import { updateSession } from "@/utils/supabase/proxy";
 export async function middleware(request: NextRequest) {
   try {
     // Check if environment variables are set
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY) {
+    if (
+      !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+      !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY
+    ) {
       console.error("Missing Supabase environment variables");
       return NextResponse.next();
     }
-    
+
     // update user's auth session
     return await updateSession(request);
   } catch (error) {
