@@ -1,4 +1,4 @@
-import { Package, User, Clock, QrCode, Truck } from "lucide-react";
+import { Package, User, Clock, Truck } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import {
   Card,
@@ -89,7 +89,7 @@ export function Account({ onNavigate }: AccountProps) {
                     </p>
                     <Button
                       onClick={() => onNavigate("products")}
-                      className="bg-amber-700 hover:bg-amber-800"
+                      className="bg-[#5F1B2C] hover:bg-[#4a1523]"
                     >
                       Start Shopping
                     </Button>
@@ -144,7 +144,7 @@ export function Account({ onNavigate }: AccountProps) {
                           <Separator />
                           <div className="flex justify-between">
                             <span className="font-semibold">Total</span>
-                            <span className="font-bold text-amber-900">
+                            <span className="font-bold text-[#3d1620]">
                               ${order.total.toFixed(2)}
                             </span>
                           </div>
@@ -159,15 +159,7 @@ export function Account({ onNavigate }: AccountProps) {
                           <div className="text-sm text-gray-600">
                             <p className="font-medium mb-1">Payment Method:</p>
                             <p className="flex items-center gap-1">
-                              {order.payment_method === "bakong" ? (
-                                <>
-                                  <QrCode className="h-4 w-4" /> Bakong (KHQR)
-                                </>
-                              ) : (
-                                <>
-                                  <Truck className="h-4 w-4" /> Cash on Delivery
-                                </>
-                              )}
+                              <Truck className="h-4 w-4" /> Cash on Delivery
                             </p>
                           </div>
                         </div>
@@ -213,7 +205,7 @@ export function Account({ onNavigate }: AccountProps) {
                         <Separator />
                         <Button
                           onClick={() => onNavigate("admin")}
-                          className="w-full bg-amber-700 hover:bg-amber-800"
+                          className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
                         >
                           Go to Admin Dashboard
                         </Button>

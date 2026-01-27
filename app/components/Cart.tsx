@@ -56,7 +56,7 @@ export function Cart({ onNavigate }: CartProps) {
             </p>
             <Button
               onClick={() => onNavigate("products")}
-              className="bg-amber-700 hover:bg-amber-800"
+              className="bg-[#5F1B2C] hover:bg-[#4a1523]"
             >
               Continue Shopping
             </Button>
@@ -95,7 +95,7 @@ export function Cart({ onNavigate }: CartProps) {
                     {/* Product Info */}
                     <div className="flex-1 min-w-0">
                       <h3
-                        className="font-semibold mb-1 cursor-pointer hover:text-amber-700"
+                        className="font-semibold mb-1 cursor-pointer hover:text-[#5F1B2C]"
                         onClick={() => onNavigate(`product-${item.product.id}`)}
                       >
                         {item.product.name}
@@ -103,7 +103,7 @@ export function Cart({ onNavigate }: CartProps) {
                       <p className="text-sm text-gray-600 mb-2 capitalize">
                         {item.product.category}
                       </p>
-                      <p className="text-lg font-bold text-amber-900">
+                      <p className="text-lg font-bold text-[#3d1620]">
                         ${item.product.price.toFixed(2)}
                       </p>
                     </div>
@@ -193,7 +193,7 @@ export function Cart({ onNavigate }: CartProps) {
 
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
-                    <span className="text-amber-900">${total.toFixed(2)}</span>
+                    <span className="text-[#3d1620]">${total.toFixed(2)}</span>
                   </div>
 
                   {subtotal < 100 && (
@@ -203,7 +203,7 @@ export function Cart({ onNavigate }: CartProps) {
                   )}
 
                   <Button
-                    className="w-full bg-amber-700 hover:bg-amber-800"
+                    className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
                     size="lg"
                     onClick={handleCheckout}
                   >

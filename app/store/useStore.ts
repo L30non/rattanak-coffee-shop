@@ -30,7 +30,7 @@ export interface User {
   created_at: string;
 }
 
-export type PaymentMethod = "bakong" | "cash";
+export type PaymentMethod = "cash";
 
 export interface Order {
   id: string;

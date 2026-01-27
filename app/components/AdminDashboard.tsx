@@ -8,7 +8,6 @@ import {
   Edit,
   Trash2,
   Loader2,
-  QrCode,
   Truck,
 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
@@ -325,7 +324,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                     onOpenChange={setIsAddDialogOpen}
                   >
                     <DialogTrigger asChild>
-                      <Button className="bg-amber-700 hover:bg-amber-800">
+                      <Button className="bg-[#5F1B2C] hover:bg-[#4a1523]">
                         <Plus className="h-4 w-4 mr-2" />
                         Add Product
                       </Button>
@@ -520,7 +519,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
                         <Button
                           type="submit"
-                          className="w-full bg-amber-700 hover:bg-amber-800"
+                          className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
                         >
                           Add Product
                         </Button>
@@ -619,7 +618,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                               </p>
                             </div>
                             <div className="flex items-center gap-4">
-                              <span className="font-bold text-amber-900">
+                              <span className="font-bold text-[#3d1620]">
                                 ${order.total.toFixed(2)}
                               </span>
                               <Select
@@ -668,20 +667,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                             <div>
                               <span className="font-medium">Payment:</span>
                               <p className="text-gray-600 flex items-center gap-1">
-                                {order.payment_method === "bakong" ? (
-                                  <>
-                                    <QrCode className="h-4 w-4" /> Bakong (KHQR)
-                                  </>
-                                ) : order.payment_method === "cash" ? (
-                                  <>
-                                    <Truck className="h-4 w-4" /> Cash on
-                                    Delivery
-                                  </>
-                                ) : (
-                                  <span className="capitalize">
-                                    {order.payment_method}
-                                  </span>
-                                )}
+                                <Truck className="h-4 w-4" /> Cash on Delivery
                               </p>
                             </div>
                           </div>
@@ -842,7 +828,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
                 <Button
                   type="submit"
-                  className="w-full bg-amber-700 hover:bg-amber-800"
+                  className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
                 >
                   Update Product
                 </Button>

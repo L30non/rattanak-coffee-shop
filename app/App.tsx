@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Header } from '@/app/components/Header';
-import { HomePage } from '@/app/components/HomePage';
-import { ProductList } from '@/app/components/ProductList';
-import { ProductDetail } from '@/app/components/ProductDetail';
-import { Cart } from '@/app/components/Cart';
-import { Checkout } from '@/app/components/Checkout';
-import { Auth } from '@/app/components/Auth';
-import { Account } from '@/app/components/Account';
-import { AdminDashboard } from '@/app/components/AdminDashboard';
-import { Toaster } from '@/app/components/ui/sonner';
+import { useState, useEffect } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Header } from "@/app/components/Header";
+import { HomePage } from "@/app/components/HomePage";
+import { ProductList } from "@/app/components/ProductList";
+import { ProductDetail } from "@/app/components/ProductDetail";
+import { Cart } from "@/app/components/Cart";
+import { Checkout } from "@/app/components/Checkout";
+import { Auth } from "@/app/components/Auth";
+import { Account } from "@/app/components/Account";
+import { AdminDashboard } from "@/app/components/AdminDashboard";
+import { Toaster } from "@/app/components/ui/sonner";
 
 // Create a client for React Query (TanStack Query)
 const queryClient = new QueryClient({
@@ -24,8 +24,8 @@ const queryClient = new QueryClient({
 });
 
 function AppContent() {
-  const [currentView, setCurrentView] = useState('home');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [currentView, setCurrentView] = useState("home");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -33,35 +33,103 @@ function AppContent() {
 
   const renderView = () => {
     // Product detail pages
-    if (currentView.startsWith('product-')) {
-      const productId = currentView.replace('product-', '');
-      return <ProductDetail productId={productId} onNavigate={setCurrentView} />;
+    if (currentView.startsWith("product-")) {
+      const productId = currentView.replace("product-", "");
+      return (
+        <ProductDetail productId={productId} onNavigate={setCurrentView} />
+      );
     }
 
     // Other views
     switch (currentView) {
-      case 'home':
+      case "home":
         return <HomePage onNavigate={setCurrentView} />;
-      case 'products':
-        return <ProductList category="all" searchQuery={searchQuery} onNavigate={setCurrentView} />;
-      case 'machines':
-        return <ProductList category="machines" searchQuery={searchQuery} onNavigate={setCurrentView} />;
-      case 'beans':
-        return <ProductList category="beans" searchQuery={searchQuery} onNavigate={setCurrentView} />;
-      case 'accessories':
-        return <ProductList category="accessories" searchQuery={searchQuery} onNavigate={setCurrentView} />;
-      case 'ingredients':
-        return <ProductList category="ingredients" searchQuery={searchQuery} onNavigate={setCurrentView} />;
-      case 'cart':
+      case "products":
+        return (
+          <ProductList
+            category="all"
+            searchQuery={searchQuery}
+            onNavigate={setCurrentView}
+          />
+        );
+      case "machines":
+        return (
+          <ProductList
+            category="machines"
+            searchQuery={searchQuery}
+            onNavigate={setCurrentView}
+          />
+        );
+      case "beans":
+        return (
+          <ProductList
+            category="beans"
+            searchQuery={searchQuery}
+            onNavigate={setCurrentView}
+          />
+        );
+      case "accessories":
+        return (
+          <ProductList
+            category="accessories"
+            searchQuery={searchQuery}
+            onNavigate={setCurrentView}
+          />
+        );
+      case "ingredients":
+        return (
+          <ProductList
+            category="ingredients"
+            searchQuery={searchQuery}
+            onNavigate={setCurrentView}
+          />
+        );
+      case "cart":
         return <Cart onNavigate={setCurrentView} />;
-      case 'checkout':
+      case "checkout":
         return <Checkout onNavigate={setCurrentView} />;
-      case 'login':
+      case "login":
         return <Auth onNavigate={setCurrentView} />;
-      case 'account':
+      case "account":
         return <Account onNavigate={setCurrentView} />;
-      case 'admin':
+      case "admin":
         return <AdminDashboard onNavigate={setCurrentView} />;
+      case "about":
+        return (
+          <div className="min-h-screen bg-gray-50 py-16">
+            <div className="container mx-auto px-4 text-center">
+              <h1 className="text-4xl font-bold mb-4">About Us</h1>
+              <p className="text-gray-600">Coming Soon...</p>
+            </div>
+          </div>
+        );
+      case "blog":
+        return (
+          <div className="min-h-screen bg-gray-50 py-16">
+            <div className="container mx-auto px-4 text-center">
+              <h1 className="text-4xl font-bold mb-4">Blog</h1>
+              <p className="text-gray-600">Coming Soon...</p>
+            </div>
+          </div>
+        );
+      case "gallery":
+        return (
+          <div className="min-h-screen bg-gray-50 py-16">
+            <div className="container mx-auto px-4 text-center">
+              <h1 className="text-4xl font-bold mb-4">Gallery</h1>
+              <p className="text-gray-600">Coming Soon...</p>
+            </div>
+          </div>
+        );
+      case "contact":
+        return (
+          <div className="min-h-screen bg-gray-50 py-16">
+            <div className="container mx-auto px-4 text-center">
+              <h1 className="text-4xl font-bold mb-4">Contact</h1>
+              <p className="text-gray-600">Coming Soon...</p>
+            </div>
+          </div>
+        );
       default:
         return <HomePage onNavigate={setCurrentView} />;
     }

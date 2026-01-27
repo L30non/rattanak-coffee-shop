@@ -191,7 +191,7 @@ export function ProductList({
                   <div className="p-4">
                     <Badge
                       variant="outline"
-                      className="mb-2 text-amber-700 border-amber-700"
+                      className="mb-2 text-[#5F1B2C] border-[#5F1B2C]"
                     >
                       {product.category}
                     </Badge>
@@ -215,14 +215,14 @@ export function ProductList({
                     )}
 
                     <div className="flex items-center justify-between mt-4">
-                      <p className="text-xl font-bold text-amber-900">
+                      <p className="text-xl font-bold text-[#3d1620]">
                         ${product.price.toFixed(2)}
                       </p>
                       <Button
                         size="sm"
                         onClick={(e) => handleAddToCart(product, e)}
                         disabled={product.stock === 0}
-                        className="bg-amber-700 hover:bg-amber-800"
+                        className="bg-[#5F1B2C] hover:bg-[#4a1523]"
                       >
                         <ShoppingCart className="h-4 w-4 mr-1" />
                         Add

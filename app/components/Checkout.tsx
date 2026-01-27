@@ -1,11 +1,5 @@
-import { useState, useEffect } from "react";
-import {
-  ArrowLeft,
-  Truck,
-  CheckCircle,
-  QrCode,
-  Smartphone,
-} from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, Truck, CheckCircle } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import {
   Card,
@@ -15,18 +9,10 @@ import {
 } from "@/app/components/ui/card";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/app/components/ui/radio-group";
 import { Separator } from "@/app/components/ui/separator";
-import { useStore, type PaymentMethod } from "@/app/store/useStore";
+import { useStore } from "@/app/store/useStore";
 import { useCreateOrder } from "@/app/hooks/useProducts";
 import { toast } from "sonner";
-import {
-  generateOrderKHQR,
-  convertUSDtoKHR,
-  formatCurrency,
-  type KHQRResult,
-} from "@/utils/bakong/khqr";
-import { QRCodeSVG } from "qrcode.react";
 
 interface CheckoutProps {
   onNavigate: (view: string) => void;
@@ -40,8 +26,6 @@ export function Checkout({ onNavigate }: CheckoutProps) {
   const createOrderMutation = useCreateOrder();
 
   const [step, setStep] = useState<"info" | "payment" | "success">("info");
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bakong");
-  const [khqrData, setKhqrData] = useState<KHQRResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     fullName: user?.name || "",
@@ -59,16 +43,6 @@ export function Checkout({ onNavigate }: CheckoutProps) {
   const shipping = subtotal > 100 ? 0 : 10;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
-  const totalKHR = convertUSDtoKHR(total);
-
-  // Generate KHQR when payment step is reached and Bakong is selected
-  useEffect(() => {
-    if (step === "payment" && paymentMethod === "bakong") {
-      const orderId = `ORD-${Date.now()}`;
-      const qrData = generateOrderKHQR(total, orderId, "USD");
-      setKhqrData(qrData);
-    }
-  }, [step, paymentMethod, total]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -103,13 +77,10 @@ export function Checkout({ onNavigate }: CheckoutProps) {
       // Create order via API
       const orderData = {
         user_id: user?.id || "",
-        status:
-          paymentMethod === "cash"
-            ? ("pending" as const)
-            : ("processing" as const),
+        status: "pending" as const,
         total,
         shipping_address: shippingAddress,
-        payment_method: paymentMethod,
+        payment_method: "cash" as const,
         date: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         items: cart.map((item) => ({
@@ -182,7 +153,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
             <div className="flex gap-4 justify-center">
               <Button
                 onClick={() => onNavigate("account")}
-                className="bg-amber-700 hover:bg-amber-800"
+                className="bg-[#5F1B2C] hover:bg-[#4a1523]"
               >
                 View Orders
               </Button>
@@ -290,7 +261,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
 
                     <Button
                       type="submit"
-                      className="w-full bg-amber-700 hover:bg-amber-800"
+                      className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
                     >
                       Continue to Payment
                     </Button>
@@ -304,124 +275,25 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSubmitPayment} className="space-y-6">
-                    <RadioGroup
-                      value={paymentMethod}
-                      onValueChange={(v) =>
-                        setPaymentMethod(v as PaymentMethod)
-                      }
-                    >
-                      <div
-                        className={`flex items-center space-x-2 border rounded-lg p-4 ${paymentMethod === "bakong" ? "border-amber-500 bg-amber-50" : ""}`}
-                      >
-                        <RadioGroupItem value="bakong" id="bakong" />
-                        <Label
-                          htmlFor="bakong"
-                          className="flex items-center gap-2 cursor-pointer flex-1"
-                        >
-                          <QrCode className="h-5 w-5 text-amber-700" />
-                          <div>
-                            <span className="font-medium">Bakong (KHQR)</span>
-                            <p className="text-xs text-gray-500">
-                              Scan with any banking app in Cambodia
-                            </p>
-                          </div>
-                        </Label>
-                      </div>
-
-                      <div
-                        className={`flex items-center space-x-2 border rounded-lg p-4 ${paymentMethod === "cash" ? "border-amber-500 bg-amber-50" : ""}`}
-                      >
-                        <RadioGroupItem value="cash" id="cash" />
-                        <Label
-                          htmlFor="cash"
-                          className="flex items-center gap-2 cursor-pointer flex-1"
-                        >
-                          <Truck className="h-5 w-5 text-amber-700" />
-                          <div>
-                            <span className="font-medium">
-                              Cash on Delivery
-                            </span>
-                            <p className="text-xs text-gray-500">
-                              Pay when you receive your order
-                            </p>
-                          </div>
-                        </Label>
-                      </div>
-                    </RadioGroup>
-
-                    {/* Bakong KHQR Code */}
-                    {paymentMethod === "bakong" && khqrData && (
-                      <div className="space-y-4 p-6 bg-white border-2 border-amber-200 rounded-xl">
-                        <div className="text-center">
-                          <h3 className="font-semibold text-lg mb-2">
-                            Scan to Pay with Bakong
-                          </h3>
-                          <p className="text-sm text-gray-600 mb-4">
-                            Use any banking app (ABA, ACLEDA, Wing, etc.) to
-                            scan this QR code
-                          </p>
-                        </div>
-
-                        <div className="flex justify-center">
-                          <div className="bg-white p-4 rounded-lg shadow-md">
-                            <QRCodeSVG
-                              value={khqrData.qrString}
-                              size={200}
-                              level="H"
-                              includeMargin
-                            />
-                          </div>
-                        </div>
-
-                        <div className="text-center space-y-2">
-                          <p className="text-2xl font-bold text-amber-900">
-                            {formatCurrency(total, "USD")}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            ≈ {formatCurrency(totalKHR, "KHR")}
-                          </p>
-                        </div>
-
-                        <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
-                          <Smartphone className="h-4 w-4" />
-                          <span>Or open Bakong app:</span>
-                          <a
-                            href={khqrData.deepLink}
-                            className="text-amber-700 underline hover:text-amber-800"
-                          >
-                            Pay with Bakong
-                          </a>
-                        </div>
-
-                        <p className="text-xs text-center text-gray-500">
-                          After payment, click &quot;Place Order&quot; to
-                          confirm your order. We&apos;ll verify your payment
-                          within 24 hours.
-                        </p>
-                      </div>
-                    )}
-
                     {/* Cash on Delivery Info */}
-                    {paymentMethod === "cash" && (
-                      <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                        <div className="flex items-start gap-3">
-                          <Truck className="h-5 w-5 text-amber-700 mt-0.5" />
-                          <div>
-                            <h4 className="font-medium text-amber-900">
-                              Cash on Delivery
-                            </h4>
-                            <p className="text-sm text-amber-700 mt-1">
-                              Please prepare exact amount:{" "}
-                              <strong>{formatCurrency(total, "USD")}</strong>
-                            </p>
-                            <p className="text-xs text-gray-600 mt-2">
-                              Our delivery partner will collect payment when
-                              your order arrives.
-                            </p>
-                          </div>
+                    <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg">
+                      <div className="flex items-start gap-3">
+                        <Truck className="h-5 w-5 text-[#5F1B2C] mt-0.5" />
+                        <div>
+                          <h4 className="font-medium text-[#3d1620]">
+                            Cash on Delivery
+                          </h4>
+                          <p className="text-sm text-[#5F1B2C] mt-1">
+                            Please prepare exact amount:{" "}
+                            <strong>${total.toFixed(2)}</strong>
+                          </p>
+                          <p className="text-xs text-gray-600 mt-2">
+                            Our delivery partner will collect payment when your
+                            order arrives.
+                          </p>
                         </div>
                       </div>
-                    )}
+                    </div>
 
                     <div className="flex gap-4">
                       <Button
@@ -435,7 +307,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                       </Button>
                       <Button
                         type="submit"
-                        className="flex-1 bg-amber-700 hover:bg-amber-800"
+                        className="flex-1 bg-[#5F1B2C] hover:bg-[#4a1523]"
                         disabled={isProcessing}
                       >
                         {isProcessing ? "Processing..." : "Place Order"}
@@ -494,7 +366,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
 
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
-                    <span className="text-amber-900">${total.toFixed(2)}</span>
+                    <span className="text-[#3d1620]">${total.toFixed(2)}</span>
                   </div>
                 </div>
               </CardContent>

@@ -80,12 +80,12 @@ export function Auth({ onNavigate }: AuthProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white py-12">
+    <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
-              <Coffee className="h-12 w-12 text-amber-700" />
+              <Coffee className="h-12 w-12 text-[#5F1B2C]" />
             </div>
             <h1 className="text-3xl mb-2">Welcome to Rattanak Coffee</h1>
             <p className="text-gray-600">
@@ -142,7 +142,7 @@ export function Auth({ onNavigate }: AuthProps) {
 
                     <Button
                       type="submit"
-                      className="w-full bg-amber-700 hover:bg-amber-800"
+                      className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (
@@ -228,7 +228,7 @@ export function Auth({ onNavigate }: AuthProps) {
 
                     <Button
                       type="submit"
-                      className="w-full bg-amber-700 hover:bg-amber-800"
+                      className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (

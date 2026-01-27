@@ -96,7 +96,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
           <div>
             <Badge
               variant="outline"
-              className="mb-4 text-amber-700 border-amber-700"
+              className="mb-4 text-[#5F1B2C] border-[#5F1B2C]"
             >
               {product.category}
             </Badge>
@@ -104,7 +104,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
             <h1 className="text-3xl md:text-4xl mb-4">{product.name}</h1>
 
             <div className="flex items-center gap-4 mb-6">
-              <p className="text-3xl font-bold text-amber-900">
+              <p className="text-3xl font-bold text-[#3d1620]">
                 ${product.price.toFixed(2)}
               </p>
               {product.stock > 0 ? (
@@ -168,7 +168,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                 <ul className="space-y-2">
                   {product.features.map((feature, index) => (
                     <li key={index} className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 bg-amber-700 rounded-full" />
+                      <div className="w-1.5 h-1.5 bg-[#5F1B2C] rounded-full" />
                       {feature}
                     </li>
                   ))}
@@ -205,7 +205,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
             {/* Add to Cart Button */}
             <Button
               size="lg"
-              className="w-full mb-6 bg-amber-700 hover:bg-amber-800"
+              className="w-full mb-6 bg-[#5F1B2C] hover:bg-[#4a1523]"
               onClick={handleAddToCart}
               disabled={product.stock === 0}
             >
@@ -216,15 +216,15 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
             {/* Benefits */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="flex items-center gap-2 text-sm">
-                <Package className="h-5 w-5 text-amber-700" />
+                <Package className="h-5 w-5 text-[#5F1B2C]" />
                 <span>Free Shipping</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <Truck className="h-5 w-5 text-amber-700" />
+                <Truck className="h-5 w-5 text-[#5F1B2C]" />
                 <span>Fast Delivery</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <Shield className="h-5 w-5 text-amber-700" />
+                <Shield className="h-5 w-5 text-[#5F1B2C]" />
                 <span>Secure Payment</span>
               </div>
             </div>
