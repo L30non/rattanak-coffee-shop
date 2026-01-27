@@ -6,6 +6,9 @@ import "../styles/theme.css";
 export const metadata: Metadata = {
   title: "Rattanak Coffee Shop",
   description: "Premium coffee and accessories",
+  icons: {
+    icon: "https://amsvlqivarurifjhboef.supabase.co/storage/v1/object/public/Images/branding/Rattanak.webp",
+  },
 };
 
 export default function RootLayout({
