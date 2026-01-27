@@ -40,6 +40,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/app/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/app/components/ui/alert-dialog";
 import { Textarea } from "@/app/components/ui/textarea";
 import {
   Table,
@@ -78,6 +89,10 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [productToDelete, setProductToDelete] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: "",
@@ -210,16 +225,21 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
   };
 
   const handleDeleteProduct = (id: string, name: string) => {
-    if (window.confirm(`Are you sure you want to delete "${name}"?`)) {
-      deleteProductMutation.mutate(id, {
-        onSuccess: () => {
-          toast.success("Product deleted successfully");
-        },
-        onError: (error) => {
-          toast.error(`Failed to delete product: ${error.message}`);
-        },
-      });
-    }
+    setProductToDelete({ id, name });
+  };
+
+  const confirmDelete = () => {
+    if (!productToDelete) return;
+
+    deleteProductMutation.mutate(productToDelete.id, {
+      onSuccess: () => {
+        toast.success("Product deleted successfully");
+        setProductToDelete(null);
+      },
+      onError: (error) => {
+        toast.error(`Failed to delete product: ${error.message}`);
+      },
+    });
   };
 
   const handleUpdateOrderStatus = (
@@ -571,15 +591,45 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                               >
                                 <Edit className="h-4 w-4" />
                               </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() =>
-                                  handleDeleteProduct(product.id, product.name)
-                                }
-                              >
-                                <Trash2 className="h-4 w-4 text-red-500" />
-                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                      handleDeleteProduct(
+                                        product.id,
+                                        product.name,
+                                      )
+                                    }
+                                  >
+                                    <Trash2 className="h-4 w-4 text-red-500" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                      Delete Product
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Are you sure you want to delete &quot;
+                                      {product.name}&quot;? This action cannot
+                                      be undone.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>
+                                      Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={confirmDelete}
+                                      className="bg-red-600 hover:bg-red-700"
+                                    >
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
                             </div>
                           </TableCell>
                         </TableRow>

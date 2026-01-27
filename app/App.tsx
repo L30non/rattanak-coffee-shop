@@ -177,7 +177,7 @@ function AppContent() {
         onSearchChange={setSearchQuery}
       />
       <main>{renderView()}</main>
-      <Toaster position="top-center" />
+      <Toaster position="top-center" closeButton />
     </div>
   );
 }
