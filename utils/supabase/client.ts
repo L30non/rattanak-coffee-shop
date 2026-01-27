@@ -18,9 +18,6 @@ export const resetBrowserClient = () => {
   browserClient = null;
 };
 
-// Export a singleton instance for convenience
-export const supabase = createClient();
-
 // Storage helper functions
 export const uploadImage = async (
   file: File,

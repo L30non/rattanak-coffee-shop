@@ -9,8 +9,6 @@ import type {
 } from "@supabase/supabase-js";
 import { useStore, type User } from "@/app/store/useStore";
 
-const supabase = createClient();
-
 // Profile type from database
 interface Profile {
   id: string;
@@ -31,6 +29,7 @@ export function useAuth() {
   const syncUserProfile = useCallback(
     async (supabaseUser: SupabaseUser) => {
       try {
+        const supabase = createClient();
         // Fetch profile from database
         const { data: profile } = (await supabase
           .from("profiles")
@@ -70,6 +69,7 @@ export function useAuth() {
     // Get initial session
     const getSession = async () => {
       try {
+        const supabase = createClient();
         const {
           data: { session },
         } = await supabase.auth.getSession();
@@ -90,6 +90,7 @@ export function useAuth() {
     getSession();
 
     // Listen for auth changes - NOT async to avoid abort issues
+    const supabase = createClient();
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(
@@ -116,6 +117,7 @@ export function useAuth() {
 
   const signUp = async (email: string, password: string, name: string) => {
     setLoading(true);
+    const supabase = createClient();
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -135,6 +137,7 @@ export function useAuth() {
 
   const signIn = async (email: string, password: string) => {
     setLoading(true);
+    const supabase = createClient();
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -166,6 +169,7 @@ export function useAuth() {
     }
 
     try {
+      const supabase = createClient();
       await supabase.auth.signOut();
     } catch (err) {
       // Ignore abort errors
