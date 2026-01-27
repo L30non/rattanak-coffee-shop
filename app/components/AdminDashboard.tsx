@@ -52,7 +52,7 @@ import {
 import { useStore, type Order } from "@/app/store/useStore";
 import { useAuth } from "@/app/hooks/useAuth";
 import {
-  useProducts,
+  useMultipleProducts,
   useAddProduct,
   useUpdateProduct,
   useDeleteProduct,
@@ -70,7 +70,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
   const orders = useStore((state) => state.orders);
   const updateOrderStatus = useStore((state) => state.updateOrderStatus);
 
-  const { data: products = [] } = useProducts();
+  const { data: products = [] } = useMultipleProducts();
   const addProductMutation = useAddProduct();
   const updateProductMutation = useUpdateProduct();
   const deleteProductMutation = useDeleteProduct();

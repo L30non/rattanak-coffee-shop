@@ -1,8 +1,8 @@
 import { useState } from "react";
+import Image from "next/image";
 import {
   ShoppingCart,
   User,
-  Coffee,
   Search,
   Menu,
   Shield,
@@ -25,6 +25,7 @@ import { useStore } from "@/app/store/useStore";
 import { useAuth } from "@/app/hooks/useAuth";
 import { Sheet, SheetContent, SheetTrigger } from "@/app/components/ui/sheet";
 import { toast } from "sonner";
+import { getImageUrl } from "@/utils/supabase/client";
 
 interface HeaderProps {
   onNavigate: (view: string) => void;
@@ -146,10 +147,22 @@ export function Header({
             {/* Logo */}
             <button
               onClick={() => onNavigate("home")}
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              className="flex items-center gap-3 hover:opacity-80 transition-opacity"
             >
-              <Coffee className="h-8 w-8 text-[#5F1B2C]" />
-              <span className="font-bold text-xl text-[#5F1B2C]">
+              <div className="relative h-12 w-12 flex-shrink-0">
+                <Image
+                  src={
+                    getImageUrl(
+                      "https://amsvlqivarurifjhboef.supabase.co/storage/v1/object/public/Images/branding/Rattanak.webp",
+                    ) || "/Rattanak.webp"
+                  }
+                  alt="Rattanak Coffee Logo"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
+              <span className="font-bold text-xl text-[#5F1B2C] hidden sm:inline">
                 Rattanak Coffee
               </span>
             </button>

@@ -12,7 +12,7 @@ import { Button } from "@/app/components/ui/button";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Badge } from "@/app/components/ui/badge";
 import { useStore } from "@/app/store/useStore";
-import { useProduct } from "@/app/hooks/useProducts";
+import { useSingleProduct } from "@/app/hooks/useProducts";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { getImageUrl } from "@/utils/supabase/client";
 import { toast } from "sonner";
@@ -23,7 +23,7 @@ interface ProductDetailProps {
 }
 
 export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
-  const { data: product, isLoading } = useProduct(productId);
+  const { data: product, isLoading } = useSingleProduct(productId);
   const addToCart = useStore((state) => state.addToCart);
   const [quantity, setQuantity] = useState(1);
 

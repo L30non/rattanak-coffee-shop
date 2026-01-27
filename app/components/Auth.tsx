@@ -1,12 +1,7 @@
 import { useState } from "react";
 import { Coffee, LogIn, UserPlus, Loader2 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/app/components/ui/card";
+import { Card, CardContent } from "@/app/components/ui/card";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import {
@@ -23,7 +18,7 @@ interface AuthProps {
 }
 
 export function Auth({ onNavigate }: AuthProps) {
-  const { signIn, signUp, loading } = useAuth();
+  const { signIn, signUp } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [registerData, setRegisterData] = useState({

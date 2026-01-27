@@ -11,7 +11,7 @@ import {
 } from "@/app/components/ui/select";
 import { Filter, ShoppingCart } from "lucide-react";
 import { useStore } from "@/app/store/useStore";
-import { useProducts } from "@/app/hooks/useProducts";
+import { useMultipleProducts } from "@/app/hooks/useProducts";
 import type { Product } from "@/app/store/useStore";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { toast } from "sonner";
@@ -29,7 +29,7 @@ export function ProductList({
   onNavigate,
 }: ProductListProps) {
   // Use React Query hook instead of local store
-  const { data: products = [] } = useProducts(category);
+  const { data: products = [] } = useMultipleProducts(category);
 
   const addToCart = useStore((state) => state.addToCart);
   const [priceFilter, setPriceFilter] = useState<string>("all");

@@ -1,7 +1,7 @@
 import { Coffee, ShoppingBag, Star, TrendingUp } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Card, CardContent } from "@/app/components/ui/card";
-import { useProducts } from "@/app/hooks/useProducts";
+import { useMultipleProducts } from "@/app/hooks/useProducts";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { getImageUrl } from "@/utils/supabase/client";
 
@@ -10,7 +10,7 @@ interface HomePageProps {
 }
 
 export function HomePage({ onNavigate }: HomePageProps) {
-  const { data: products = [] } = useProducts();
+  const { data: products = [] } = useMultipleProducts();
 
   const featuredProducts = products.slice(0, 4);
 

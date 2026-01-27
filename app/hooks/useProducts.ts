@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Product, Order } from "@/app/store/useStore";
 
-export const useProducts = (category?: string) => {
+export const useMultipleProducts = (category?: string) => {
   return useQuery({
     queryKey: ["products", category],
     queryFn: async () => {
@@ -15,7 +15,7 @@ export const useProducts = (category?: string) => {
   });
 };
 
-export const useProduct = (id: string) => {
+export const useSingleProduct = (id: string) => {
   return useQuery({
     queryKey: ["product", id],
     queryFn: async () => {
