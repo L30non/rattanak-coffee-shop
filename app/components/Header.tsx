@@ -20,7 +20,10 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from "@/app/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/app/components/ui/avatar";
 import { useStore } from "@/app/store/useStore";
 import { useAuth } from "@/app/hooks/useAuth";
 import { Sheet, SheetContent, SheetTrigger } from "@/app/components/ui/sheet";
@@ -266,18 +269,114 @@ export function Header({
                       Admin
                     </Badge>
                   )}
-                  <Button
-                    variant="ghost"
-                    onClick={() =>
-                      onNavigate(user.is_admin ? "admin" : "account")
-                    }
-                  >
-                    <User className="h-5 w-5 mr-2" />
-                    {user.name}
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={handleLogout}>
-                    Logout
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="flex items-center gap-2"
+                      >
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback className="bg-[#5F1B2C] text-white text-sm">
+                            {user.name.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span>{user.name}</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                      <DropdownMenuLabel>
+                        <div className="flex flex-col space-y-1">
+                          <p className="text-sm font-medium leading-none">
+                            {user.name}
+                          </p>
+                          <p className="text-xs leading-none text-muted-foreground">
+                            {user.email}
+                          </p>
+                        </div>
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => onNavigate("profile")}
+                        className="cursor-pointer"
+                      >
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => onNavigate("account")}
+                        className="cursor-pointer"
+                      >
+                        <ShoppingCart className="mr-2 h-4 w-4" />
+                        <span>Orders</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => onNavigate("address")}
+                        className="cursor-pointer"
+                      >
+                        <MapPin className="mr-2 h-4 w-4" />
+                        <span>Address</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => onNavigate("settings")}
+                        className="cursor-pointer"
+                      >
+                        <svg
+                          className="mr-2 h-4 w-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                        <span>Settings</span>
+                      </DropdownMenuItem>
+                      {user.is_admin && (
+                        <>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => onNavigate("admin")}
+                            className="cursor-pointer"
+                          >
+                            <Shield className="mr-2 h-4 w-4" />
+                            <span>Admin Dashboard</span>
+                          </DropdownMenuItem>
+                        </>
+                      )}
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={handleLogout}
+                        className="cursor-pointer text-red-600 focus:text-red-600"
+                      >
+                        <svg
+                          className="mr-2 h-4 w-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                          />
+                        </svg>
+                        <span>Logout</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               ) : (
                 <Button
@@ -370,25 +469,103 @@ export function Header({
 
                     {/* Mobile User Actions */}
                     {user ? (
-                      <>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-3 p-3 border rounded-lg">
+                          <Avatar className="h-10 w-10">
+                            <AvatarFallback className="bg-[#5F1B2C] text-white">
+                              {user.name.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">
+                              {user.name}
+                            </p>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {user.email}
+                            </p>
+                          </div>
+                        </div>
                         <Button
                           variant="outline"
-                          onClick={() =>
-                            onNavigate(user.is_admin ? "admin" : "account")
-                          }
-                          className="w-full"
+                          onClick={() => onNavigate("profile")}
+                          className="w-full justify-start"
                         >
-                          <User className="h-5 w-5 mr-2" />
-                          {user.name}
+                          <User className="h-4 w-4 mr-2" />
+                          Profile
                         </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => onNavigate("account")}
+                          className="w-full justify-start"
+                        >
+                          <ShoppingCart className="h-4 w-4 mr-2" />
+                          Orders
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => onNavigate("address")}
+                          className="w-full justify-start"
+                        >
+                          <MapPin className="h-4 w-4 mr-2" />
+                          Address
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => onNavigate("settings")}
+                          className="w-full justify-start"
+                        >
+                          <svg
+                            className="h-4 w-4 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                          </svg>
+                          Settings
+                        </Button>
+                        {user.is_admin && (
+                          <Button
+                            variant="outline"
+                            onClick={() => onNavigate("admin")}
+                            className="w-full justify-start"
+                          >
+                            <Shield className="h-4 w-4 mr-2" />
+                            Admin Dashboard
+                          </Button>
+                        )}
                         <Button
                           variant="outline"
                           onClick={handleLogout}
-                          className="w-full"
+                          className="w-full justify-start text-red-600 hover:text-red-600"
                         >
+                          <svg
+                            className="h-4 w-4 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                            />
+                          </svg>
                           Logout
                         </Button>
-                      </>
+                      </div>
                     ) : (
                       <Button
                         variant="default"
