@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 import Image from "next/image";
 import {
   ShoppingCart,
@@ -36,24 +36,23 @@ interface HeaderProps {
   onSearchChange: (search: string) => void;
 }
 
-export function Header({
-  onNavigate,
-  currentView,
-  onSearchChange,
-}: HeaderProps) {
+const Header = ({ onNavigate, currentView, onSearchChange }: HeaderProps) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const cart = useStore((state) => state.cart);
   const { user, signOut } = useAuth();
 
-  const handleSearchChange = (value: string) => {
-    onSearchChange(value);
-    // Navigate to products page when searching from home
-    if (value && currentView === "home") {
-      onNavigate("products");
-    }
-  };
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      onSearchChange(value);
+      // Navigate to products page when searching from home
+      if (value && currentView === "home") {
+        onNavigate("products");
+      }
+    },
+    [onSearchChange, currentView, onNavigate],
+  );
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     const result = await signOut();
     if (result.success) {
       toast.success("Logged out successfully");
@@ -61,7 +60,7 @@ export function Header({
     } else {
       toast.error("Failed to logout");
     }
-  };
+  }, [signOut, onNavigate]);
 
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -302,6 +301,15 @@ export function Header({
                         <User className="mr-2 h-4 w-4" />
                         <span>Profile</span>
                       </DropdownMenuItem>
+                      {!user.is_admin && (
+                        <DropdownMenuItem
+                          onClick={() => onNavigate("account")}
+                          className="cursor-pointer"
+                        >
+                          <ShoppingCart className="mr-2 h-4 w-4" />
+                          <span>Orders</span>
+                        </DropdownMenuItem>
+                      )}
                       <DropdownMenuItem
                         onClick={() => onNavigate("address")}
                         className="cursor-pointer"
@@ -486,14 +494,16 @@ export function Header({
                           <User className="h-4 w-4 mr-2" />
                           Profile
                         </Button>
-                        <Button
-                          variant="outline"
-                          onClick={() => onNavigate("account")}
-                          className="w-full justify-start"
-                        >
-                          <ShoppingCart className="h-4 w-4 mr-2" />
-                          Orders
-                        </Button>
+                        {!user.is_admin && (
+                          <Button
+                            variant="outline"
+                            onClick={() => onNavigate("account")}
+                            className="w-full justify-start"
+                          >
+                            <ShoppingCart className="h-4 w-4 mr-2" />
+                            Orders
+                          </Button>
+                        )}
                         <Button
                           variant="outline"
                           onClick={() => onNavigate("address")}
@@ -608,4 +618,7 @@ export function Header({
       </div>
     </header>
   );
-}
+};
+
+export { Header };
+export default memo(Header);
