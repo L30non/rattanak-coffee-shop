@@ -303,13 +303,6 @@ export function Header({
                         <span>Profile</span>
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        onClick={() => onNavigate("account")}
-                        className="cursor-pointer"
-                      >
-                        <ShoppingCart className="mr-2 h-4 w-4" />
-                        <span>Orders</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
                         onClick={() => onNavigate("address")}
                         className="cursor-pointer"
                       >
