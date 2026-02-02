@@ -26,10 +26,8 @@ export function Checkout({ onNavigate }: CheckoutProps) {
 
   const [step, setStep] = useState<"info" | "payment" | "success">("info");
   const [isProcessing, setIsProcessing] = useState(false);
-<<<<<<< HEAD
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
-=======
->>>>>>> parent of 3a72575 (Added Stripe Payment as another payment method. Improved fix of order not rendering properly on the web.)
+  const [, setStripeClientSecret] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
@@ -68,9 +66,10 @@ export function Checkout({ onNavigate }: CheckoutProps) {
       return;
     }
     setStep("payment");
+    // Reset stripe client secret when going back to payment
+    setStripeClientSecret(null);
   };
 
-<<<<<<< HEAD
   // Fetch Stripe client secret for embedded checkout
   const fetchStripeClientSecret = useCallback(async () => {
     const shippingAddress = `${formData.address}, ${formData.city}, ${formData.zipCode}`;
@@ -93,6 +92,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
 
     const data = await response.json();
     if (data.clientSecret) {
+      setStripeClientSecret(data.clientSecret);
       return data.clientSecret;
     }
     throw new Error(data.error || "Failed to create checkout session");
@@ -119,7 +119,13 @@ export function Checkout({ onNavigate }: CheckoutProps) {
         })),
       };
 
-      await createOrderMutation.mutateAsync(orderData);
+      const createdOrder = await createOrderMutation.mutateAsync(orderData);
+
+      // Add to local store for UI
+      addOrder({
+        ...createdOrder,
+        items: cart,
+      });
 
       // Clear cart
       clearCart();
@@ -130,7 +136,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
       toast.error("Failed to save order. Please contact support.");
       console.error("Order save error:", error);
     }
-  }, [formData, user, total, cart, createOrderMutation, clearCart]);
+  }, [formData, user, total, cart, createOrderMutation, addOrder, clearCart]);
 
 =======
 >>>>>>> parent of 3a72575 (Added Stripe Payment as another payment method. Improved fix of order not rendering properly on the web.)
@@ -353,7 +359,6 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                             order arrives.
                           </p>
                         </div>
-<<<<<<< HEAD
 
                         <div className="flex gap-4">
                           <Button
@@ -396,35 +401,15 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                           variant="outline"
                           onClick={() => {
                             setPaymentMethod("cash");
+                            setStripeClientSecret(null);
                           }}
                           className="w-full"
                         >
                           Back to Payment Options
                         </Button>
-=======
->>>>>>> parent of 3a72575 (Added Stripe Payment as another payment method. Improved fix of order not rendering properly on the web.)
                       </div>
-                    </div>
-
-                    <div className="flex gap-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setStep("info")}
-                        className="flex-1"
-                        disabled={isProcessing}
-                      >
-                        Back
-                      </Button>
-                      <Button
-                        type="submit"
-                        className="flex-1 bg-[#5F1B2C] hover:bg-[#4a1523]"
-                        disabled={isProcessing}
-                      >
-                        {isProcessing ? "Processing..." : "Place Order"}
-                      </Button>
-                    </div>
-                  </form>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             )}
