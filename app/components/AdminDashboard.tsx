@@ -727,23 +727,40 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                                     | "cancelled",
                                 ) => handleUpdateOrderStatus(order.id, value)}
                               >
-                                <SelectTrigger className={`w-[150px] ${getStatusBgLight(order.status)} ${getStatusTextColor(order.status)} border-none font-medium`}>
+                                <SelectTrigger
+                                  className={`w-[150px] ${getStatusBgLight(order.status)} ${getStatusTextColor(order.status)} border-none font-medium`}
+                                >
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="pending" className="bg-yellow-50 text-yellow-700">
+                                  <SelectItem
+                                    value="pending"
+                                    className="bg-yellow-50 text-yellow-700"
+                                  >
                                     Pending
                                   </SelectItem>
-                                  <SelectItem value="processing" className="bg-blue-50 text-blue-700">
+                                  <SelectItem
+                                    value="processing"
+                                    className="bg-blue-50 text-blue-700"
+                                  >
                                     Processing
                                   </SelectItem>
-                                  <SelectItem value="shipped" className="bg-purple-50 text-purple-700">
+                                  <SelectItem
+                                    value="shipped"
+                                    className="bg-purple-50 text-purple-700"
+                                  >
                                     Shipped
                                   </SelectItem>
-                                  <SelectItem value="delivered" className="bg-green-50 text-green-700">
+                                  <SelectItem
+                                    value="delivered"
+                                    className="bg-green-50 text-green-700"
+                                  >
                                     Delivered
                                   </SelectItem>
-                                  <SelectItem value="cancelled" className="bg-red-50 text-red-700">
+                                  <SelectItem
+                                    value="cancelled"
+                                    className="bg-red-50 text-red-700"
+                                  >
                                     Cancelled
                                   </SelectItem>
                                 </SelectContent>
