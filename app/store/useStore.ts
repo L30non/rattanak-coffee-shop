@@ -30,7 +30,7 @@ export interface User {
   created_at: string;
 }
 
-export type PaymentMethod = "cash" | "stripe";
+export type PaymentMethod = "cash";
 
 export interface Order {
   id: string;
@@ -53,6 +53,14 @@ interface StoreState {
   updateCartQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   setUser: (user: User | null) => void;
+<<<<<<< HEAD
+=======
+  addOrder: (order: Order) => void;
+  updateOrderStatus: (orderId: string, status: Order["status"]) => void;
+  login: (email: string) => void;
+  register: (name: string, email: string) => void;
+  logout: () => void;
+>>>>>>> parent of 3a72575 (Added Stripe Payment as another payment method. Improved fix of order not rendering properly on the web.)
 }
 
 export const useStore = create<StoreState>()(
@@ -88,6 +96,38 @@ export const useStore = create<StoreState>()(
         })),
       clearCart: () => set({ cart: [] }),
       setUser: (user) => set({ user }),
+<<<<<<< HEAD
+=======
+      addOrder: (order) =>
+        set((state) => ({ orders: [order, ...state.orders] })),
+      updateOrderStatus: (orderId, status) =>
+        set((state) => ({
+          orders: state.orders.map((order) =>
+            order.id === orderId ? { ...order, status } : order,
+          ),
+        })),
+      login: (email) =>
+        set({
+          user: {
+            id: "1",
+            email,
+            name: email.split("@")[0],
+            is_admin: email.includes("admin"),
+            created_at: new Date().toISOString(),
+          },
+        }),
+      register: (name, email) =>
+        set({
+          user: {
+            id: "1",
+            email,
+            name,
+            is_admin: email.includes("admin"),
+            created_at: new Date().toISOString(),
+          },
+        }),
+      logout: () => set({ user: null }),
+>>>>>>> parent of 3a72575 (Added Stripe Payment as another payment method. Improved fix of order not rendering properly on the web.)
     }),
     {
       name: "coffee-shop-storage",

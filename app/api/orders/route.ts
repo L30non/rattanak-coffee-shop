@@ -16,14 +16,7 @@ export async function GET(request: NextRequest) {
           product_id,
           quantity,
           price,
-          created_at,
-          products (
-            id,
-            name,
-            price,
-            image,
-            category
-          )
+          created_at
         )
       `);
 
@@ -31,42 +24,13 @@ export async function GET(request: NextRequest) {
       query = query.eq("user_id", userId);
     }
 
-    const { data, error } = await query.order("created_at", {
-      ascending: false,
-    });
+    const { data, error } = await query;
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    // Transform data to match expected format with items containing product info
-    const transformedData = data?.map((order) => ({
-      ...order,
-      items: order.order_items?.map(
-        (item: {
-          quantity: number;
-          price: number;
-          products: {
-            id: string;
-            name: string;
-            price: number;
-            image: string | null;
-            category: string;
-          } | null;
-        }) => ({
-          quantity: item.quantity,
-          product: item.products || {
-            id: "unknown",
-            name: "Unknown Product",
-            price: item.price,
-            image: null,
-            category: "unknown",
-          },
-        }),
-      ),
-    }));
-
-    return NextResponse.json(transformedData);
+    return NextResponse.json(data);
   } catch {
     return NextResponse.json(
       { error: "Internal server error" },
@@ -110,31 +74,6 @@ export async function POST(request: NextRequest) {
           { error: itemsError.message },
           { status: 400 },
         );
-      }
-
-      // Decrease stock for each product
-      for (const item of items) {
-        const { error: stockError } = await supabase.rpc("decrement_stock", {
-          product_id: item.product_id,
-          quantity: item.quantity,
-        });
-
-        // If RPC doesn't exist, fall back to manual update
-        if (stockError) {
-          // Get current stock
-          const { data: product } = await supabase
-            .from("products")
-            .select("stock")
-            .eq("id", item.product_id)
-            .single();
-
-          if (product) {
-            await supabase
-              .from("products")
-              .update({ stock: Math.max(0, product.stock - item.quantity) })
-              .eq("id", item.product_id);
-          }
-        }
       }
     }
 

@@ -1,11 +1,4 @@
-import {
-  Package,
-  Clock,
-  Truck,
-  CreditCard,
-  Trash2,
-  Loader2,
-} from "lucide-react";
+import { Package, Clock, Truck } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import {
   Card,
@@ -15,10 +8,8 @@ import {
 } from "@/app/components/ui/card";
 import { Badge } from "@/app/components/ui/badge";
 import { Separator } from "@/app/components/ui/separator";
+import { useStore } from "@/app/store/useStore";
 import { useAuth } from "@/app/hooks/useAuth";
-import { useOrders } from "@/app/hooks/useProducts";
-import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
 
 interface AccountProps {
   onNavigate: (view: string) => void;
@@ -26,27 +17,7 @@ interface AccountProps {
 
 export function Account({ onNavigate }: AccountProps) {
   const { user } = useAuth();
-  const { data: orders = [], isLoading } = useOrders(user?.id);
-  const queryClient = useQueryClient();
-
-  const handleDeleteOrder = async (orderId: string) => {
-    try {
-      const response = await fetch(`/api/orders/${orderId}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        toast.error(error.error || "Failed to delete order");
-        return;
-      }
-
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
-      toast.success("Order deleted successfully");
-    } catch {
-      toast.error("Failed to delete order");
-    }
-  };
+  const orders = useStore((state) => state.orders);
 
   if (!user) {
     return (
@@ -61,7 +32,7 @@ export function Account({ onNavigate }: AccountProps) {
     );
   }
 
-  const userOrders = orders;
+  const userOrders = orders.filter(() => true); // In real app, filter by user ID
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -77,18 +48,6 @@ export function Account({ onNavigate }: AccountProps) {
         return "bg-gray-500";
     }
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-center items-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-[#5F1B2C]" />
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -134,23 +93,10 @@ export function Account({ onNavigate }: AccountProps) {
                           })}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge className={getStatusColor(order.status)}>
-                          {order.status.charAt(0).toUpperCase() +
-                            order.status.slice(1)}
-                        </Badge>
-                        {(order.status === "delivered" ||
-                          order.status === "cancelled") && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDeleteOrder(order.id)}
-                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
+                      <Badge className={getStatusColor(order.status)}>
+                        {order.status.charAt(0).toUpperCase() +
+                          order.status.slice(1)}
+                      </Badge>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -184,16 +130,7 @@ export function Account({ onNavigate }: AccountProps) {
                       <div className="text-sm text-gray-600">
                         <p className="font-medium mb-1">Payment Method:</p>
                         <p className="flex items-center gap-1">
-                          {order.payment_method === "stripe" ? (
-                            <>
-                              <CreditCard className="h-4 w-4" /> Credit Card
-                              (Stripe)
-                            </>
-                          ) : (
-                            <>
-                              <Truck className="h-4 w-4" /> Cash on Delivery
-                            </>
-                          )}
+                          <Truck className="h-4 w-4" /> Cash on Delivery
                         </p>
                       </div>
                     </div>

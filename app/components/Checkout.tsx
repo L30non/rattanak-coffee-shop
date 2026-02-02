@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import { ArrowLeft, Truck, CheckCircle, CreditCard } from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, Truck, CheckCircle } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import {
   Card,
@@ -10,18 +10,9 @@ import {
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { Separator } from "@/app/components/ui/separator";
-import { useStore, PaymentMethod } from "@/app/store/useStore";
+import { useStore } from "@/app/store/useStore";
 import { useCreateOrder } from "@/app/hooks/useProducts";
 import { toast } from "sonner";
-import { loadStripe } from "@stripe/stripe-js";
-import {
-  EmbeddedCheckoutProvider,
-  EmbeddedCheckout,
-} from "@stripe/react-stripe-js";
-
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
-);
 
 interface CheckoutProps {
   onNavigate: (view: string) => void;
@@ -35,7 +26,10 @@ export function Checkout({ onNavigate }: CheckoutProps) {
 
   const [step, setStep] = useState<"info" | "payment" | "success">("info");
   const [isProcessing, setIsProcessing] = useState(false);
+<<<<<<< HEAD
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
+=======
+>>>>>>> parent of 3a72575 (Added Stripe Payment as another payment method. Improved fix of order not rendering properly on the web.)
   const [formData, setFormData] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
@@ -76,6 +70,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
     setStep("payment");
   };
 
+<<<<<<< HEAD
   // Fetch Stripe client secret for embedded checkout
   const fetchStripeClientSecret = useCallback(async () => {
     const shippingAddress = `${formData.address}, ${formData.city}, ${formData.zipCode}`;
@@ -137,6 +132,8 @@ export function Checkout({ onNavigate }: CheckoutProps) {
     }
   }, [formData, user, total, cart, createOrderMutation, clearCart]);
 
+=======
+>>>>>>> parent of 3a72575 (Added Stripe Payment as another payment method. Improved fix of order not rendering properly on the web.)
   const handleSubmitPayment = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
@@ -338,76 +335,16 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                   <CardTitle>Payment Method</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-6">
-                    {/* Payment Method Selection */}
-                    <div className="space-y-3">
-                      {/* Cash on Delivery Option */}
-                      <label
-                        className={`block p-4 border rounded-lg cursor-pointer transition-colors ${
-                          paymentMethod === "cash"
-                            ? "bg-rose-50 border-rose-300"
-                            : "bg-white border-gray-200 hover:border-gray-300"
-                        }`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <input
-                            type="radio"
-                            name="paymentMethod"
-                            value="cash"
-                            checked={paymentMethod === "cash"}
-                            onChange={() => setPaymentMethod("cash")}
-                            className="mt-1"
-                          />
-                          <Truck className="h-5 w-5 text-[#5F1B2C] mt-0.5" />
-                          <div className="flex-1">
-                            <h4 className="font-medium text-[#3d1620]">
-                              Cash on Delivery
-                            </h4>
-                            <p className="text-sm text-gray-600 mt-1">
-                              Pay when your order arrives
-                            </p>
-                          </div>
-                        </div>
-                      </label>
-
-                      {/* Stripe Option */}
-                      <label
-                        className={`block p-4 border rounded-lg cursor-pointer transition-colors ${
-                          paymentMethod === "stripe"
-                            ? "bg-rose-50 border-rose-300"
-                            : "bg-white border-gray-200 hover:border-gray-300"
-                        }`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <input
-                            type="radio"
-                            name="paymentMethod"
-                            value="stripe"
-                            checked={paymentMethod === "stripe"}
-                            onChange={() => setPaymentMethod("stripe")}
-                            className="mt-1"
-                          />
-                          <CreditCard className="h-5 w-5 text-[#5F1B2C] mt-0.5" />
-                          <div className="flex-1">
-                            <h4 className="font-medium text-[#3d1620]">
-                              Pay with Card
-                            </h4>
-                            <p className="text-sm text-gray-600 mt-1">
-                              Secure payment via Stripe
-                            </p>
-                          </div>
-                        </div>
-                      </label>
-                    </div>
-
-                    {/* Cash on Delivery Details */}
-                    {paymentMethod === "cash" && (
-                      <form
-                        onSubmit={handleSubmitPayment}
-                        className="space-y-4"
-                      >
-                        <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg">
-                          <p className="text-sm text-[#5F1B2C]">
+                  <form onSubmit={handleSubmitPayment} className="space-y-6">
+                    {/* Cash on Delivery Info */}
+                    <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg">
+                      <div className="flex items-start gap-3">
+                        <Truck className="h-5 w-5 text-[#5F1B2C] mt-0.5" />
+                        <div>
+                          <h4 className="font-medium text-[#3d1620]">
+                            Cash on Delivery
+                          </h4>
+                          <p className="text-sm text-[#5F1B2C] mt-1">
                             Please prepare exact amount:{" "}
                             <strong>${total.toFixed(2)}</strong>
                           </p>
@@ -416,6 +353,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                             order arrives.
                           </p>
                         </div>
+<<<<<<< HEAD
 
                         <div className="flex gap-4">
                           <Button
@@ -463,9 +401,30 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                         >
                           Back to Payment Options
                         </Button>
+=======
+>>>>>>> parent of 3a72575 (Added Stripe Payment as another payment method. Improved fix of order not rendering properly on the web.)
                       </div>
-                    )}
-                  </div>
+                    </div>
+
+                    <div className="flex gap-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setStep("info")}
+                        className="flex-1"
+                        disabled={isProcessing}
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        type="submit"
+                        className="flex-1 bg-[#5F1B2C] hover:bg-[#4a1523]"
+                        disabled={isProcessing}
+                      >
+                        {isProcessing ? "Processing..." : "Place Order"}
+                      </Button>
+                    </div>
+                  </form>
                 </CardContent>
               </Card>
             )}

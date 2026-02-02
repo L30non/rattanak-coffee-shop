@@ -9,7 +9,6 @@ import {
   Trash2,
   Loader2,
   Truck,
-  CreditCard,
 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import {
@@ -61,19 +60,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
-import { type Order } from "@/app/store/useStore";
+import { useStore, type Order } from "@/app/store/useStore";
 import { useAuth } from "@/app/hooks/useAuth";
 import {
   useMultipleProducts,
   useAddProduct,
   useUpdateProduct,
   useDeleteProduct,
-  useOrders,
 } from "@/app/hooks/useProducts";
 import type { Product } from "@/app/store/useStore";
 import { toast } from "sonner";
 import { uploadImage, getImageUrl } from "@/utils/supabase/client";
-import { useQueryClient } from "@tanstack/react-query";
 
 interface AdminDashboardProps {
   onNavigate: (view: string) => void;
@@ -81,8 +78,8 @@ interface AdminDashboardProps {
 
 export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
   const { user } = useAuth();
-  const { data: orders = [] } = useOrders();
-  const queryClient = useQueryClient();
+  const orders = useStore((state) => state.orders);
+  const updateOrderStatus = useStore((state) => state.updateOrderStatus);
 
   const { data: products = [] } = useMultipleProducts();
   const addProductMutation = useAddProduct();
@@ -245,28 +242,12 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
     });
   };
 
-  const handleUpdateOrderStatus = async (
+  const handleUpdateOrderStatus = (
     orderId: string,
     status: Order["status"],
   ) => {
-    try {
-      const response = await fetch(`/api/orders/${orderId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        toast.error(error.error || "Failed to update order status");
-        return;
-      }
-
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
-      toast.success("Order status updated!");
-    } catch {
-      toast.error("Failed to update order status");
-    }
+    updateOrderStatus(orderId, status);
+    toast.success("Order status updated!");
   };
 
   return (
@@ -736,17 +717,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                             <div>
                               <span className="font-medium">Payment:</span>
                               <p className="text-gray-600 flex items-center gap-1">
-                                {order.payment_method === "stripe" ? (
-                                  <>
-                                    <CreditCard className="h-4 w-4" /> Credit
-                                    Card (Stripe)
-                                  </>
-                                ) : (
-                                  <>
-                                    <Truck className="h-4 w-4" /> Cash on
-                                    Delivery
-                                  </>
-                                )}
+                                <Truck className="h-4 w-4" /> Cash on Delivery
                               </p>
                             </div>
                           </div>
