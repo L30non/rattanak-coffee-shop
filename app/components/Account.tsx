@@ -1,4 +1,4 @@
-import { Package, Clock, Truck } from "lucide-react";
+import { Package, Clock, Truck, Trash2 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import {
   Card,
@@ -8,8 +8,9 @@ import {
 } from "@/app/components/ui/card";
 import { Badge } from "@/app/components/ui/badge";
 import { Separator } from "@/app/components/ui/separator";
-import { useStore } from "@/app/store/useStore";
 import { useAuth } from "@/app/hooks/useAuth";
+import { useOrders, useDeleteOrder } from "@/app/hooks/useProducts";
+import { toast } from "sonner";
 
 interface AccountProps {
   onNavigate: (view: string) => void;
@@ -17,7 +18,19 @@ interface AccountProps {
 
 export function Account({ onNavigate }: AccountProps) {
   const { user } = useAuth();
-  const orders = useStore((state) => state.orders);
+  const { data: orders = [], isLoading } = useOrders(user?.id);
+  const deleteOrderMutation = useDeleteOrder();
+
+  const handleDeleteOrder = async (orderId: string) => {
+    try {
+      await deleteOrderMutation.mutateAsync(orderId);
+      toast.success("Order deleted successfully");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to delete order",
+      );
+    }
+  };
 
   if (!user) {
     return (
@@ -32,8 +45,6 @@ export function Account({ onNavigate }: AccountProps) {
     );
   }
 
-  const userOrders = orders.filter(() => true); // In real app, filter by user ID
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
@@ -44,10 +55,24 @@ export function Account({ onNavigate }: AccountProps) {
         return "bg-purple-500";
       case "delivered":
         return "bg-green-500";
+      case "cancelled":
+        return "bg-red-500";
       default:
         return "bg-gray-500";
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="container mx-auto px-4">
+          <div className="max-w-2xl mx-auto text-center py-20">
+            <p className="text-lg">Loading orders...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -58,7 +83,7 @@ export function Account({ onNavigate }: AccountProps) {
             <p className="text-gray-600">View and track your order history</p>
           </div>
 
-          {userOrders.length === 0 ? (
+          {orders.length === 0 ? (
             <Card>
               <CardContent className="text-center py-12">
                 <Package className="h-16 w-16 mx-auto mb-4 text-gray-300" />
@@ -76,7 +101,7 @@ export function Account({ onNavigate }: AccountProps) {
             </Card>
           ) : (
             <div className="space-y-4">
-              {userOrders.map((order) => (
+              {orders.map((order) => (
                 <Card key={order.id}>
                   <CardHeader>
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -133,6 +158,23 @@ export function Account({ onNavigate }: AccountProps) {
                           <Truck className="h-4 w-4" /> Cash on Delivery
                         </p>
                       </div>
+
+                      {order.status === "delivered" && (
+                        <div className="pt-4 border-t">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            onClick={() => handleDeleteOrder(order.id)}
+                            disabled={deleteOrderMutation.isPending}
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            {deleteOrderMutation.isPending
+                              ? "Deleting..."
+                              : "Delete Order"}
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>

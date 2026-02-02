@@ -302,6 +302,15 @@ export function Header({
                         <User className="mr-2 h-4 w-4" />
                         <span>Profile</span>
                       </DropdownMenuItem>
+                      {!user.is_admin && (
+                        <DropdownMenuItem
+                          onClick={() => onNavigate("account")}
+                          className="cursor-pointer"
+                        >
+                          <ShoppingCart className="mr-2 h-4 w-4" />
+                          <span>Orders</span>
+                        </DropdownMenuItem>
+                      )}
                       <DropdownMenuItem
                         onClick={() => onNavigate("address")}
                         className="cursor-pointer"

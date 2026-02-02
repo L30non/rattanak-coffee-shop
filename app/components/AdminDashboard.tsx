@@ -60,13 +60,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
-import { useStore, type Order } from "@/app/store/useStore";
+import { type Order } from "@/app/store/useStore";
 import { useAuth } from "@/app/hooks/useAuth";
 import {
   useMultipleProducts,
   useAddProduct,
   useUpdateProduct,
   useDeleteProduct,
+  useOrders,
+  useUpdateOrder,
 } from "@/app/hooks/useProducts";
 import type { Product } from "@/app/store/useStore";
 import { toast } from "sonner";
@@ -78,8 +80,8 @@ interface AdminDashboardProps {
 
 export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
   const { user } = useAuth();
-  const orders = useStore((state) => state.orders);
-  const updateOrderStatus = useStore((state) => state.updateOrderStatus);
+  const { data: orders = [] } = useOrders(); // Fetch all orders from API for admin
+  const updateOrderMutation = useUpdateOrder();
 
   const { data: products = [] } = useMultipleProducts();
   const addProductMutation = useAddProduct();
@@ -242,12 +244,55 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
     });
   };
 
-  const handleUpdateOrderStatus = (
+  const getStatusTextColor = (status: string) => {
+    switch (status) {
+      case "pending":
+        return "text-yellow-700";
+      case "processing":
+        return "text-blue-700";
+      case "shipped":
+        return "text-purple-700";
+      case "delivered":
+        return "text-green-700";
+      case "cancelled":
+        return "text-red-700";
+      default:
+        return "text-gray-700";
+    }
+  };
+
+  const getStatusBgLight = (status: string) => {
+    switch (status) {
+      case "pending":
+        return "bg-yellow-50";
+      case "processing":
+        return "bg-blue-50";
+      case "shipped":
+        return "bg-purple-50";
+      case "delivered":
+        return "bg-green-50";
+      case "cancelled":
+        return "bg-red-50";
+      default:
+        return "bg-gray-50";
+    }
+  };
+
+  const handleUpdateOrderStatus = async (
     orderId: string,
     status: Order["status"],
   ) => {
-    updateOrderStatus(orderId, status);
-    toast.success("Order status updated!");
+    try {
+      await updateOrderMutation.mutateAsync({
+        id: orderId,
+        status,
+        updated_at: new Date().toISOString(),
+      });
+      toast.success("Order status updated!");
+    } catch (error) {
+      toast.error("Failed to update order status");
+      console.error("Order status update error:", error);
+    }
   };
 
   return (
@@ -678,24 +723,28 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                                     | "pending"
                                     | "processing"
                                     | "shipped"
-                                    | "delivered",
+                                    | "delivered"
+                                    | "cancelled",
                                 ) => handleUpdateOrderStatus(order.id, value)}
                               >
-                                <SelectTrigger className="w-[150px]">
+                                <SelectTrigger className={`w-[150px] ${getStatusBgLight(order.status)} ${getStatusTextColor(order.status)} border-none font-medium`}>
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="pending">
+                                  <SelectItem value="pending" className="bg-yellow-50 text-yellow-700">
                                     Pending
                                   </SelectItem>
-                                  <SelectItem value="processing">
+                                  <SelectItem value="processing" className="bg-blue-50 text-blue-700">
                                     Processing
                                   </SelectItem>
-                                  <SelectItem value="shipped">
+                                  <SelectItem value="shipped" className="bg-purple-50 text-purple-700">
                                     Shipped
                                   </SelectItem>
-                                  <SelectItem value="delivered">
+                                  <SelectItem value="delivered" className="bg-green-50 text-green-700">
                                     Delivered
+                                  </SelectItem>
+                                  <SelectItem value="cancelled" className="bg-red-50 text-red-700">
+                                    Cancelled
                                   </SelectItem>
                                 </SelectContent>
                               </Select>

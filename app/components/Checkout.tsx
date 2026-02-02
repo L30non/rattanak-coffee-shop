@@ -21,14 +21,11 @@ interface CheckoutProps {
 export function Checkout({ onNavigate }: CheckoutProps) {
   const cart = useStore((state) => state.cart);
   const clearCart = useStore((state) => state.clearCart);
-  const addOrder = useStore((state) => state.addOrder);
   const user = useStore((state) => state.user);
   const createOrderMutation = useCreateOrder();
 
   const [step, setStep] = useState<"info" | "payment" | "success">("info");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
-  const [, setStripeClientSecret] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
@@ -67,80 +64,8 @@ export function Checkout({ onNavigate }: CheckoutProps) {
       return;
     }
     setStep("payment");
-    // Reset stripe client secret when going back to payment
-    setStripeClientSecret(null);
   };
 
-  // Fetch Stripe client secret for embedded checkout
-  const fetchStripeClientSecret = useCallback(async () => {
-    const shippingAddress = `${formData.address}, ${formData.city}, ${formData.zipCode}`;
-
-    const response = await fetch("/api/stripe/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        items: cart.map((item) => ({
-          name: item.product.name,
-          price: item.product.price,
-          quantity: item.quantity,
-          productId: item.product.id,
-        })),
-        shippingAddress,
-        email: formData.email,
-        userId: user?.id || "",
-      }),
-    });
-
-    const data = await response.json();
-    if (data.clientSecret) {
-      setStripeClientSecret(data.clientSecret);
-      return data.clientSecret;
-    }
-    throw new Error(data.error || "Failed to create checkout session");
-  }, [cart, formData, user]);
-
-  // Handle Stripe checkout completion
-  const handleStripeComplete = useCallback(async () => {
-    try {
-      const shippingAddress = `${formData.address}, ${formData.city}, ${formData.zipCode}`;
-
-      // Create order via API
-      const orderData = {
-        user_id: user?.id || "",
-        status: "pending" as const,
-        total,
-        shipping_address: shippingAddress,
-        payment_method: "stripe" as const,
-        date: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        items: cart.map((item) => ({
-          product_id: item.product.id,
-          quantity: item.quantity,
-          price: item.product.price,
-        })),
-      };
-
-      const createdOrder = await createOrderMutation.mutateAsync(orderData);
-
-      // Add to local store for UI
-      addOrder({
-        ...createdOrder,
-        items: cart,
-      });
-
-      // Clear cart
-      clearCart();
-
-      setStep("success");
-      toast.success("Payment successful! Order placed.");
-    } catch (error) {
-      toast.error("Failed to save order. Please contact support.");
-      console.error("Order save error:", error);
-    }
-  }, [formData, user, total, cart, createOrderMutation, addOrder, clearCart]);
-
-=======
->>>>>>> parent of 3a72575 (Added Stripe Payment as another payment method. Improved fix of order not rendering properly on the web.)
   const handleSubmitPayment = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
@@ -148,7 +73,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
     try {
       const shippingAddress = `${formData.address}, ${formData.city}, ${formData.zipCode}`;
 
-      // Create order via API
+      // Create order via API (saved to Supabase)
       const orderData = {
         user_id: user?.id || "",
         status: "pending" as const,
@@ -164,13 +89,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
         })),
       };
 
-      const createdOrder = await createOrderMutation.mutateAsync(orderData);
-
-      // Add to local store for UI
-      addOrder({
-        ...createdOrder,
-        items: cart,
-      });
+      await createOrderMutation.mutateAsync(orderData);
 
       // Clear cart
       clearCart();
@@ -366,57 +285,28 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                             order arrives.
                           </p>
                         </div>
-
-                        <div className="flex gap-4">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => setStep("info")}
-                            className="flex-1"
-                            disabled={isProcessing}
-                          >
-                            Back
-                          </Button>
-                          <Button
-                            type="submit"
-                            className="flex-1 bg-[#5F1B2C] hover:bg-[#4a1523]"
-                            disabled={isProcessing}
-                          >
-                            {isProcessing ? "Processing..." : "Place Order"}
-                          </Button>
-                        </div>
-                      </form>
-                    )}
-
-                    {/* Stripe Embedded Checkout */}
-                    {paymentMethod === "stripe" && (
-                      <div className="space-y-4">
-                        <div id="stripe-checkout-container">
-                          <EmbeddedCheckoutProvider
-                            stripe={stripePromise}
-                            options={{
-                              fetchClientSecret: fetchStripeClientSecret,
-                              onComplete: handleStripeComplete,
-                            }}
-                          >
-                            <EmbeddedCheckout />
-                          </EmbeddedCheckoutProvider>
-                        </div>
-
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => {
-                            setPaymentMethod("cash");
-                            setStripeClientSecret(null);
-                          }}
-                          className="w-full"
-                        >
-                          Back to Payment Options
-                        </Button>
                       </div>
-                    )}
-                  </div>
+                    </div>
+
+                    <div className="flex gap-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setStep("info")}
+                        className="flex-1"
+                        disabled={isProcessing}
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        type="submit"
+                        className="flex-1 bg-[#5F1B2C] hover:bg-[#4a1523]"
+                        disabled={isProcessing}
+                      >
+                        {isProcessing ? "Processing..." : "Place Order"}
+                      </Button>
+                    </div>
+                  </form>
                 </CardContent>
               </Card>
             )}

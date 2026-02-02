@@ -54,6 +54,8 @@ interface StoreState {
   updateCartQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   setUser: (user: User | null) => void;
+  addOrder: (order: Order) => void;
+  updateOrderStatus: (orderId: string, status: Order["status"]) => void;
 }
 
 export const useStore = create<StoreState>()(
@@ -90,6 +92,18 @@ export const useStore = create<StoreState>()(
         })),
       clearCart: () => set({ cart: [] }),
       setUser: (user) => set({ user }),
+      addOrder: (order) =>
+        set((state) => ({
+          orders: [...state.orders, order],
+        })),
+      updateOrderStatus: (orderId, status) =>
+        set((state) => ({
+          orders: state.orders.map((order) =>
+            order.id === orderId
+              ? { ...order, status, updated_at: new Date().toISOString() }
+              : order,
+          ),
+        })),
     }),
     {
       name: "coffee-shop-storage",
