@@ -30,7 +30,7 @@ export interface User {
   created_at: string;
 }
 
-export type PaymentMethod = "cash";
+export type PaymentMethod = "cash" | "stripe";
 
 export interface Order {
   id: string;
@@ -55,6 +55,7 @@ interface StoreState {
   clearCart: () => void;
   setUser: (user: User | null) => void;
   addOrder: (order: Order) => void;
+  removeOrder: (orderId: string) => void;
   updateOrderStatus: (orderId: string, status: Order["status"]) => void;
   login: (email: string) => void;
   register: (name: string, email: string) => void;
@@ -97,6 +98,10 @@ export const useStore = create<StoreState>()(
       setUser: (user) => set({ user }),
       addOrder: (order) =>
         set((state) => ({ orders: [order, ...state.orders] })),
+      removeOrder: (orderId) =>
+        set((state) => ({
+          orders: state.orders.filter((order) => order.id !== orderId),
+        })),
       updateOrderStatus: (orderId, status) =>
         set((state) => ({
           orders: state.orders.map((order) =>
