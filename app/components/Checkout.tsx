@@ -30,14 +30,12 @@ interface CheckoutProps {
 export function Checkout({ onNavigate }: CheckoutProps) {
   const cart = useStore((state) => state.cart);
   const clearCart = useStore((state) => state.clearCart);
-  const addOrder = useStore((state) => state.addOrder);
   const user = useStore((state) => state.user);
   const createOrderMutation = useCreateOrder();
 
   const [step, setStep] = useState<"info" | "payment" | "success">("info");
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
-  const [, setStripeClientSecret] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
@@ -76,8 +74,6 @@ export function Checkout({ onNavigate }: CheckoutProps) {
       return;
     }
     setStep("payment");
-    // Reset stripe client secret when going back to payment
-    setStripeClientSecret(null);
   };
 
   // Fetch Stripe client secret for embedded checkout
@@ -102,7 +98,6 @@ export function Checkout({ onNavigate }: CheckoutProps) {
 
     const data = await response.json();
     if (data.clientSecret) {
-      setStripeClientSecret(data.clientSecret);
       return data.clientSecret;
     }
     throw new Error(data.error || "Failed to create checkout session");
@@ -129,13 +124,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
         })),
       };
 
-      const createdOrder = await createOrderMutation.mutateAsync(orderData);
-
-      // Add to local store for UI
-      addOrder({
-        ...createdOrder,
-        items: cart,
-      });
+      await createOrderMutation.mutateAsync(orderData);
 
       // Clear cart
       clearCart();
@@ -146,7 +135,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
       toast.error("Failed to save order. Please contact support.");
       console.error("Order save error:", error);
     }
-  }, [formData, user, total, cart, createOrderMutation, addOrder, clearCart]);
+  }, [formData, user, total, cart, createOrderMutation, clearCart]);
 
   const handleSubmitPayment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -171,13 +160,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
         })),
       };
 
-      const createdOrder = await createOrderMutation.mutateAsync(orderData);
-
-      // Add to local store for UI
-      addOrder({
-        ...createdOrder,
-        items: cart,
-      });
+      await createOrderMutation.mutateAsync(orderData);
 
       // Clear cart
       clearCart();
@@ -475,7 +458,6 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                           variant="outline"
                           onClick={() => {
                             setPaymentMethod("cash");
-                            setStripeClientSecret(null);
                           }}
                           className="w-full"
                         >

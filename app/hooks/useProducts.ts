@@ -98,18 +98,6 @@ export const useOrders = (userId?: string) => {
   });
 };
 
-export const useOrder = (id: string) => {
-  return useQuery({
-    queryKey: ["order", id],
-    queryFn: async () => {
-      const response = await fetch(`/api/orders/${id}`);
-      if (!response.ok) throw new Error("Failed to fetch order");
-      return response.json() as Promise<Order>;
-    },
-    enabled: !!id,
-  });
-};
-
 export interface CreateOrderInput {
   user_id: string;
   status: Order["status"];
@@ -132,25 +120,6 @@ export const useCreateOrder = () => {
         body: JSON.stringify(newOrder),
       });
       if (!response.ok) throw new Error("Failed to create order");
-      return response.json() as Promise<Order>;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
-    },
-  });
-};
-
-export const useUpdateOrder = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({ id, ...updates }: Partial<Order> & { id: string }) => {
-      const response = await fetch(`/api/orders/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updates),
-      });
-      if (!response.ok) throw new Error("Failed to update order");
       return response.json() as Promise<Order>;
     },
     onSuccess: () => {
