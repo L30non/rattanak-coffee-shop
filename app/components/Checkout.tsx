@@ -21,6 +21,7 @@ interface CheckoutProps {
 export function Checkout({ onNavigate }: CheckoutProps) {
   const cart = useStore((state) => state.cart);
   const clearCart = useStore((state) => state.clearCart);
+  const addOrder = useStore((state) => state.addOrder);
   const user = useStore((state) => state.user);
   const createOrderMutation = useCreateOrder();
 
@@ -163,7 +164,13 @@ export function Checkout({ onNavigate }: CheckoutProps) {
         })),
       };
 
-      await createOrderMutation.mutateAsync(orderData);
+      const createdOrder = await createOrderMutation.mutateAsync(orderData);
+
+      // Add to local store for UI
+      addOrder({
+        ...createdOrder,
+        items: cart,
+      });
 
       // Clear cart
       clearCart();
