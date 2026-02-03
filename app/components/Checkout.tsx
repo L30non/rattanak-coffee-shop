@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Truck, CheckCircle } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import {
@@ -40,7 +41,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
     0,
   );
   const shipping = subtotal > 100 ? 0 : 10;
-  const tax = subtotal * 0.08;
+  const tax = subtotal * 0.1; // 10% VAT
   const total = subtotal + shipping + tax;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,6 +83,8 @@ export function Checkout({ onNavigate }: CheckoutProps) {
         payment_method: "cash" as const,
         date: new Date().toISOString(),
         updated_at: new Date().toISOString(),
+        tax_amount: tax,
+        shipping_cost: shipping,
         items: cart.map((item) => ({
           product_id: item.product.id,
           quantity: item.quantity,
@@ -134,10 +137,21 @@ export function Checkout({ onNavigate }: CheckoutProps) {
 
   if (step === "success") {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="min-h-screen bg-gray-50 py-8"
+      >
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center py-20">
-            <CheckCircle className="h-20 w-20 mx-auto mb-4 text-green-500" />
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            >
+              <CheckCircle className="h-20 w-20 mx-auto mb-4 text-green-500" />
+            </motion.div>
             <h2 className="text-3xl mb-2">Order Placed Successfully!</h2>
             <p className="text-gray-600 mb-6">
               Thank you for your order. We&apos;ll send you a confirmation email
@@ -156,7 +170,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
@@ -175,141 +189,162 @@ export function Checkout({ onNavigate }: CheckoutProps) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Form */}
           <div className="lg:col-span-2">
-            {step === "info" ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Shipping Information</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleSubmitInfo} className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="fullName">Full Name *</Label>
-                        <Input
-                          id="fullName"
-                          name="fullName"
-                          value={formData.fullName}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="email">Email *</Label>
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="phone">Phone Number *</Label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="address">Address *</Label>
-                      <Input
-                        id="address"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="city">City *</Label>
-                        <Input
-                          id="city"
-                          name="city"
-                          value={formData.city}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="zipCode">ZIP Code *</Label>
-                        <Input
-                          id="zipCode"
-                          name="zipCode"
-                          value={formData.zipCode}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <Button
-                      type="submit"
-                      className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
-                    >
-                      Continue to Payment
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            ) : (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Payment Method</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleSubmitPayment} className="space-y-6">
-                    {/* Cash on Delivery Info */}
-                    <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg">
-                      <div className="flex items-start gap-3">
-                        <Truck className="h-5 w-5 text-[#5F1B2C] mt-0.5" />
-                        <div>
-                          <h4 className="font-medium text-[#3d1620]">
-                            Cash on Delivery
-                          </h4>
-                          <p className="text-sm text-[#5F1B2C] mt-1">
-                            Please prepare exact amount:{" "}
-                            <strong>${total.toFixed(2)}</strong>
-                          </p>
-                          <p className="text-xs text-gray-600 mt-2">
-                            Our delivery partner will collect payment when your
-                            order arrives.
-                          </p>
+            <AnimatePresence mode="wait">
+              {step === "info" ? (
+                <motion.div
+                  key="info"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Shipping Information</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <form onSubmit={handleSubmitInfo} className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="fullName">Full Name *</Label>
+                            <Input
+                              id="fullName"
+                              name="fullName"
+                              value={formData.fullName}
+                              onChange={handleInputChange}
+                              required
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="email">Email *</Label>
+                            <Input
+                              id="email"
+                              name="email"
+                              type="email"
+                              value={formData.email}
+                              onChange={handleInputChange}
+                              required
+                            />
+                          </div>
                         </div>
-                      </div>
-                    </div>
 
-                    <div className="flex gap-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setStep("info")}
-                        className="flex-1"
-                        disabled={isProcessing}
+                        <div>
+                          <Label htmlFor="phone">Phone Number *</Label>
+                          <Input
+                            id="phone"
+                            name="phone"
+                            type="tel"
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <Label htmlFor="address">Address *</Label>
+                          <Input
+                            id="address"
+                            name="address"
+                            value={formData.address}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="city">City *</Label>
+                            <Input
+                              id="city"
+                              name="city"
+                              value={formData.city}
+                              onChange={handleInputChange}
+                              required
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="zipCode">ZIP Code *</Label>
+                            <Input
+                              id="zipCode"
+                              name="zipCode"
+                              value={formData.zipCode}
+                              onChange={handleInputChange}
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <Button
+                          type="submit"
+                          className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
+                        >
+                          Continue to Payment
+                        </Button>
+                      </form>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="payment"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Payment Method</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <form
+                        onSubmit={handleSubmitPayment}
+                        className="space-y-6"
                       >
-                        Back
-                      </Button>
-                      <Button
-                        type="submit"
-                        className="flex-1 bg-[#5F1B2C] hover:bg-[#4a1523]"
-                        disabled={isProcessing}
-                      >
-                        {isProcessing ? "Processing..." : "Place Order"}
-                      </Button>
-                    </div>
-                  </form>
-                </CardContent>
-              </Card>
-            )}
+                        {/* Cash on Delivery Info */}
+                        <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg">
+                          <div className="flex items-start gap-3">
+                            <Truck className="h-5 w-5 text-[#5F1B2C] mt-0.5" />
+                            <div>
+                              <h4 className="font-medium text-[#3d1620]">
+                                Cash on Delivery
+                              </h4>
+                              <p className="text-sm text-[#5F1B2C] mt-1">
+                                Please prepare exact amount:{" "}
+                                <strong>${total.toFixed(2)}</strong>
+                              </p>
+                              <p className="text-xs text-gray-600 mt-2">
+                                Our delivery partner will collect payment when
+                                your order arrives.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-4">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setStep("info")}
+                            className="flex-1"
+                            disabled={isProcessing}
+                          >
+                            Back
+                          </Button>
+                          <Button
+                            type="submit"
+                            className="flex-1 bg-[#5F1B2C] hover:bg-[#4a1523]"
+                            disabled={isProcessing}
+                          >
+                            {isProcessing ? "Processing..." : "Place Order"}
+                          </Button>
+                        </div>
+                      </form>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Order Summary */}
@@ -351,7 +386,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                   </div>
 
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Tax</span>
+                    <span className="text-gray-600">Tax (10% VAT)</span>
                     <span className="font-medium">${tax.toFixed(2)}</span>
                   </div>
 

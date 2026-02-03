@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/app/components/Header";
 import { HomePage } from "@/app/components/HomePage";
 import { ProductList } from "@/app/components/ProductList";
@@ -14,6 +15,11 @@ import { Profile } from "@/app/components/Profile";
 import { AdminDashboard } from "@/app/components/AdminDashboard";
 import { Toaster } from "@/app/components/ui/sonner";
 import { Button } from "@/app/components/ui/button";
+import { TermsOfService } from "@/app/components/TermsOfService";
+import { PrivacyPolicy } from "@/app/components/PrivacyPolicy";
+import { RefundPolicy } from "@/app/components/RefundPolicy";
+import { Footer } from "@/app/components/Footer";
+import ErrorBoundary from "@/app/components/ErrorBoundary";
 
 // Create a client for React Query (TanStack Query)
 const queryClient = new QueryClient({
@@ -128,6 +134,12 @@ function AppContent() {
             </div>
           </div>
         );
+      case "terms":
+        return <TermsOfService onNavigate={setCurrentView} />;
+      case "privacy":
+        return <PrivacyPolicy onNavigate={setCurrentView} />;
+      case "refund":
+        return <RefundPolicy onNavigate={setCurrentView} />;
       case "about":
         return (
           <div className="min-h-screen bg-gray-50 py-16">
@@ -170,13 +182,26 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white flex flex-col">
       <Header
         onNavigate={setCurrentView}
         currentView={currentView}
         onSearchChange={setSearchQuery}
       />
-      <main>{renderView()}</main>
+      <main className="flex-1">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentView}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            {renderView()}
+          </motion.div>
+        </AnimatePresence>
+      </main>
+      <Footer onNavigate={setCurrentView} />
       <Toaster position="top-center" closeButton />
     </div>
   );
@@ -184,8 +209,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AppContent />
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <AppContent />
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }

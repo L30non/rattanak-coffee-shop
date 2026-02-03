@@ -1,4 +1,5 @@
 import { ShoppingBag, Trash2, Minus, Plus } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/app/components/ui/button";
 import {
   Card,
@@ -74,94 +75,108 @@ export function Cart({ onNavigate }: CartProps) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
-            {cart.map((item) => (
-              <Card key={item.product.id}>
-                <CardContent className="p-4">
-                  <div className="flex gap-4">
-                    {/* Product Image */}
-                    <div
-                      className="w-24 h-24 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 cursor-pointer relative"
-                      onClick={() => onNavigate(`product-${item.product.id}`)}
-                    >
-                      <ImageWithFallback
-                        src={getImageUrl(item.product.image)}
-                        alt={item.product.name}
-                        fill
-                        sizes="96px"
-                        className="object-cover"
-                      />
-                    </div>
-
-                    {/* Product Info */}
-                    <div className="flex-1 min-w-0">
-                      <h3
-                        className="font-semibold mb-1 cursor-pointer hover:text-[#5F1B2C]"
-                        onClick={() => onNavigate(`product-${item.product.id}`)}
-                      >
-                        {item.product.name}
-                      </h3>
-                      <p className="text-sm text-gray-600 mb-2 capitalize">
-                        {item.product.category}
-                      </p>
-                      <p className="text-lg font-bold text-[#3d1620]">
-                        ${item.product.price.toFixed(2)}
-                      </p>
-                    </div>
-
-                    {/* Quantity Controls */}
-                    <div className="flex flex-col items-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() =>
-                          handleRemove(item.product.id, item.product.name)
-                        }
-                      >
-                        <Trash2 className="h-4 w-4 text-red-500" />
-                      </Button>
-
-                      <div className="flex items-center border rounded-md">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8"
+            <AnimatePresence>
+              {cart.map((item) => (
+                <motion.div
+                  key={item.product.id}
+                  initial={{ opacity: 0, height: 0, y: -20 }}
+                  animate={{ opacity: 1, height: "auto", y: 0 }}
+                  exit={{ opacity: 0, x: -100, height: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex gap-4">
+                        {/* Product Image */}
+                        <div
+                          className="w-24 h-24 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 cursor-pointer relative"
                           onClick={() =>
-                            updateCartQuantity(
-                              item.product.id,
-                              item.quantity - 1,
-                            )
+                            onNavigate(`product-${item.product.id}`)
                           }
-                          disabled={item.quantity <= 1}
                         >
-                          <Minus className="h-3 w-3" />
-                        </Button>
-                        <span className="px-3 text-sm font-medium">
-                          {item.quantity}
-                        </span>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() =>
-                            updateCartQuantity(
-                              item.product.id,
-                              item.quantity + 1,
-                            )
-                          }
-                          disabled={item.quantity >= item.product.stock}
-                        >
-                          <Plus className="h-3 w-3" />
-                        </Button>
+                          <ImageWithFallback
+                            src={getImageUrl(item.product.image)}
+                            alt={item.product.name}
+                            fill
+                            sizes="96px"
+                            className="object-cover"
+                          />
+                        </div>
+
+                        {/* Product Info */}
+                        <div className="flex-1 min-w-0">
+                          <h3
+                            className="font-semibold mb-1 cursor-pointer hover:text-[#5F1B2C]"
+                            onClick={() =>
+                              onNavigate(`product-${item.product.id}`)
+                            }
+                          >
+                            {item.product.name}
+                          </h3>
+                          <p className="text-sm text-gray-600 mb-2 capitalize">
+                            {item.product.category}
+                          </p>
+                          <p className="text-lg font-bold text-[#3d1620]">
+                            ${item.product.price.toFixed(2)}
+                          </p>
+                        </div>
+
+                        {/* Quantity Controls */}
+                        <div className="flex flex-col items-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() =>
+                              handleRemove(item.product.id, item.product.name)
+                            }
+                          >
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                          </Button>
+
+                          <div className="flex items-center border rounded-md">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() =>
+                                updateCartQuantity(
+                                  item.product.id,
+                                  item.quantity - 1,
+                                )
+                              }
+                              disabled={item.quantity <= 1}
+                            >
+                              <Minus className="h-3 w-3" />
+                            </Button>
+                            <span className="px-3 text-sm font-medium">
+                              {item.quantity}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() =>
+                                updateCartQuantity(
+                                  item.product.id,
+                                  item.quantity + 1,
+                                )
+                              }
+                              disabled={item.quantity >= item.product.stock}
+                            >
+                              <Plus className="h-3 w-3" />
+                            </Button>
+                          </div>
+
+                          <p className="text-sm font-semibold">
+                            ${(item.product.price * item.quantity).toFixed(2)}
+                          </p>
+                        </div>
                       </div>
-
-                      <p className="text-sm font-semibold">
-                        ${(item.product.price * item.quantity).toFixed(2)}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
 
           {/* Order Summary */}

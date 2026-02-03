@@ -13,8 +13,25 @@ export interface Product {
   origin: string | null;
   weight: string | null;
   features: string[] | null;
+  average_rating?: number;
+  review_count?: number;
   created_at: string;
   updated_at: string;
+}
+
+export interface ProductReview {
+  id: string;
+  product_id: string;
+  user_id: string;
+  rating: number;
+  title: string | null;
+  comment: string | null;
+  created_at: string;
+  updated_at: string;
+  user?: {
+    name: string;
+    email: string;
+  };
 }
 
 export interface CartItem {
@@ -39,10 +56,19 @@ export interface Order {
   total: number;
   shipping_address: string;
   payment_method: PaymentMethod;
-  date: string; // Order date (when the order was placed)
+  date: string;
   created_at: string;
   updated_at: string;
+  tracking_number?: string;
+  shipping_carrier?: string;
+  tax_amount?: number;
+  shipping_cost?: number;
   items?: CartItem[];
+  profiles?: {
+    id: string;
+    email: string;
+    name: string;
+  };
 }
 
 interface StoreState {

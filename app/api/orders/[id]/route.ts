@@ -21,7 +21,22 @@ export async function GET(
           product_id,
           quantity,
           price,
-          created_at
+          created_at,
+          products (
+            id,
+            name,
+            category,
+            price,
+            description,
+            image,
+            stock,
+            roast_level,
+            origin,
+            weight,
+            features,
+            created_at,
+            updated_at
+          )
         )
       `,
       )
@@ -32,7 +47,19 @@ export async function GET(
       return NextResponse.json({ error: error.message }, { status: 404 });
     }
 
-    return NextResponse.json(data);
+    // Map the response to match the Order type with items
+    const orderWithItems = {
+      ...data,
+
+      items:
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        data.order_items?.map((item: any) => ({
+          product: item.products,
+          quantity: item.quantity,
+        })) || [],
+    };
+
+    return NextResponse.json(orderWithItems);
   } catch {
     return NextResponse.json(
       { error: "Internal server error" },
@@ -78,10 +105,10 @@ export async function DELETE(
     const supabase = await createClient();
     const { id } = await params;
 
-    // First, check if the order exists and is delivered
+    // First, check if the order exists and get its status
     const { data: order, error: fetchError } = await supabase
       .from("orders")
-      .select("status")
+      .select("status, user_id")
       .eq("id", id)
       .single();
 
@@ -89,9 +116,27 @@ export async function DELETE(
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    if (order.status !== "delivered") {
+    // Get current user
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Check if user owns this order
+    if (order.user_id !== user.id) {
       return NextResponse.json(
-        { error: "Only delivered orders can be deleted" },
+        { error: "Unauthorized to delete this order" },
+        { status: 403 },
+      );
+    }
+
+    // Only allow deletion of delivered or cancelled orders
+    if (order.status !== "delivered" && order.status !== "cancelled") {
+      return NextResponse.json(
+        { error: "Only delivered or cancelled orders can be deleted" },
         { status: 400 },
       );
     }

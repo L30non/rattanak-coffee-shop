@@ -14,6 +14,7 @@ import { Badge } from "@/app/components/ui/badge";
 import { useStore } from "@/app/store/useStore";
 import { useSingleProduct } from "@/app/hooks/useProducts";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
+import { ProductReviews } from "@/app/components/ProductReviews";
 import { getImageUrl } from "@/utils/supabase/client";
 import { toast } from "sonner";
 
@@ -230,6 +231,9 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
             </div>
           </div>
         </div>
+
+        {/* Product Reviews Section */}
+        <ProductReviews productId={productId} productName={product.name} />
       </div>
     </div>
   );

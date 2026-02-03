@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Product, Order } from "@/app/store/useStore";
+import type { Product, Order, ProductReview } from "@/app/store/useStore";
 
 export const useMultipleProducts = (category?: string) => {
   return useQuery({
@@ -175,6 +175,97 @@ export const useDeleteOrder = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+  });
+};
+
+// ============================================
+// PRODUCT REVIEWS HOOKS
+// ============================================
+
+export const useProductReviews = (productId: string) => {
+  return useQuery({
+    queryKey: ["reviews", productId],
+    queryFn: async () => {
+      const response = await fetch(`/api/reviews?product_id=${productId}`);
+      if (!response.ok) throw new Error("Failed to fetch reviews");
+      return response.json() as Promise<ProductReview[]>;
+    },
+    enabled: !!productId,
+  });
+};
+
+export const useCreateReview = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (
+      newReview: Omit<ProductReview, "id" | "created_at" | "updated_at">,
+    ) => {
+      const response = await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newReview),
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to create review");
+      }
+      return response.json() as Promise<ProductReview>;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["reviews", data.product_id] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["product", data.product_id] });
+    },
+  });
+};
+
+export const useUpdateReview = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      ...updates
+    }: Partial<ProductReview> & { id: string }) => {
+      const response = await fetch(`/api/reviews/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updates),
+      });
+      if (!response.ok) throw new Error("Failed to update review");
+      return response.json() as Promise<ProductReview>;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["reviews", data.product_id] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["product", data.product_id] });
+    },
+  });
+};
+
+export const useDeleteReview = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      productId,
+    }: {
+      id: string;
+      productId: string;
+    }) => {
+      const response = await fetch(`/api/reviews/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Failed to delete review");
+      return { id, productId };
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["reviews", data.productId] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["product", data.productId] });
     },
   });
 };

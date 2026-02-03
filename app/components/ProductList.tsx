@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Button } from "@/app/components/ui/button";
 import { Badge } from "@/app/components/ui/badge";
@@ -9,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/components/ui/select";
-import { Filter, ShoppingCart } from "lucide-react";
+import { Filter, ShoppingCart, Star } from "lucide-react";
 import { useStore } from "@/app/store/useStore";
 import { useMultipleProducts } from "@/app/hooks/useProducts";
 import type { Product } from "@/app/store/useStore";
@@ -77,6 +78,11 @@ export function ProductList({
         break;
       case "price-high":
         filtered = [...filtered].sort((a, b) => b.price - a.price);
+        break;
+      case "rating":
+        filtered = [...filtered].sort(
+          (a, b) => (b.average_rating || 0) - (a.average_rating || 0),
+        );
         break;
       case "name":
         filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
@@ -147,6 +153,7 @@ export function ProductList({
               <SelectItem value="name">Name (A-Z)</SelectItem>
               <SelectItem value="price-low">Price (Low to High)</SelectItem>
               <SelectItem value="price-high">Price (High to Low)</SelectItem>
+              <SelectItem value="rating">Highest Rated</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -160,79 +167,115 @@ export function ProductList({
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1 },
+              },
+            }}
+            initial="hidden"
+            animate="show"
+          >
             {filteredProducts.map((product) => (
-              <Card
+              <motion.div
                 key={product.id}
-                className="group cursor-pointer hover:shadow-xl transition-all"
-                onClick={() => onNavigate(`product-${product.id}`)}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  show: { opacity: 1, y: 0 },
+                }}
+                whileHover={{ y: -8, transition: { duration: 0.2 } }}
               >
-                <CardContent className="p-0">
-                  <div className="aspect-square overflow-hidden bg-gray-100 relative">
-                    <ImageWithFallback
-                      src={getImageUrl(product.image)}
-                      alt={product.name}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-                    {product.stock < 10 && product.stock > 0 && (
-                      <Badge className="absolute top-2 right-2 bg-orange-500 z-10">
-                        Low Stock
-                      </Badge>
-                    )}
-                    {product.stock === 0 && (
-                      <Badge className="absolute top-2 right-2 bg-red-500 z-10">
-                        Out of Stock
-                      </Badge>
-                    )}
-                  </div>
-
-                  <div className="p-4">
-                    <Badge
-                      variant="outline"
-                      className="mb-2 text-[#5F1B2C] border-[#5F1B2C]"
-                    >
-                      {product.category}
-                    </Badge>
-                    <h3 className="font-semibold mb-2 line-clamp-2 min-h-[3rem]">
-                      {product.name}
-                    </h3>
-                    <p className="text-sm text-gray-600 line-clamp-2 mb-3">
-                      {product.description}
-                    </p>
-
-                    {/* Additional Info */}
-                    {product.roast_level && (
-                      <p className="text-xs text-gray-500 mb-2">
-                        Roast: {product.roast_level}
-                      </p>
-                    )}
-                    {product.origin && (
-                      <p className="text-xs text-gray-500 mb-2">
-                        Origin: {product.origin}
-                      </p>
-                    )}
-
-                    <div className="flex items-center justify-between mt-4">
-                      <p className="text-xl font-bold text-[#3d1620]">
-                        ${product.price.toFixed(2)}
-                      </p>
-                      <Button
-                        size="sm"
-                        onClick={(e) => handleAddToCart(product, e)}
-                        disabled={product.stock === 0}
-                        className="bg-[#5F1B2C] hover:bg-[#4a1523]"
-                      >
-                        <ShoppingCart className="h-4 w-4 mr-1" />
-                        Add
-                      </Button>
+                <Card
+                  className="group cursor-pointer hover:shadow-xl transition-all h-full"
+                  onClick={() => onNavigate(`product-${product.id}`)}
+                >
+                  <CardContent className="p-0">
+                    <div className="aspect-square overflow-hidden bg-gray-100 relative">
+                      <ImageWithFallback
+                        src={getImageUrl(product.image)}
+                        alt={product.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        className="object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
+                      {product.stock < 10 && product.stock > 0 && (
+                        <Badge className="absolute top-2 right-2 bg-orange-500 z-10">
+                          Low Stock
+                        </Badge>
+                      )}
+                      {product.stock === 0 && (
+                        <Badge className="absolute top-2 right-2 bg-red-500 z-10">
+                          Out of Stock
+                        </Badge>
+                      )}
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+
+                    <div className="p-4">
+                      <Badge
+                        variant="outline"
+                        className="mb-2 text-[#5F1B2C] border-[#5F1B2C]"
+                      >
+                        {product.category}
+                      </Badge>
+                      <h3 className="font-semibold mb-2 line-clamp-2 min-h-[3rem]">
+                        {product.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                        {product.description}
+                      </p>
+
+                      {/* Rating */}
+                      {product.average_rating && product.average_rating > 0 && (
+                        <div className="flex items-center gap-1 mb-2">
+                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <span className="text-sm font-medium">
+                            {product.average_rating.toFixed(1)}
+                          </span>
+                          {product.review_count && (
+                            <span className="text-xs text-gray-500">
+                              ({product.review_count})
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Additional Info */}
+                      {product.roast_level && (
+                        <p className="text-xs text-gray-500 mb-2">
+                          Roast: {product.roast_level}
+                        </p>
+                      )}
+                      {product.origin && (
+                        <p className="text-xs text-gray-500 mb-2">
+                          Origin: {product.origin}
+                        </p>
+                      )}
+
+                      <div className="flex items-center justify-between mt-4">
+                        <p className="text-xl font-bold text-[#3d1620]">
+                          ${product.price.toFixed(2)}
+                        </p>
+                        <motion.div whileTap={{ scale: 0.95 }}>
+                          <Button
+                            size="sm"
+                            onClick={(e) => handleAddToCart(product, e)}
+                            disabled={product.stock === 0}
+                            className="bg-[#5F1B2C] hover:bg-[#4a1523]"
+                          >
+                            <ShoppingCart className="h-4 w-4 mr-1" />
+                            Add
+                          </Button>
+                        </motion.div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
     </div>

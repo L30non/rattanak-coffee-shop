@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import {
   ShoppingCart,
   User,
@@ -251,9 +252,17 @@ export function Header({
               >
                 <ShoppingCart className="h-5 w-5" />
                 {cartItemCount > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-[#5F1B2C]">
-                    {cartItemCount}
-                  </Badge>
+                  <motion.div
+                    key={cartItemCount}
+                    initial={{ scale: 1 }}
+                    animate={{ scale: [1, 1.3, 1] }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute -top-1 -right-1"
+                  >
+                    <Badge className="h-5 w-5 flex items-center justify-center p-0 bg-[#5F1B2C]">
+                      {cartItemCount}
+                    </Badge>
+                  </motion.div>
                 )}
               </Button>
 

@@ -704,13 +704,19 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
                             <div>
                               <h3 className="font-semibold text-lg">
-                                Order #{order.id}
+                                Order #{order.id.substring(0, 8)}
                               </h3>
                               <p className="text-sm text-gray-600">
                                 {new Date(
                                   order.created_at,
                                 ).toLocaleDateString()}
                               </p>
+                              {order.profiles && (
+                                <p className="text-sm text-gray-600 mt-1">
+                                  <span className="font-medium">Customer:</span>{" "}
+                                  {order.profiles.name || order.profiles.email}
+                                </p>
+                              )}
                             </div>
                             <div className="flex items-center gap-4">
                               <span className="font-bold text-[#3d1620]">
@@ -780,6 +786,16 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                                 </p>
                               ))}
                             </div>
+                            {order.tracking_number && (
+                              <div>
+                                <span className="font-medium">Tracking:</span>
+                                <p className="text-gray-600 font-mono text-xs">
+                                  {order.tracking_number}
+                                  {order.shipping_carrier &&
+                                    ` (${order.shipping_carrier})`}
+                                </p>
+                              </div>
+                            )}
                             <div>
                               <span className="font-medium">Payment:</span>
                               <p className="text-gray-600 flex items-center gap-1">

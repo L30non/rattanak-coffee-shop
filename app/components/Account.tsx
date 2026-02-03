@@ -152,14 +152,31 @@ export function Account({ onNavigate }: AccountProps) {
                         <p>{order.shipping_address}</p>
                       </div>
 
-                      <div className="text-sm text-gray-600">
+                      {order.tracking_number && (
+                        <div className="text-sm mt-3">
+                          <p className="font-medium mb-1 text-gray-700">
+                            Tracking Number:
+                          </p>
+                          <Badge variant="outline" className="font-mono">
+                            {order.tracking_number}
+                          </Badge>
+                          {order.shipping_carrier && (
+                            <span className="text-gray-600 ml-2">
+                              via {order.shipping_carrier}
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      <div className="text-sm text-gray-600 mt-3">
                         <p className="font-medium mb-1">Payment Method:</p>
                         <p className="flex items-center gap-1">
                           <Truck className="h-4 w-4" /> Cash on Delivery
                         </p>
                       </div>
 
-                      {order.status === "delivered" && (
+                      {(order.status === "delivered" ||
+                        order.status === "cancelled") && (
                         <div className="pt-4 border-t">
                           <Button
                             variant="outline"

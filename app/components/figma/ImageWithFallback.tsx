@@ -16,6 +16,8 @@ interface ImageWithFallbackProps {
   height?: number;
   sizes?: string;
   priority?: boolean;
+  placeholder?: "blur" | "empty";
+  blurDataURL?: string;
 }
 
 export function ImageWithFallback({
@@ -28,6 +30,8 @@ export function ImageWithFallback({
   height,
   sizes = "100vw",
   priority = false,
+  placeholder = "empty",
+  blurDataURL,
 }: ImageWithFallbackProps) {
   const [didError, setDidError] = useState(false);
 
@@ -68,6 +72,8 @@ export function ImageWithFallback({
         style={{ objectFit: "cover", ...style }}
         onError={handleError}
         priority={priority}
+        placeholder={placeholder}
+        blurDataURL={blurDataURL}
       />
     );
   }
@@ -83,6 +89,8 @@ export function ImageWithFallback({
       style={style}
       onError={handleError}
       priority={priority}
+      placeholder={placeholder}
+      blurDataURL={blurDataURL}
     />
   );
 }

@@ -1,4 +1,5 @@
 import { Coffee, ShoppingBag, Star, TrendingUp } from "lucide-react";
+import { motion } from "framer-motion";
 import { Button } from "@/app/components/ui/button";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { useMultipleProducts } from "@/app/hooks/useProducts";
@@ -58,61 +59,94 @@ export function HomePage({ onNavigate }: HomePageProps) {
       {/* Features */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="border-none shadow-md">
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-4">
-                  <div className="bg-rose-50 p-3 rounded-full">
-                    <Coffee className="h-6 w-6 text-[#5F1B2C]" />
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.2 },
+              },
+            }}
+          >
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
+              <Card className="border-none shadow-md">
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-rose-50 p-3 rounded-full">
+                      <Coffee className="h-6 w-6 text-[#5F1B2C]" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-1">
+                        Premium Quality
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Sourced from the finest coffee regions worldwide
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-lg mb-1">
-                      Premium Quality
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      Sourced from the finest coffee regions worldwide
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </motion.div>
 
-            <Card className="border-none shadow-md">
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-4">
-                  <div className="bg-rose-50 p-3 rounded-full">
-                    <Star className="h-6 w-6 text-[#5F1B2C]" />
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
+              <Card className="border-none shadow-md">
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-rose-50 p-3 rounded-full">
+                      <Star className="h-6 w-6 text-[#5F1B2C]" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-1">
+                        Expert Selection
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Curated by coffee professionals and enthusiasts
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-lg mb-1">
-                      Expert Selection
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      Curated by coffee professionals and enthusiasts
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </motion.div>
 
-            <Card className="border-none shadow-md">
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-4">
-                  <div className="bg-rose-50 p-3 rounded-full">
-                    <TrendingUp className="h-6 w-6 text-[#5F1B2C]" />
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
+              <Card className="border-none shadow-md">
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-rose-50 p-3 rounded-full">
+                      <TrendingUp className="h-6 w-6 text-[#5F1B2C]" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-1">
+                        Fresh Roasted
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Beans roasted to order for maximum freshness
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-lg mb-1">
-                      Fresh Roasted
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      Beans roasted to order for maximum freshness
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
@@ -126,38 +160,58 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1 },
+              },
+            }}
+          >
             {featuredProducts.map((product) => (
-              <Card
+              <motion.div
                 key={product.id}
-                className="group cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() => onNavigate(`product-${product.id}`)}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                whileHover={{ y: -8, scale: 1.02 }}
               >
-                <CardContent className="p-0">
-                  <div className="aspect-square overflow-hidden bg-gray-100 relative">
-                    <ImageWithFallback
-                      src={getImageUrl(product.image)}
-                      alt={product.name}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <p className="text-xs text-[#5F1B2C] uppercase tracking-wide mb-1">
-                      {product.category}
-                    </p>
-                    <h3 className="font-semibold mb-2 line-clamp-2">
-                      {product.name}
-                    </h3>
-                    <p className="text-lg font-bold text-[#3d1620]">
-                      ${product.price.toFixed(2)}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+                <Card
+                  className="group cursor-pointer hover:shadow-lg transition-shadow"
+                  onClick={() => onNavigate(`product-${product.id}`)}
+                >
+                  <CardContent className="p-0">
+                    <div className="aspect-square overflow-hidden bg-gray-100 relative">
+                      <ImageWithFallback
+                        src={getImageUrl(product.image)}
+                        alt={product.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <p className="text-xs text-[#5F1B2C] uppercase tracking-wide mb-1">
+                        {product.category}
+                      </p>
+                      <h3 className="font-semibold mb-2 line-clamp-2">
+                        {product.name}
+                      </h3>
+                      <p className="text-lg font-bold text-[#3d1620]">
+                        ${product.price.toFixed(2)}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           <div className="text-center mt-12">
             <Button
@@ -181,27 +235,48 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.15 },
+              },
+            }}
+          >
             {[
               { name: "Machines", view: "machines", icon: "☕" },
               { name: "Coffee Beans", view: "beans", icon: "🫘" },
               { name: "Accessories", view: "accessories", icon: "🔧" },
               { name: "Ingredients", view: "ingredients", icon: "🍯" },
             ].map((category) => (
-              <Card
+              <motion.div
                 key={category.view}
-                className="cursor-pointer hover:shadow-lg transition-shadow group"
-                onClick={() => onNavigate(category.view)}
+                variants={{
+                  hidden: { opacity: 0, scale: 0.9 },
+                  visible: { opacity: 1, scale: 1 },
+                }}
+                whileHover={{ y: -8, scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <CardContent className="p-8 text-center">
-                  <div className="text-6xl mb-4">{category.icon}</div>
-                  <h3 className="font-semibold text-xl group-hover:text-[#5F1B2C] transition-colors">
-                    {category.name}
-                  </h3>
-                </CardContent>
-              </Card>
+                <Card
+                  className="cursor-pointer hover:shadow-lg transition-shadow group"
+                  onClick={() => onNavigate(category.view)}
+                >
+                  <CardContent className="p-8 text-center">
+                    <div className="text-6xl mb-4">{category.icon}</div>
+                    <h3 className="font-semibold text-xl group-hover:text-[#5F1B2C] transition-colors">
+                      {category.name}
+                    </h3>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
