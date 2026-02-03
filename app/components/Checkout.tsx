@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Truck, CheckCircle } from "lucide-react";
+import { ArrowLeft, Truck, CheckCircle, MapPin } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import {
   Card,
@@ -11,7 +11,14 @@ import {
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { Separator } from "@/app/components/ui/separator";
-import { useStore } from "@/app/store/useStore";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/app/components/ui/select";
+import { useStore, Address } from "@/app/store/useStore";
 import { useCreateOrder } from "@/app/hooks/useProducts";
 import { toast } from "sonner";
 
@@ -23,10 +30,15 @@ export function Checkout({ onNavigate }: CheckoutProps) {
   const cart = useStore((state) => state.cart);
   const clearCart = useStore((state) => state.clearCart);
   const user = useStore((state) => state.user);
+  const addresses = useStore((state) => state.addresses);
+  const setAddresses = useStore((state) => state.setAddresses);
   const createOrderMutation = useCreateOrder();
 
   const [step, setStep] = useState<"info" | "payment" | "success">("info");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
+    null,
+  );
   const [formData, setFormData] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
@@ -44,7 +56,69 @@ export function Checkout({ onNavigate }: CheckoutProps) {
   const tax = subtotal * 0.1; // 10% VAT
   const total = subtotal + shipping + tax;
 
+  // Load saved addresses on mount
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      try {
+        const response = await fetch("/api/addresses");
+        if (response.ok) {
+          const data = await response.json();
+          setAddresses(data.addresses || []);
+          // Auto-select default address if exists
+          const defaultAddr = data.addresses?.find(
+            (a: Address) => a.is_default,
+          );
+          if (defaultAddr) {
+            setSelectedAddressId(defaultAddr.id);
+            populateFormFromAddress(defaultAddr);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching addresses:", error);
+      }
+    };
+
+    if (user) {
+      fetchAddresses();
+    }
+  }, [user]);
+
+  const populateFormFromAddress = (address: Address) => {
+    setFormData((prev) => ({
+      ...prev,
+      phone: address.phone || prev.phone,
+      address: `${address.street_line_1}${address.street_line_2 ? ", " + address.street_line_2 : ""}`,
+      city: address.city,
+      zipCode: address.zip_code,
+    }));
+  };
+
+  const handleAddressSelect = (addressId: string) => {
+    if (addressId === "manual") {
+      setSelectedAddressId(null);
+      setFormData((prev) => ({
+        ...prev,
+        phone: "",
+        address: "",
+        city: "",
+        zipCode: "",
+      }));
+      return;
+    }
+
+    const selectedAddress = addresses.find((a) => a.id === addressId);
+    if (selectedAddress) {
+      setSelectedAddressId(addressId);
+      populateFormFromAddress(selectedAddress);
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // If user manually edits address fields, clear address selection
+    // (phone is excluded since it can be changed independently)
+    if (["address", "city", "zipCode"].includes(e.target.name)) {
+      setSelectedAddressId(null);
+    }
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -239,6 +313,40 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                             required
                           />
                         </div>
+
+                        {/* Saved Address Selector */}
+                        {addresses.length > 0 && (
+                          <div>
+                            <Label htmlFor="saved-address">
+                              <MapPin className="inline h-4 w-4 mr-1" />
+                              Use Saved Address
+                            </Label>
+                            <Select
+                              value={selectedAddressId || "manual"}
+                              onValueChange={handleAddressSelect}
+                            >
+                              <SelectTrigger id="saved-address">
+                                <SelectValue placeholder="Select a saved address" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="manual">
+                                  Enter address manually
+                                </SelectItem>
+                                {addresses.map((address) => (
+                                  <SelectItem
+                                    key={address.id}
+                                    value={address.id}
+                                  >
+                                    {address.label || "Saved Address"} -{" "}
+                                    {address.city},{" "}
+                                    {address.state || address.zip_code}
+                                    {address.is_default && " (Default)"}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        )}
 
                         <div>
                           <Label htmlFor="address">Address *</Label>

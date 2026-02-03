@@ -13,6 +13,7 @@ import { Auth } from "@/app/components/Auth";
 import { Account } from "@/app/components/Account";
 import { Profile } from "@/app/components/Profile";
 import { AdminDashboard } from "@/app/components/AdminDashboard";
+import { AddressManagement } from "@/app/components/AddressManagement";
 import { Toaster } from "@/app/components/ui/sonner";
 import { Button } from "@/app/components/ui/button";
 import { TermsOfService } from "@/app/components/TermsOfService";
@@ -105,20 +106,7 @@ function AppContent() {
       case "admin":
         return <AdminDashboard onNavigate={setCurrentView} />;
       case "address":
-        return (
-          <div className="min-h-screen bg-gray-50 py-16">
-            <div className="container mx-auto px-4 text-center">
-              <h1 className="text-4xl font-bold mb-4">Address Management</h1>
-              <p className="text-gray-600 mb-4">Coming Soon...</p>
-              <Button
-                variant="outline"
-                onClick={() => setCurrentView("account")}
-              >
-                Back to Account
-              </Button>
-            </div>
-          </div>
-        );
+        return <AddressManagement onNavigate={setCurrentView} />;
       case "settings":
         return (
           <div className="min-h-screen bg-gray-50 py-16">

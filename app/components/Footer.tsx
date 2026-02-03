@@ -113,11 +113,13 @@ export function Footer({ onNavigate }: FooterProps) {
             <ul className="space-y-2 text-sm">
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                <span>123 Coffee Street, Bean City, BC 12345</span>
+                <span>
+                  #09 107BT, Sangkat Boeung Tumpun, Khan Mean Chey, Phnom Penh
+                </span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 flex-shrink-0" />
-                <span>+1 (555) 123-4567</span>
+                <span>+855 12 828 029</span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 flex-shrink-0" />

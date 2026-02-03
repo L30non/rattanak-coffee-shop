@@ -47,6 +47,22 @@ export interface User {
   created_at: string;
 }
 
+export interface Address {
+  id: string;
+  user_id: string;
+  label: string | null;
+  street_line_1: string;
+  street_line_2: string | null;
+  city: string;
+  state: string | null;
+  zip_code: string;
+  country: string;
+  phone: string | null;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export type PaymentMethod = "cash";
 
 export interface Order {
@@ -55,6 +71,7 @@ export interface Order {
   status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
   total: number;
   shipping_address: string;
+  address_id?: string | null;
   payment_method: PaymentMethod;
   date: string;
   created_at: string;
@@ -75,6 +92,7 @@ interface StoreState {
   cart: CartItem[];
   user: User | null;
   orders: Order[]; // Local cache of orders for demo/UI
+  addresses: Address[]; // Local cache of addresses
   addToCart: (product: Product, quantity: number) => void;
   removeFromCart: (productId: string) => void;
   updateCartQuantity: (productId: string, quantity: number) => void;
@@ -82,6 +100,11 @@ interface StoreState {
   setUser: (user: User | null) => void;
   addOrder: (order: Order) => void;
   updateOrderStatus: (orderId: string, status: Order["status"]) => void;
+  setAddresses: (addresses: Address[]) => void;
+  addAddress: (address: Address) => void;
+  updateAddress: (addressId: string, address: Partial<Address>) => void;
+  deleteAddress: (addressId: string) => void;
+  setDefaultAddress: (addressId: string) => void;
 }
 
 export const useStore = create<StoreState>()(
@@ -90,6 +113,7 @@ export const useStore = create<StoreState>()(
       cart: [],
       user: null,
       orders: [],
+      addresses: [],
       addToCart: (product, quantity) =>
         set((state) => {
           const existingItem = state.cart.find(
@@ -129,6 +153,36 @@ export const useStore = create<StoreState>()(
               ? { ...order, status, updated_at: new Date().toISOString() }
               : order,
           ),
+        })),
+      setAddresses: (addresses) => set({ addresses }),
+      addAddress: (address) =>
+        set((state) => ({
+          addresses: [...state.addresses, address],
+        })),
+      updateAddress: (addressId, updatedAddress) =>
+        set((state) => ({
+          addresses: state.addresses.map((address) =>
+            address.id === addressId
+              ? {
+                  ...address,
+                  ...updatedAddress,
+                  updated_at: new Date().toISOString(),
+                }
+              : address,
+          ),
+        })),
+      deleteAddress: (addressId) =>
+        set((state) => ({
+          addresses: state.addresses.filter(
+            (address) => address.id !== addressId,
+          ),
+        })),
+      setDefaultAddress: (addressId) =>
+        set((state) => ({
+          addresses: state.addresses.map((address) => ({
+            ...address,
+            is_default: address.id === addressId,
+          })),
         })),
     }),
     {

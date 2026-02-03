@@ -18,8 +18,22 @@ export function HomePage({ onNavigate }: HomePageProps) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-[#3d1620] to-[#5F1B2C] text-white">
-        <div className="container mx-auto px-4 py-24">
+      <section className="relative overflow-hidden bg-gradient-to-r from-[#3d1620] to-[#5F1B2C] text-white min-h-[600px]">
+        {/* Background Image Placeholder - Replace with Supabase image URL */}
+        <div className="absolute inset-0 z-0">
+          <ImageWithFallback
+            src="https://amsvlqivarurifjhboef.supabase.co/storage/v1/object/public/Images/branding/brownroaster.jpg"
+            alt="Coffee background"
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+          />
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#3d1620]/90 to-[#5F1B2C]/80" />
+        </div>
+
+        <div className="container relative z-10 mx-auto px-4 py-24">
           <div className="max-w-3xl">
             <h1 className="text-5xl md:text-6xl mb-6">
               Premium Coffee
@@ -50,9 +64,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </Button>
             </div>
           </div>
-        </div>
-        <div className="absolute right-0 top-0 opacity-10">
-          <Coffee className="h-96 w-96" />
         </div>
       </section>
 
