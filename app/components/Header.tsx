@@ -304,13 +304,6 @@ export function Header({
                         </div>
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={() => onNavigate("profile")}
-                        className="cursor-pointer"
-                      >
-                        <User className="mr-2 h-4 w-4" />
-                        <span>Profile</span>
-                      </DropdownMenuItem>
                       {!user.is_admin && (
                         <DropdownMenuItem
                           onClick={() => onNavigate("account")}

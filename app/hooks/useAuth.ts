@@ -185,6 +185,94 @@ export function useAuth() {
     return { success: true, error: undefined };
   };
 
+  const updateProfile = async (name: string, email?: string) => {
+    setLoading(true);
+    try {
+      const supabase = createClient();
+
+      // Update auth user email if provided
+      if (email && email !== supabaseUser?.email) {
+        const { error: authError } = await supabase.auth.updateUser({
+          email,
+        });
+
+        if (authError) {
+          setLoading(false);
+          return { success: false, error: authError.message };
+        }
+      }
+
+      // Update profile in database
+      if (supabaseUser) {
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .update({ name, updated_at: new Date().toISOString() })
+          .eq("id", supabaseUser.id);
+
+        if (profileError) {
+          setLoading(false);
+          return { success: false, error: profileError.message };
+        }
+
+        // Sync updated profile
+        await syncUserProfile(supabaseUser);
+      }
+
+      setLoading(false);
+      return { success: true };
+    } catch (error) {
+      setLoading(false);
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : "Failed to update profile",
+      };
+    }
+  };
+
+  const changePassword = async (
+    currentPassword: string,
+    newPassword: string,
+  ) => {
+    setLoading(true);
+    try {
+      const supabase = createClient();
+
+      // First, verify current password by attempting to re-authenticate
+      if (supabaseUser?.email) {
+        const { error: authError } = await supabase.auth.signInWithPassword({
+          email: supabaseUser.email,
+          password: currentPassword,
+        });
+
+        if (authError) {
+          setLoading(false);
+          return { success: false, error: "Current password is incorrect" };
+        }
+      }
+
+      // Update to new password
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (updateError) {
+        setLoading(false);
+        return { success: false, error: updateError.message };
+      }
+
+      setLoading(false);
+      return { success: true };
+    } catch (error) {
+      setLoading(false);
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : "Failed to change password",
+      };
+    }
+  };
+
   return {
     user,
     supabaseUser,
@@ -192,6 +280,8 @@ export function useAuth() {
     signUp,
     signIn,
     signOut,
+    updateProfile,
+    changePassword,
     isAuthenticated: !!user,
   };
 }
