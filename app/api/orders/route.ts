@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import type { Order } from "@/app/store/useStore";
-// import { sendOrderConfirmationEmail } from "@/lib/email"; // Commented out until domain is verified
+import { sendOrderConfirmationEmail } from "@/lib/email";
 
 // Generate unique tracking number
 function generateTrackingNumber(): string {
@@ -157,9 +157,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // TODO: Uncomment when domain is verified at resend.com/domains
     // Send order confirmation email
-    /*
     if (process.env.RESEND_API_KEY) {
       try {
         // Fetch user details
@@ -205,7 +203,6 @@ export async function POST(request: NextRequest) {
         console.error("Failed to send confirmation email:", emailError);
       }
     }
-    */
 
     return NextResponse.json(order, { status: 201 });
   } catch {

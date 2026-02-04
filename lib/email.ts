@@ -199,7 +199,7 @@ function generateOrderConfirmationHTML(
           </div>
           
           <div style="text-align: center;">
-            <a href="https://rattanakcoffee.com" class="button">View Order Status</a>
+            <a href="https://rattanak-coffee-shop.vercel.app" class="button">View Order Status</a>
           </div>
           
           <p style="margin-top: 30px; color: #6b7280; font-size: 0.9em;">
