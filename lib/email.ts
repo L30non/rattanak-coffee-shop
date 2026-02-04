@@ -1,6 +1,21 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resendClient: Resend | null = null;
+
+function getResendClient(): Resend {
+  if (resendClient) {
+    return resendClient;
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("Missing RESEND_API_KEY environment variable.");
+  }
+
+  resendClient = new Resend(apiKey);
+  return resendClient;
+}
 
 export interface OrderConfirmationEmailData {
   customerName: string;
@@ -24,6 +39,7 @@ export async function sendOrderConfirmationEmail(
   data: OrderConfirmationEmailData,
 ) {
   try {
+    const resend = getResendClient();
     const { data: emailResult, error } = await resend.emails.send({
       from: "Rattanak Coffee Shop <orders@rattanakcoffee.com>",
       to: [data.customerEmail],
