@@ -63,7 +63,7 @@ export interface Address {
   updated_at: string;
 }
 
-export type PaymentMethod = "cash";
+export type PaymentMethod = "cash" | "bakong";
 
 export interface Order {
   id: string;

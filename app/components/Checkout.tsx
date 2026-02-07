@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Truck, CheckCircle, MapPin } from "lucide-react";
+import { ArrowLeft, Truck, CheckCircle, MapPin, QrCode } from "lucide-react";
+import { BakongPayment } from "@/app/components/BakongPayment";
 import { Button } from "@/app/components/ui/button";
 import {
   Card,
@@ -36,6 +37,11 @@ export function Checkout({ onNavigate }: CheckoutProps) {
 
   const [step, setStep] = useState<"info" | "payment" | "success">("info");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<"cash" | "bakong">("cash");
+  const [bakongVerified, setBakongVerified] = useState(false);
+  const [bakongTransactionId, setBakongTransactionId] = useState<string | null>(
+    null,
+  );
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
     null,
   );
@@ -52,8 +58,8 @@ export function Checkout({ onNavigate }: CheckoutProps) {
     (sum, item) => sum + item.product.price * item.quantity,
     0,
   );
-  const shipping = subtotal > 100 ? 0 : 10;
-  const tax = subtotal * 0.1; // 10% VAT
+  const shipping = 0; // Disabled for testing
+  const tax = 0; // Disabled for testing
   const total = subtotal + shipping + tax;
 
   // Load saved addresses on mount
@@ -141,20 +147,34 @@ export function Checkout({ onNavigate }: CheckoutProps) {
     setStep("payment");
   };
 
-  const handleSubmitPayment = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleBakongVerified = (transactionId: string) => {
+    setBakongVerified(true);
+    setBakongTransactionId(transactionId);
+  };
+
+  const handleSubmitPayment = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+
+    // For Bakong, ensure payment is verified first
+    if (paymentMethod === "bakong" && !bakongVerified) {
+      toast.error("Please complete and verify your Bakong payment first.");
+      return;
+    }
+
     setIsProcessing(true);
 
     try {
       const shippingAddress = `${formData.address}, ${formData.city}, ${formData.zipCode}`;
 
-      // Create order via API (saved to Supabase)
       const orderData = {
         user_id: user?.id || "",
-        status: "pending" as const,
+        status:
+          paymentMethod === "bakong"
+            ? ("processing" as const)
+            : ("pending" as const),
         total,
         shipping_address: shippingAddress,
-        payment_method: "cash" as const,
+        payment_method: paymentMethod,
         date: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         tax_amount: tax,
@@ -168,11 +188,13 @@ export function Checkout({ onNavigate }: CheckoutProps) {
 
       await createOrderMutation.mutateAsync(orderData);
 
-      // Clear cart
       clearCart();
-
       setStep("success");
-      toast.success("Order placed successfully!");
+      toast.success(
+        paymentMethod === "bakong"
+          ? "Payment received! Order placed successfully!"
+          : "Order placed successfully!",
+      );
     } catch (error) {
       toast.error("Failed to place order. Please try again.");
       console.error("Order error:", error);
@@ -180,6 +202,14 @@ export function Checkout({ onNavigate }: CheckoutProps) {
       setIsProcessing(false);
     }
   };
+
+  // Auto-submit order once Bakong payment is verified
+  useEffect(() => {
+    if (bakongVerified && bakongTransactionId && paymentMethod === "bakong") {
+      handleSubmitPayment();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bakongVerified, bakongTransactionId]);
 
   if (!user) {
     return (
@@ -404,50 +434,153 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                     <CardHeader>
                       <CardTitle>Payment Method</CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <form
-                        onSubmit={handleSubmitPayment}
-                        className="space-y-6"
-                      >
-                        {/* Cash on Delivery Info */}
-                        <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg">
-                          <div className="flex items-start gap-3">
-                            <Truck className="h-5 w-5 text-[#5F1B2C] mt-0.5" />
+                    <CardContent className="space-y-6">
+                      {/* Payment Method Selector */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPaymentMethod("cash");
+                            setBakongVerified(false);
+                            setBakongTransactionId(null);
+                          }}
+                          className={`p-4 rounded-lg border-2 text-left transition-all ${
+                            paymentMethod === "cash"
+                              ? "border-[#5F1B2C] bg-rose-50"
+                              : "border-gray-200 hover:border-gray-300"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <Truck
+                              className={`h-5 w-5 ${
+                                paymentMethod === "cash"
+                                  ? "text-[#5F1B2C]"
+                                  : "text-gray-400"
+                              }`}
+                            />
                             <div>
-                              <h4 className="font-medium text-[#3d1620]">
+                              <p
+                                className={`font-medium text-sm ${
+                                  paymentMethod === "cash"
+                                    ? "text-[#3d1620]"
+                                    : "text-gray-700"
+                                }`}
+                              >
                                 Cash on Delivery
-                              </h4>
-                              <p className="text-sm text-[#5F1B2C] mt-1">
-                                Please prepare exact amount:{" "}
-                                <strong>${total.toFixed(2)}</strong>
                               </p>
-                              <p className="text-xs text-gray-600 mt-2">
-                                Our delivery partner will collect payment when
-                                your order arrives.
+                              <p className="text-xs text-gray-500">
+                                Pay when delivered
                               </p>
                             </div>
                           </div>
-                        </div>
+                        </button>
 
-                        <div className="flex gap-4">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPaymentMethod("bakong");
+                          }}
+                          className={`p-4 rounded-lg border-2 text-left transition-all ${
+                            paymentMethod === "bakong"
+                              ? "border-[#5F1B2C] bg-rose-50"
+                              : "border-gray-200 hover:border-gray-300"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <QrCode
+                              className={`h-5 w-5 ${
+                                paymentMethod === "bakong"
+                                  ? "text-[#5F1B2C]"
+                                  : "text-gray-400"
+                              }`}
+                            />
+                            <div>
+                              <p
+                                className={`font-medium text-sm ${
+                                  paymentMethod === "bakong"
+                                    ? "text-[#3d1620]"
+                                    : "text-gray-700"
+                                }`}
+                              >
+                                Bakong KHQR
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                Scan &amp; pay instantly
+                              </p>
+                            </div>
+                          </div>
+                        </button>
+                      </div>
+
+                      {/* Payment Method Content */}
+                      {paymentMethod === "cash" ? (
+                        <form
+                          onSubmit={handleSubmitPayment}
+                          className="space-y-6"
+                        >
+                          <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg">
+                            <div className="flex items-start gap-3">
+                              <Truck className="h-5 w-5 text-[#5F1B2C] mt-0.5" />
+                              <div>
+                                <h4 className="font-medium text-[#3d1620]">
+                                  Cash on Delivery
+                                </h4>
+                                <p className="text-sm text-[#5F1B2C] mt-1">
+                                  Please prepare exact amount:{" "}
+                                  <strong>${total.toFixed(2)}</strong>
+                                </p>
+                                <p className="text-xs text-gray-600 mt-2">
+                                  Our delivery partner will collect payment when
+                                  your order arrives.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex gap-4">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => setStep("info")}
+                              className="flex-1"
+                              disabled={isProcessing}
+                            >
+                              Back
+                            </Button>
+                            <Button
+                              type="submit"
+                              className="flex-1 bg-[#5F1B2C] hover:bg-[#4a1523]"
+                              disabled={isProcessing}
+                            >
+                              {isProcessing ? "Processing..." : "Place Order"}
+                            </Button>
+                          </div>
+                        </form>
+                      ) : (
+                        <div className="space-y-4">
+                          <BakongPayment
+                            amount={total}
+                            onVerified={handleBakongVerified}
+                          />
+
+                          {isProcessing && (
+                            <div className="flex items-center justify-center gap-2 text-sm text-gray-600 py-2">
+                              <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#5F1B2C] border-t-transparent" />
+                              Creating your order...
+                            </div>
+                          )}
+
                           <Button
                             type="button"
                             variant="outline"
                             onClick={() => setStep("info")}
-                            className="flex-1"
+                            className="w-full"
                             disabled={isProcessing}
                           >
-                            Back
-                          </Button>
-                          <Button
-                            type="submit"
-                            className="flex-1 bg-[#5F1B2C] hover:bg-[#4a1523]"
-                            disabled={isProcessing}
-                          >
-                            {isProcessing ? "Processing..." : "Place Order"}
+                            Back to Shipping Info
                           </Button>
                         </div>
-                      </form>
+                      )}
                     </CardContent>
                   </Card>
                 </motion.div>

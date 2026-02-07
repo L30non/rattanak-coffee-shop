@@ -25,14 +25,17 @@ export function Footer({ onNavigate }: FooterProps) {
               brew.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="hover:text-[#D4AF37] transition-colors">
+              <a
+                href="https://www.facebook.com/rattanakcoffeeroaster"
+                className="hover:text-[#D4AF37] transition-colors"
+              >
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="hover:text-[#D4AF37] transition-colors">
+              <a
+                href="https://www.instagram.com/rattanakcoffee/"
+                className="hover:text-[#D4AF37] transition-colors"
+              >
                 <Instagram className="h-5 w-5" />
-              </a>
-              <a href="#" className="hover:text-[#D4AF37] transition-colors">
-                <Twitter className="h-5 w-5" />
               </a>
             </div>
           </div>

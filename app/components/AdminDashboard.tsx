@@ -798,8 +798,33 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                             )}
                             <div>
                               <span className="font-medium">Payment:</span>
-                              <p className="text-gray-600 flex items-center gap-1">
-                                <Truck className="h-4 w-4" /> Cash on Delivery
+                              <p className="text-gray-600 flex items-center gap-1 capitalize">
+                                {order.payment_method === "bakong" ? (
+                                  <>
+                                    <svg
+                                      className="h-4 w-4"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <rect
+                                        x="3"
+                                        y="3"
+                                        width="18"
+                                        height="18"
+                                        rx="2"
+                                        ry="2"
+                                      />
+                                      <path d="M7 8h10M7 12h10M7 16h10" />
+                                    </svg>
+                                    Bakong KHQR
+                                  </>
+                                ) : (
+                                  <>
+                                    <Truck className="h-4 w-4" /> Cash on
+                                    Delivery
+                                  </>
+                                )}
                               </p>
                             </div>
                           </div>
