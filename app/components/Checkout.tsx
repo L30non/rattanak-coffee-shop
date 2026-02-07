@@ -58,7 +58,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
     (sum, item) => sum + item.product.price * item.quantity,
     0,
   );
-  const shipping = subtotal > 100 ? 0 : 10;
+  const shipping = subtotal > 100 ? 0 : 1;
   const tax = subtotal * 0.1; // 10% VAT
   const total = subtotal + shipping + tax;
 
