@@ -77,26 +77,67 @@ export function BakongPayment({
 
   // Auto-verify payment via polling
   const checkPaymentStatus = useCallback(async () => {
-    if (!khqrData || isVerified || isExpired) return;
+    if (!khqrData || isVerified || isExpired) {
+      console.log(
+        "[BakongPayment Client] Skipping check - verified:",
+        isVerified,
+        "expired:",
+        isExpired,
+      );
+      return;
+    }
 
     try {
+      console.log(
+        "[BakongPayment Client] Checking payment for md5:",
+        khqrData.md5.substring(0, 10) + "...",
+      );
       const response = await fetch("/api/bakong/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ md5: khqrData.md5 }),
       });
 
+      console.log("[BakongPayment Client] Response status:", response.status);
       const result = await response.json();
+      console.log("[BakongPayment Client] Response body:", result);
 
       if (result.verified && result.transactionId) {
+        console.log(
+          "[BakongPayment Client] ✓ PAYMENT VERIFIED! Stopping polling...",
+        );
+
+        // Stop polling IMMEDIATELY
+        if (pollRef.current) {
+          clearInterval(pollRef.current);
+          pollRef.current = null;
+        }
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
+
         setIsVerified(true);
-        if (timerRef.current) clearInterval(timerRef.current);
-        if (pollRef.current) clearInterval(pollRef.current);
         toast.success("Payment received! Processing your order...");
-        onVerified?.(result.transactionId);
+
+        if (onVerified) {
+          console.log(
+            "[BakongPayment Client] Calling onVerified callback with:",
+            result.transactionId,
+          );
+          onVerified(result.transactionId);
+        } else {
+          console.warn(
+            "[BakongPayment Client] No onVerified callback provided!",
+          );
+        }
+      } else {
+        console.log(
+          "[BakongPayment Client] Payment not yet verified. Will check again in 3s...",
+        );
       }
     } catch (err) {
-      console.error("Payment verification check error:", err);
+      console.error("[BakongPayment Client] Verification error:", err);
       // Continue polling on error - don't show error to user for background checks
     }
   }, [khqrData, isVerified, isExpired, onVerified]);
@@ -104,6 +145,11 @@ export function BakongPayment({
   // Start polling when QR is generated
   useEffect(() => {
     if (khqrData && !isVerified && !isExpired) {
+      console.log(
+        "[BakongPayment Client] Starting polling for md5:",
+        khqrData.md5.substring(0, 10) + "...",
+      );
+
       // Initial check after 2 seconds
       const initialTimeout = setTimeout(() => {
         checkPaymentStatus();
@@ -113,9 +159,29 @@ export function BakongPayment({
       pollRef.current = setInterval(checkPaymentStatus, POLL_INTERVAL_MS);
 
       return () => {
+        console.log(
+          "[BakongPayment Client] Cleaning up polling (component unmount or deps changed)",
+        );
         clearTimeout(initialTimeout);
-        if (pollRef.current) clearInterval(pollRef.current);
+        if (pollRef.current) {
+          clearInterval(pollRef.current);
+          pollRef.current = null;
+        }
       };
+    } else if (isVerified) {
+      console.log(
+        "[BakongPayment Client] Payment already verified - not starting polling",
+      );
+      if (pollRef.current) {
+        clearInterval(pollRef.current);
+        pollRef.current = null;
+      }
+    } else if (isExpired) {
+      console.log("[BakongPayment Client] QR expired - stopping polling");
+      if (pollRef.current) {
+        clearInterval(pollRef.current);
+        pollRef.current = null;
+      }
     }
   }, [khqrData, isVerified, isExpired, checkPaymentStatus]);
 
