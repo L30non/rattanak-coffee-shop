@@ -90,10 +90,14 @@ export async function verifyBakongPayment(md5Hash: string): Promise<{
 
   console.log("[Bakong] Verifying payment - md5:", md5Hash);
   console.log("[Bakong] API URL:", apiUrl ? "configured" : "MISSING");
-  console.log("[Bakong] Token:", token ? `configured (${token.length} chars)` : "MISSING");
+  console.log(
+    "[Bakong] Token:",
+    token ? `configured (${token.length} chars)` : "MISSING",
+  );
 
   if (!apiUrl || !token) {
-    const error = "Missing Bakong API configuration. Please set BAKONG_PROD_BASE_API_URL_MD5 and BAKONG_TOKEN in environment variables.";
+    const error =
+      "Missing Bakong API configuration. Please set BAKONG_PROD_BASE_API_URL_MD5 and BAKONG_TOKEN in environment variables.";
     console.error("[Bakong]", error);
     throw new Error(error);
   }
@@ -114,7 +118,12 @@ export async function verifyBakongPayment(md5Hash: string): Promise<{
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("[Bakong] API error - Status:", response.status, "Body:", errorText);
+      console.error(
+        "[Bakong] API error - Status:",
+        response.status,
+        "Body:",
+        errorText,
+      );
       return {
         verified: false,
         error: `Bakong API returned status ${response.status}: ${errorText.substring(0, 100)}`,
@@ -126,7 +135,10 @@ export async function verifyBakongPayment(md5Hash: string): Promise<{
 
     // The NBC API returns responseCode 0 for success and includes transaction hash
     if (data.responseCode === 0 && data.data) {
-      console.log("[Bakong] ✓ Payment verified! Transaction:", data.data.hash || data.data.transactionId);
+      console.log(
+        "[Bakong] ✓ Payment verified! Transaction:",
+        data.data.hash || data.data.transactionId,
+      );
       return {
         verified: true,
         transactionId:
@@ -135,7 +147,12 @@ export async function verifyBakongPayment(md5Hash: string): Promise<{
     }
 
     // Payment not found or not yet completed
-    console.log("[Bakong] Payment not verified - Code:", data.responseCode, "Message:", data.responseMessage);
+    console.log(
+      "[Bakong] Payment not verified - Code:",
+      data.responseCode,
+      "Message:",
+      data.responseMessage,
+    );
     return {
       verified: false,
       error:
