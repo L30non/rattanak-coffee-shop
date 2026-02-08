@@ -88,22 +88,13 @@ export async function verifyBakongPayment(md5Hash: string): Promise<{
   const apiUrl = process.env.BAKONG_PROD_BASE_API_URL_MD5;
   const token = process.env.BAKONG_TOKEN;
 
-  console.log("[Bakong] Verifying payment - md5:", md5Hash);
-  console.log("[Bakong] API URL:", apiUrl ? "configured" : "MISSING");
-  console.log(
-    "[Bakong] Token:",
-    token ? `configured (${token.length} chars)` : "MISSING",
-  );
-
   if (!apiUrl || !token) {
-    const error =
-      "Missing Bakong API configuration. Please set BAKONG_PROD_BASE_API_URL_MD5 and BAKONG_TOKEN in environment variables.";
-    console.error("[Bakong]", error);
-    throw new Error(error);
+    throw new Error(
+      "Missing Bakong API configuration. Please set BAKONG_PROD_BASE_API_URL_MD5 and BAKONG_TOKEN in environment variables.",
+    );
   }
 
   try {
-    console.log("[Bakong] Calling NBC API:", apiUrl);
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
@@ -114,31 +105,18 @@ export async function verifyBakongPayment(md5Hash: string): Promise<{
       signal: AbortSignal.timeout(30000), // 30 second timeout
     });
 
-    console.log("[Bakong] NBC API response status:", response.status);
-
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(
-        "[Bakong] API error - Status:",
-        response.status,
-        "Body:",
-        errorText,
-      );
       return {
         verified: false,
-        error: `Bakong API returned status ${response.status}: ${errorText.substring(0, 100)}`,
+        error: `Bakong API returned status ${response.status}`,
       };
     }
 
     const data = await response.json();
-    console.log("[Bakong] NBC API response data:", JSON.stringify(data));
 
     // The NBC API returns responseCode 0 for success and includes transaction hash
     if (data.responseCode === 0 && data.data) {
-      console.log(
-        "[Bakong] ✓ Payment verified! Transaction:",
-        data.data.hash || data.data.transactionId,
-      );
       return {
         verified: true,
         transactionId:
@@ -147,12 +125,6 @@ export async function verifyBakongPayment(md5Hash: string): Promise<{
     }
 
     // Payment not found or not yet completed
-    console.log(
-      "[Bakong] Payment not verified - Code:",
-      data.responseCode,
-      "Message:",
-      data.responseMessage,
-    );
     return {
       verified: false,
       error:
@@ -160,7 +132,6 @@ export async function verifyBakongPayment(md5Hash: string): Promise<{
         "Payment not yet received. Please complete the payment and try again.",
     };
   } catch (err) {
-    console.error("[Bakong] Exception during verification:", err);
     if (err instanceof Error && err.name === "TimeoutError") {
       return {
         verified: false,

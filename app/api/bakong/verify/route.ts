@@ -11,22 +11,14 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { md5 } = body as { md5: string };
 
-    console.log(
-      "[Bakong API] Received verification request for md5:",
-      md5?.substring(0, 10) + "...",
-    );
-
     if (!md5) {
       return NextResponse.json({ error: "Missing md5 hash" }, { status: 400 });
     }
 
     const result = await verifyBakongPayment(md5);
 
-    console.log("[Bakong API] Returning result:", JSON.stringify(result));
-
     return NextResponse.json(result);
   } catch (err) {
-    console.error("[Bakong API] Error:", err);
     return NextResponse.json(
       {
         error:
