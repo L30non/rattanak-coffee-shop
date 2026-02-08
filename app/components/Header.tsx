@@ -167,7 +167,7 @@ export function Header({
                 />
               </div>
               <span className="font-bold text-xl text-[#5F1B2C] hidden sm:inline">
-                Rattanak Coffee
+                RATTANAK COFFEE
               </span>
             </button>
 
