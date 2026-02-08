@@ -11,7 +11,7 @@ interface HomePageProps {
 }
 
 export function HomePage({ onNavigate }: HomePageProps) {
-  const { data: products = [] } = useMultipleProducts();
+  const { data: products = [], isLoading, error } = useMultipleProducts();
 
   const featuredProducts = products.slice(0, 4);
 
@@ -184,44 +184,76 @@ export function HomePage({ onNavigate }: HomePageProps) {
               },
             }}
           >
-            {featuredProducts.map((product) => (
-              <motion.div
-                key={product.id}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-                whileHover={{ y: -8, scale: 1.02 }}
-              >
-                <Card
-                  className="group cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => onNavigate(`product-${product.id}`)}
+            {isLoading ? (
+              // Loading skeleton
+              Array.from({ length: 4 }).map((_, index) => (
+                <motion.div
+                  key={`skeleton-${index}`}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
                 >
-                  <CardContent className="p-0">
-                    <div className="aspect-square overflow-hidden bg-gray-100 relative">
-                      <ImageWithFallback
-                        src={getImageUrl(product.image)}
-                        alt={product.name}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                    <div className="p-4">
-                      <p className="text-xs text-[#5F1B2C] uppercase tracking-wide mb-1">
-                        {product.category}
-                      </p>
-                      <h3 className="font-semibold mb-2 line-clamp-2">
-                        {product.name}
-                      </h3>
-                      <p className="text-lg font-bold text-[#3d1620]">
-                        ${product.price.toFixed(2)}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                  <Card className="animate-pulse">
+                    <CardContent className="p-0">
+                      <div className="aspect-square bg-gray-200" />
+                      <div className="p-4 space-y-3">
+                        <div className="h-3 bg-gray-200 rounded w-1/4" />
+                        <div className="h-4 bg-gray-200 rounded w-3/4" />
+                        <div className="h-5 bg-gray-200 rounded w-1/3" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))
+            ) : error ? (
+              <div className="col-span-full text-center py-12">
+                <p className="text-red-600">Failed to load products. Please try again later.</p>
+              </div>
+            ) : featuredProducts.length === 0 ? (
+              <div className="col-span-full text-center py-12">
+                <p className="text-gray-600">No products available at the moment.</p>
+              </div>
+            ) : (
+              featuredProducts.map((product) => (
+                <motion.div
+                  key={product.id}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                >
+                  <Card
+                    className="group cursor-pointer hover:shadow-lg transition-shadow"
+                    onClick={() => onNavigate(`product-${product.id}`)}
+                  >
+                    <CardContent className="p-0">
+                      <div className="aspect-square overflow-hidden bg-gray-100 relative">
+                        <ImageWithFallback
+                          src={getImageUrl(product.image)}
+                          alt={product.name}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <p className="text-xs text-[#5F1B2C] uppercase tracking-wide mb-1">
+                          {product.category}
+                        </p>
+                        <h3 className="font-semibold mb-2 line-clamp-2">
+                          {product.name}
+                        </h3>
+                        <p className="text-lg font-bold text-[#3d1620]">
+                          ${product.price.toFixed(2)}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))
+            )}
           </motion.div>
 
           <div className="text-center mt-12">
