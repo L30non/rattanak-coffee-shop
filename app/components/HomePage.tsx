@@ -174,13 +174,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
           <motion.div
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
+            animate="visible"
             variants={{
               hidden: { opacity: 0 },
               visible: {
                 opacity: 1,
-                transition: { staggerChildren: 0.1 },
+                transition: { staggerChildren: 0.1, delayChildren: 0.2 },
               },
             }}
           >
@@ -208,11 +207,15 @@ export function HomePage({ onNavigate }: HomePageProps) {
               ))
             ) : error ? (
               <div className="col-span-full text-center py-12">
-                <p className="text-red-600">Failed to load products. Please try again later.</p>
+                <p className="text-red-600">
+                  Failed to load products. Please try again later.
+                </p>
               </div>
             ) : featuredProducts.length === 0 ? (
               <div className="col-span-full text-center py-12">
-                <p className="text-gray-600">No products available at the moment.</p>
+                <p className="text-gray-600">
+                  No products available at the moment.
+                </p>
               </div>
             ) : (
               featuredProducts.map((product) => (
