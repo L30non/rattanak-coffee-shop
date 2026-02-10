@@ -12,6 +12,7 @@ import {
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { Separator } from "@/app/components/ui/separator";
+import { Checkbox } from "@/app/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -33,6 +34,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
   const user = useStore((state) => state.user);
   const addresses = useStore((state) => state.addresses);
   const setAddresses = useStore((state) => state.setAddresses);
+  const addAddress = useStore((state) => state.addAddress);
   const createOrderMutation = useCreateOrder();
 
   const [step, setStep] = useState<"info" | "payment" | "success">("info");
@@ -45,6 +47,9 @@ export function Checkout({ onNavigate }: CheckoutProps) {
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
     null,
   );
+  const [saveAddress, setSaveAddress] = useState(false);
+  const [addressLabel, setAddressLabel] = useState("");
+  const [setAsDefault, setSetAsDefault] = useState(false);
   const [formData, setFormData] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
@@ -87,7 +92,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
     if (user) {
       fetchAddresses();
     }
-  }, [user]);
+  }, [user, setAddresses]);
 
   const populateFormFromAddress = (address: Address) => {
     setFormData((prev) => ({
@@ -116,6 +121,10 @@ export function Checkout({ onNavigate }: CheckoutProps) {
     if (selectedAddress) {
       setSelectedAddressId(addressId);
       populateFormFromAddress(selectedAddress);
+      // Reset save options since using saved address
+      setSaveAddress(false);
+      setAddressLabel("");
+      setSetAsDefault(false);
     }
   };
 
@@ -164,6 +173,41 @@ export function Checkout({ onNavigate }: CheckoutProps) {
     setIsProcessing(true);
 
     try {
+      // Save address if user opted in and entered manually
+      if (saveAddress && !selectedAddressId && user) {
+        try {
+          const addressParts = formData.address.split(", ");
+          const newAddressData = {
+            label: addressLabel || "Shipping Address",
+            street_line_1: addressParts[0] || formData.address,
+            street_line_2: addressParts.slice(1).join(", ") || undefined,
+            city: formData.city,
+            state: "",
+            zip_code: formData.zipCode,
+            country: "Cambodia",
+            phone: formData.phone,
+            is_default: setAsDefault,
+          };
+          
+          const response = await fetch("/api/addresses", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newAddressData),
+          });
+          
+          if (response.ok) {
+            const { address: savedAddress } = await response.json();
+            addAddress(savedAddress);
+            toast.success("Address saved for future orders!");
+          } else {
+            throw new Error("Failed to save address");
+          }
+        } catch (saveError) {
+          console.error("Failed to save address:", saveError);
+          toast.warning("Could not save address, but continuing with order...");
+        }
+      }
+
       const shippingAddress = `${formData.address}, ${formData.city}, ${formData.zipCode}`;
 
       const orderData = {
@@ -411,6 +455,64 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                             />
                           </div>
                         </div>
+
+                        {/* Save Address Option - shown only for manual entry */}
+                        {user && !selectedAddressId && formData.address && formData.city && formData.zipCode && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="space-y-3 p-4 bg-gray-50 rounded-lg border border-gray-200"
+                          >
+                            <div className="flex items-center space-x-2">
+                              <Checkbox
+                                id="saveAddress"
+                                checked={saveAddress}
+                                onCheckedChange={(checked) => setSaveAddress(checked === true)}
+                              />
+                              <Label
+                                htmlFor="saveAddress"
+                                className="text-sm font-medium cursor-pointer"
+                              >
+                                Save this address for future orders
+                              </Label>
+                            </div>
+
+                            {saveAddress && (
+                              <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="space-y-3 pl-6"
+                              >
+                                <div>
+                                  <Label htmlFor="addressLabel" className="text-sm">
+                                    Address Label (optional)
+                                  </Label>
+                                  <Input
+                                    id="addressLabel"
+                                    placeholder="e.g., Home, Work, Office"
+                                    value={addressLabel}
+                                    onChange={(e) => setAddressLabel(e.target.value)}
+                                    className="mt-1"
+                                  />
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <Checkbox
+                                    id="setAsDefault"
+                                    checked={setAsDefault}
+                                    onCheckedChange={(checked) => setSetAsDefault(checked === true)}
+                                  />
+                                  <Label
+                                    htmlFor="setAsDefault"
+                                    className="text-sm cursor-pointer"
+                                  >
+                                    Set as default shipping address
+                                  </Label>
+                                </div>
+                              </motion.div>
+                            )}
+                          </motion.div>
+                        )}
 
                         <Button
                           type="submit"
