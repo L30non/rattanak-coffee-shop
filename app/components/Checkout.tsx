@@ -188,13 +188,13 @@ export function Checkout({ onNavigate }: CheckoutProps) {
             phone: formData.phone,
             is_default: setAsDefault,
           };
-          
+
           const response = await fetch("/api/addresses", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newAddressData),
           });
-          
+
           if (response.ok) {
             const { address: savedAddress } = await response.json();
             addAddress(savedAddress);
@@ -457,62 +457,75 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                         </div>
 
                         {/* Save Address Option - shown only for manual entry */}
-                        {user && !selectedAddressId && formData.address && formData.city && formData.zipCode && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="space-y-3 p-4 bg-gray-50 rounded-lg border border-gray-200"
-                          >
-                            <div className="flex items-center space-x-2">
-                              <Checkbox
-                                id="saveAddress"
-                                checked={saveAddress}
-                                onCheckedChange={(checked) => setSaveAddress(checked === true)}
-                              />
-                              <Label
-                                htmlFor="saveAddress"
-                                className="text-sm font-medium cursor-pointer"
-                              >
-                                Save this address for future orders
-                              </Label>
-                            </div>
+                        {user &&
+                          !selectedAddressId &&
+                          formData.address &&
+                          formData.city &&
+                          formData.zipCode && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="space-y-3 p-4 bg-gray-50 rounded-lg border border-gray-200"
+                            >
+                              <div className="flex items-center space-x-2">
+                                <Checkbox
+                                  id="saveAddress"
+                                  checked={saveAddress}
+                                  onCheckedChange={(checked) =>
+                                    setSaveAddress(checked === true)
+                                  }
+                                />
+                                <Label
+                                  htmlFor="saveAddress"
+                                  className="text-sm font-medium cursor-pointer"
+                                >
+                                  Save this address for future orders
+                                </Label>
+                              </div>
 
-                            {saveAddress && (
-                              <motion.div
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="space-y-3 pl-6"
-                              >
-                                <div>
-                                  <Label htmlFor="addressLabel" className="text-sm">
-                                    Address Label (optional)
-                                  </Label>
-                                  <Input
-                                    id="addressLabel"
-                                    placeholder="e.g., Home, Work, Office"
-                                    value={addressLabel}
-                                    onChange={(e) => setAddressLabel(e.target.value)}
-                                    className="mt-1"
-                                  />
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                  <Checkbox
-                                    id="setAsDefault"
-                                    checked={setAsDefault}
-                                    onCheckedChange={(checked) => setSetAsDefault(checked === true)}
-                                  />
-                                  <Label
-                                    htmlFor="setAsDefault"
-                                    className="text-sm cursor-pointer"
-                                  >
-                                    Set as default shipping address
-                                  </Label>
-                                </div>
-                              </motion.div>
-                            )}
-                          </motion.div>
-                        )}
+                              {saveAddress && (
+                                <motion.div
+                                  initial={{ opacity: 0, y: -10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  className="space-y-3 pl-6"
+                                >
+                                  <div>
+                                    <Label
+                                      htmlFor="addressLabel"
+                                      className="text-sm"
+                                    >
+                                      Address Label (optional)
+                                    </Label>
+                                    <Input
+                                      id="addressLabel"
+                                      placeholder="e.g., Home, Work, Office"
+                                      value={addressLabel}
+                                      onChange={(e) =>
+                                        setAddressLabel(e.target.value)
+                                      }
+                                      className="mt-1"
+                                    />
+                                  </div>
+                                  <div className="flex items-center space-x-2">
+                                    <Checkbox
+                                      id="setAsDefault"
+                                      checked={setAsDefault}
+                                      onCheckedChange={(checked) =>
+                                        setSetAsDefault(checked === true)
+                                      }
+                                    />
+                                    <Label
+                                      htmlFor="setAsDefault"
+                                      className="text-sm cursor-pointer"
+                                    >
+                                      Set as default shipping address
+                                    </Label>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </motion.div>
+                          )}
 
                         <Button
                           type="submit"
