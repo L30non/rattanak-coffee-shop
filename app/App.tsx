@@ -20,6 +20,10 @@ import { Button } from "@/app/components/ui/button";
 import { TermsOfService } from "@/app/components/TermsOfService";
 import { PrivacyPolicy } from "@/app/components/PrivacyPolicy";
 import { RefundPolicy } from "@/app/components/RefundPolicy";
+import { AboutUs } from "@/app/components/AboutUs";
+import { Blog } from "@/app/components/Blog";
+import { Gallery } from "@/app/components/Gallery";
+import { Contact } from "@/app/components/Contact";
 import { Footer } from "@/app/components/Footer";
 import ErrorBoundary from "@/app/components/ErrorBoundary";
 
@@ -117,41 +121,13 @@ function AppContent() {
       case "refund":
         return <RefundPolicy onNavigate={setCurrentView} />;
       case "about":
-        return (
-          <div className="min-h-screen bg-gray-50 py-16">
-            <div className="container mx-auto px-4 text-center">
-              <h1 className="text-4xl font-bold mb-4">About Us</h1>
-              <p className="text-gray-600">Coming Soon...</p>
-            </div>
-          </div>
-        );
+        return <AboutUs onNavigate={setCurrentView} />;
       case "blog":
-        return (
-          <div className="min-h-screen bg-gray-50 py-16">
-            <div className="container mx-auto px-4 text-center">
-              <h1 className="text-4xl font-bold mb-4">Blog</h1>
-              <p className="text-gray-600">Coming Soon...</p>
-            </div>
-          </div>
-        );
+        return <Blog onNavigate={setCurrentView} />;
       case "gallery":
-        return (
-          <div className="min-h-screen bg-gray-50 py-16">
-            <div className="container mx-auto px-4 text-center">
-              <h1 className="text-4xl font-bold mb-4">Gallery</h1>
-              <p className="text-gray-600">Coming Soon...</p>
-            </div>
-          </div>
-        );
+        return <Gallery onNavigate={setCurrentView} />;
       case "contact":
-        return (
-          <div className="min-h-screen bg-gray-50 py-16">
-            <div className="container mx-auto px-4 text-center">
-              <h1 className="text-4xl font-bold mb-4">Contact</h1>
-              <p className="text-gray-600">Coming Soon...</p>
-            </div>
-          </div>
-        );
+        return <Contact onNavigate={setCurrentView} />;
       default:
         return <HomePage onNavigate={setCurrentView} />;
     }
