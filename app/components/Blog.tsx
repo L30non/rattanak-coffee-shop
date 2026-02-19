@@ -293,9 +293,7 @@ export function Blog({ onNavigate }: BlogProps) {
                           }
                           className="text-[#5F1B2C] text-sm font-medium flex items-center gap-1 hover:gap-2 transition-all"
                         >
-                          {expandedPost === post.id
-                            ? "Show Less"
-                            : "Read More"}
+                          {expandedPost === post.id ? "Show Less" : "Read More"}
                           <ChevronRight
                             className={`h-4 w-4 transition-transform ${expandedPost === post.id ? "rotate-90" : ""}`}
                           />

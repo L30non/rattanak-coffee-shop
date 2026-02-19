@@ -164,11 +164,11 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
               <p className="text-gray-700 text-lg leading-relaxed">
                 Rattanak Coffee Shop is a Phnom Penh-based coffee company
                 dedicated to providing everything you need to start and run a
-                successful cafe. From premium roasted beans to professional-grade
-                machines, quality accessories, and essential ingredients, we are
-                your trusted partner in the coffee business. Our goal is to make
-                specialty coffee accessible and to support the growing cafe
-                culture in Cambodia.
+                successful cafe. From premium roasted beans to
+                professional-grade machines, quality accessories, and essential
+                ingredients, we are your trusted partner in the coffee business.
+                Our goal is to make specialty coffee accessible and to support
+                the growing cafe culture in Cambodia.
               </p>
             </motion.div>
 
@@ -274,9 +274,7 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
                     <h3 className="font-semibold text-lg mb-2">
                       {value.title}
                     </h3>
-                    <p className="text-sm text-gray-600">
-                      {value.description}
-                    </p>
+                    <p className="text-sm text-gray-600">{value.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>
