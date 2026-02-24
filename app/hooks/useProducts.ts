@@ -1,6 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Product, Order, ProductReview } from "@/app/store/useStore";
 
+export const useSearchProducts = (search: string) => {
+  return useQuery({
+    queryKey: ["products", "search", search],
+    queryFn: async () => {
+      const params = new URLSearchParams({ search });
+      const response = await fetch(`/api/products?${params.toString()}`);
+      if (!response.ok) throw new Error("Failed to search products");
+      return response.json() as Promise<Product[]>;
+    },
+    enabled: search.length >= 2,
+  });
+};
+
 export const useMultipleProducts = (category?: string) => {
   return useQuery({
     queryKey: ["products", category],

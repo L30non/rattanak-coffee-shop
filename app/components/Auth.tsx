@@ -28,8 +28,26 @@ export function Auth({ onNavigate }: AuthProps) {
     confirmPassword: "",
   });
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!loginData.email.trim()) {
+      toast.error("Email is required");
+      return;
+    }
+
+    if (!emailRegex.test(loginData.email.trim())) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    if (!loginData.password) {
+      toast.error("Password is required");
+      return;
+    }
+
     setIsSubmitting(true);
 
     const result = await signIn(loginData.email, loginData.password);
@@ -46,13 +64,48 @@ export function Auth({ onNavigate }: AuthProps) {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (registerData.password !== registerData.confirmPassword) {
-      toast.error("Passwords do not match");
+    if (!registerData.name.trim()) {
+      toast.error("Full name is required");
+      return;
+    }
+
+    if (registerData.name.trim().length < 2) {
+      toast.error("Full name must be at least 2 characters");
+      return;
+    }
+
+    if (!registerData.email.trim()) {
+      toast.error("Email is required");
+      return;
+    }
+
+    if (!emailRegex.test(registerData.email.trim())) {
+      toast.error("Please enter a valid email address");
       return;
     }
 
     if (registerData.password.length < 6) {
       toast.error("Password must be at least 6 characters");
+      return;
+    }
+
+    if (!/[A-Z]/.test(registerData.password)) {
+      toast.error("Password must contain at least one uppercase letter");
+      return;
+    }
+
+    if (!/[a-z]/.test(registerData.password)) {
+      toast.error("Password must contain at least one lowercase letter");
+      return;
+    }
+
+    if (!/[0-9]/.test(registerData.password)) {
+      toast.error("Password must contain at least one number");
+      return;
+    }
+
+    if (registerData.password !== registerData.confirmPassword) {
+      toast.error("Passwords do not match");
       return;
     }
 

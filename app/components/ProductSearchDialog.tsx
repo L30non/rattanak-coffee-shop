@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Search, Loader2, Package } from "lucide-react";
 import {
   CommandDialog,
@@ -11,7 +11,7 @@ import {
 import { Badge } from "@/app/components/ui/badge";
 import { getImageUrl } from "@/utils/supabase/client";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
-import type { Product } from "@/app/store/useStore";
+import { useSearchProducts } from "@/app/hooks/useProducts";
 
 interface ProductSearchDialogProps {
   open: boolean;
@@ -25,28 +25,28 @@ export function ProductSearchDialog({
   onNavigate,
 }: ProductSearchDialogProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  // TODO: Implement search functionality
-  const products = useMemo<Product[]>(() => [], []);
-  const isLoading = false;
-  const error: Error | null = null;
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(searchQuery), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const {
+    data: products = [],
+    isLoading,
+    error,
+  } = useSearchProducts(debouncedQuery);
 
   // Reset search when dialog closes
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen) {
       setSearchQuery("");
+      setDebouncedQuery("");
     }
     onOpenChange(newOpen);
   };
-
-  // Debug logs
-  useEffect(() => {
-    if (searchQuery.length >= 2) {
-      console.log("Searching for:", searchQuery);
-      console.log("Results:", products);
-      console.log("Loading:", isLoading);
-      console.log("Error:", error);
-    }
-  }, [searchQuery, products, isLoading, error]);
 
   // Add keyboard shortcut (Cmd/Ctrl + K)
   useEffect(() => {

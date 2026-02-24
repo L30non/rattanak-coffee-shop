@@ -8,10 +8,16 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category");
+    const search = searchParams.get("search");
 
     let query = supabase.from("products").select("*");
     if (category && category !== "all") {
       query = query.eq("category", category);
+    }
+    if (search) {
+      query = query.or(
+        `name.ilike.%${search}%,category.ilike.%${search}%,description.ilike.%${search}%`,
+      );
     }
 
     const { data, error } = await query;
