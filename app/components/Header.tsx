@@ -157,7 +157,7 @@ export function Header({
                 <Image
                   src={
                     getImageUrl(
-                      "https://amsvlqivarurifjhboef.supabase.co/storage/v1/object/public/Images/branding/Rattanak.webp",
+                      "https://qboxqdnuoqpsrmqtaaaf.supabase.co/storage/v1/object/public/Images/branding/Rattanak.webp",
                     ) || "/Rattanak.webp"
                   }
                   alt="Rattanak Coffee Logo"

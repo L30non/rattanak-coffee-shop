@@ -111,7 +111,7 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
       <section className="relative overflow-hidden bg-gradient-to-r from-[#3d1620] to-[#5F1B2C] text-white">
         <div className="absolute inset-0 z-0">
           <ImageWithFallback
-            src="https://amsvlqivarurifjhboef.supabase.co/storage/v1/object/public/Images/branding/brownroaster.jpg"
+            src="https://qboxqdnuoqpsrmqtaaaf.supabase.co/storage/v1/object/public/Images/branding/brownroaster.jpg"
             alt="Coffee roasting background"
             fill
             className="object-cover"

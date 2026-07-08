@@ -22,7 +22,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
         {/* Background Image Placeholder - Replace with Supabase image URL */}
         <div className="absolute inset-0 z-0">
           <ImageWithFallback
-            src="https://amsvlqivarurifjhboef.supabase.co/storage/v1/object/public/Images/branding/brownroaster.jpg"
+            src="https://qboxqdnuoqpsrmqtaaaf.supabase.co/storage/v1/object/public/Images/branding/brownroaster.jpg"
             alt="Coffee background"
             fill
             className="object-cover"
