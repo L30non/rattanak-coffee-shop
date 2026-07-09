@@ -89,7 +89,7 @@ export function Account({ onNavigate }: AccountProps) {
                 <Package className="h-16 w-16 mx-auto mb-4 text-gray-300" />
                 <h3 className="text-xl mb-2">No orders yet</h3>
                 <p className="text-gray-600 mb-6">
-                  Start shopping to see your orders here
+                  Start shopping to see your orders here!
                 </p>
                 <Button
                   onClick={() => onNavigate("products")}
