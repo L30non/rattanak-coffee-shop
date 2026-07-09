@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { getProduct } from "@/lib/products";
 import type { Product } from "@/app/store/useStore";
 
 export async function GET(
@@ -8,20 +9,14 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const supabase = await createClient();
     const { id } = await params;
+    const product = await getProduct(id);
 
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .eq("id", id)
-      .single();
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 404 });
+    if (!product) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    return NextResponse.json(data);
+    return NextResponse.json(product);
   } catch {
     return NextResponse.json(
       { error: "Internal server error" },

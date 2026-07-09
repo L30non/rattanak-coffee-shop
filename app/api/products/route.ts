@@ -1,35 +1,20 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { getProducts } from "@/lib/products";
 import type { Product } from "@/app/store/useStore";
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createClient();
     const { searchParams } = new URL(request.url);
-    const category = searchParams.get("category");
-    const search = searchParams.get("search");
+    const category = searchParams.get("category") ?? undefined;
+    const search = searchParams.get("search") ?? undefined;
 
-    let query = supabase.from("products").select("*");
-    if (category && category !== "all") {
-      query = query.eq("category", category);
-    }
-    if (search) {
-      query = query.or(
-        `name.ilike.%${search}%,category.ilike.%${search}%,description.ilike.%${search}%`,
-      );
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
-    }
-
+    const data = await getProducts({ category, search });
     return NextResponse.json(data);
-  } catch {
+  } catch (error) {
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 },
     );
   }
