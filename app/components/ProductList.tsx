@@ -186,7 +186,6 @@ export function ProductList({
                   hidden: { opacity: 0, y: 20 },
                   show: { opacity: 1, y: 0 },
                 }}
-                whileHover={{ y: -8, transition: { duration: 0.2 } }}
               >
                 <Card
                   className="group cursor-pointer hover:shadow-xl transition-all h-full"
@@ -198,8 +197,9 @@ export function ProductList({
                         src={getImageUrl(product.image)}
                         alt={product.name}
                         fill
+                        objectFit="contain"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        className="object-cover group-hover:scale-110 transition-transform duration-300"
+                        className="object-contain group-hover:scale-110 transition-transform duration-500"
                       />
                       {product.stock < 10 && product.stock > 0 && (
                         <Badge className="absolute top-2 right-2 bg-orange-500 z-10">

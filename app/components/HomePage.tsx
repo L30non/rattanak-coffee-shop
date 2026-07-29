@@ -172,6 +172,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
           </div>
 
           <motion.div
+            key={isLoading ? "loading" : "loaded"}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
             initial="hidden"
             animate="visible"
@@ -225,7 +226,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     hidden: { opacity: 0, y: 20 },
                     visible: { opacity: 1, y: 0 },
                   }}
-                  whileHover={{ y: -8, scale: 1.02 }}
                 >
                   <Card
                     className="group cursor-pointer hover:shadow-lg transition-shadow"
@@ -237,8 +237,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
                           src={getImageUrl(product.image)}
                           alt={product.name}
                           fill
+                          objectFit="contain"
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="object-contain group-hover:scale-105 transition-transform duration-500"
                         />
                       </div>
                       <div className="p-4">

@@ -15,6 +15,7 @@ interface ImageWithFallbackProps {
   width?: number;
   height?: number;
   sizes?: string;
+  objectFit?: React.CSSProperties["objectFit"];
   priority?: boolean;
   placeholder?: "blur" | "empty";
   blurDataURL?: string;
@@ -29,6 +30,7 @@ export function ImageWithFallback({
   width,
   height,
   sizes = "100vw",
+  objectFit = "cover",
   priority = false,
   placeholder = "empty",
   blurDataURL,
@@ -69,7 +71,7 @@ export function ImageWithFallback({
         fill
         sizes={sizes}
         className={className}
-        style={{ objectFit: "cover", ...style }}
+        style={{ objectFit, objectPosition: "center", ...style }}
         onError={handleError}
         priority={priority}
         placeholder={placeholder}
