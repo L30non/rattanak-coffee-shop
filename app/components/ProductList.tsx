@@ -30,7 +30,7 @@ export function ProductList({
   onNavigate,
 }: ProductListProps) {
   // Use React Query hook instead of local store
-  const { data: products = [] } = useMultipleProducts(category);
+  const { data: products = [], isLoading } = useMultipleProducts(category);
 
   const addToCart = useStore((state) => state.addToCart);
   const [priceFilter, setPriceFilter] = useState<string>("all");
@@ -120,8 +120,9 @@ export function ProductList({
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl mb-2">{getCategoryTitle()}</h1>
           <p className="text-gray-600">
-            {filteredProducts.length} product
-            {filteredProducts.length !== 1 ? "s" : ""} found
+            {isLoading
+              ? "Loading products…"
+              : `${filteredProducts.length} product${filteredProducts.length !== 1 ? "s" : ""} found`}
           </p>
         </div>
 
@@ -159,27 +160,51 @@ export function ProductList({
         </div>
 
         {/* Products Grid */}
-        {filteredProducts.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-gray-500 text-lg mb-4">No products found</p>
-            <Button onClick={() => onNavigate("products")} variant="outline">
-              View All Products
-            </Button>
-          </div>
-        ) : (
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-            variants={{
-              hidden: { opacity: 0 },
-              show: {
-                opacity: 1,
-                transition: { staggerChildren: 0.1 },
-              },
-            }}
-            initial="hidden"
-            animate="show"
-          >
-            {filteredProducts.map((product) => (
+        <motion.div
+          key={isLoading ? "loading" : "loaded"}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          variants={{
+            hidden: { opacity: 0 },
+            show: {
+              opacity: 1,
+              transition: { staggerChildren: 0.1 },
+            },
+          }}
+          initial="hidden"
+          animate="show"
+        >
+          {isLoading ? (
+            // Loading skeleton
+            Array.from({ length: 8 }).map((_, index) => (
+              <motion.div
+                key={`skeleton-${index}`}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  show: { opacity: 1, y: 0 },
+                }}
+              >
+                <Card className="animate-pulse h-full">
+                  <CardContent className="p-0">
+                    <div className="aspect-square bg-gray-200" />
+                    <div className="p-4 space-y-3">
+                      <div className="h-3 bg-gray-200 rounded w-1/4" />
+                      <div className="h-4 bg-gray-200 rounded w-3/4" />
+                      <div className="h-4 bg-gray-200 rounded w-1/2" />
+                      <div className="h-5 bg-gray-200 rounded w-1/3" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))
+          ) : filteredProducts.length === 0 ? (
+            <div className="col-span-full text-center py-12">
+              <p className="text-gray-500 text-lg mb-4">No products found</p>
+              <Button onClick={() => onNavigate("products")} variant="outline">
+                View All Products
+              </Button>
+            </div>
+          ) : (
+            filteredProducts.map((product) => (
               <motion.div
                 key={product.id}
                 variants={{
@@ -274,9 +299,9 @@ export function ProductList({
                   </CardContent>
                 </Card>
               </motion.div>
-            ))}
-          </motion.div>
-        )}
+            ))
+          )}
+        </motion.div>
       </div>
     </div>
   );

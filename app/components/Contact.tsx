@@ -101,8 +101,8 @@ export function Contact({ onNavigate }: ContactProps) {
               {
                 icon: Phone,
                 title: "Call Us",
-                info: "+855 12 828 029",
-                sub: "Mon - Sat, 8AM - 6PM",
+                info: "+855 17 667 778",
+                sub: "Mon - Sat, 8AM - 5PM",
               },
               {
                 icon: Mail,
@@ -113,7 +113,7 @@ export function Contact({ onNavigate }: ContactProps) {
               {
                 icon: Clock,
                 title: "Working Hours",
-                info: "Mon - Sat: 8:00 AM - 6:00 PM",
+                info: "Mon - Sat: 8:00 AM - 5:00 PM",
                 sub: "Sunday: Closed",
               },
             ].map((item) => (
@@ -265,7 +265,7 @@ export function Contact({ onNavigate }: ContactProps) {
                 <CardContent className="p-0 h-full min-h-[400px]">
                   <iframe
                     title="Rattanak Coffee Shop Location"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3909.0!2d104.929!3d11.538!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDMyJzE2LjgiTiAxMDTCsDU1JzQ0LjQiRQ!5e0!3m2!1sen!2skh!4v1700000000000"
+                    src="https://www.google.com/maps?q=11.5359496,104.9022911&z=18&output=embed"
                     width="100%"
                     height="100%"
                     style={{ border: 0, minHeight: "400px" }}
