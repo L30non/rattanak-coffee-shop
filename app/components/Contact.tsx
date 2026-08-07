@@ -265,7 +265,7 @@ export function Contact({ onNavigate }: ContactProps) {
                 <CardContent className="p-0 h-full min-h-[400px]">
                   <iframe
                     title="Rattanak Coffee Shop Location"
-                    src="https://www.google.com/maps?q=11.5359496,104.9022911&z=18&output=embed"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d393.4334456707434!2d104.9024206555716!3d11.536029783254826!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x310950fadfd7b241%3A0x3de01509c6a9a539!2sRATTANAK%20COFFEE%20ROASTER!5e1!3m2!1sen!2sat!4v1785314647657!5m2!1sen!2sat"
                     width="100%"
                     height="100%"
                     style={{ border: 0, minHeight: "400px" }}

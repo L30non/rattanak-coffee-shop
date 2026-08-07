@@ -21,12 +21,13 @@ export const resetBrowserClient = () => {
 // Storage helper functions
 export const uploadImage = async (
   file: File,
+  folder: string = "products",
 ): Promise<{ path: string | null; error: string | null }> => {
   try {
     const client = createClient();
     const fileExt = file.name.split(".").pop();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-    const filePath = `products/${fileName}`;
+    const filePath = `${folder}/${fileName}`;
 
     const { error: uploadError } = await client.storage
       .from("Images")

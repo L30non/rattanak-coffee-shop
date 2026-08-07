@@ -19,6 +19,16 @@ export interface Product {
   updated_at: string;
 }
 
+export interface Gallery {
+  id: string;
+  src: string;
+  alt: string;
+  category: string;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ProductReview {
   id: string;
   product_id: string;
