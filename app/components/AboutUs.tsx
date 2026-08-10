@@ -83,14 +83,23 @@ const values = [
   },
 ];
 
-const teamFounder = {
-  name: "Ou Senghong",
-  role: "Founder & CEO",
-  image:
-    "https://qboxqdnuoqpsrmqtaaaf.supabase.co/storage/v1/object/public/Images/for%20websites/OuSengHongImage.jpg" as string, // set to a photo URL when available; falls back to initials avatar if empty
-  description:
-    "With a deep passion for coffee and years of experience in the industry, I founded the company to share premium coffee culture with Cambodia.",
-};
+interface TeamMember {
+  name: string;
+  role: string;
+  image: string; // full URL or Supabase storage path; empty string → initials fallback
+  description: string;
+}
+
+const teamMembers: TeamMember[] = [
+  {
+    name: "Ou Senghong",
+    role: "Founder & CEO",
+    image:
+      "https://qboxqdnuoqpsrmqtaaaf.supabase.co/storage/v1/object/public/Images/for%20websites/OuSengHongImage.jpg",
+    description:
+      "With a deep passion for coffee and years of experience in the industry, I founded the company to share premium coffee culture with Cambodia.",
+  },
+];
 
 export function AboutUs({ onNavigate }: AboutUsProps) {
   return (
@@ -345,42 +354,60 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
           </motion.div>
 
           <motion.div
-            className="max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            className="flex flex-wrap justify-center gap-8"
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.15 },
+              },
+            }}
           >
-            <Card className="text-center border-none shadow-md hover:shadow-lg transition-shadow">
-              <CardContent className="pt-10 pb-10">
-                {teamFounder.image ? (
-                  <div className="relative w-40 h-40 rounded-full overflow-hidden mx-auto mb-6">
-                    <ImageWithFallback
-                      src={teamFounder.image}
-                      alt={teamFounder.name}
-                      fill
-                      className="object-cover"
-                      sizes="160px"
-                    />
+            {teamMembers.map((member) => (
+              <motion.div
+                key={member.name}
+                className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] max-w-sm"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+              >
+                <Card className="group overflow-hidden gap-0 border-none shadow-md hover:shadow-xl transition-shadow h-full">
+                  <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
+                    {member.image ? (
+                      <ImageWithFallback
+                        src={member.image}
+                        alt={member.name}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[#5F1B2C] text-white flex items-center justify-center">
+                        <span className="text-5xl font-bold">
+                          {member.name.charAt(0)}
+                        </span>
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  <div className="bg-[#5F1B2C] text-white rounded-full w-40 h-40 flex items-center justify-center mx-auto mb-6">
-                    <span className="text-5xl font-bold">
-                      {teamFounder.name.charAt(0)}
-                    </span>
-                  </div>
-                )}
-                <h3 className="font-semibold text-2xl text-[#3d1620]">
-                  {teamFounder.name}
-                </h3>
-                <p className="text-[#5F1B2C] font-medium mb-4">
-                  {teamFounder.role}
-                </p>
-                <Separator className="w-16 mx-auto mb-4 bg-[#5F1B2C]" />
-                <p className="text-gray-600 max-w-md mx-auto">
-                  {teamFounder.description}
-                </p>
-              </CardContent>
-            </Card>
+                  <CardContent className="p-6 text-center">
+                    <h3 className="font-semibold text-xl text-[#3d1620]">
+                      {member.name}
+                    </h3>
+                    <p className="text-[#5F1B2C] font-medium mb-4">
+                      {member.role}
+                    </p>
+                    <Separator className="w-16 mx-auto mb-4 bg-[#5F1B2C]" />
+                    <p className="text-sm text-gray-600">
+                      {member.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
