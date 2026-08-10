@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Truck, CheckCircle, MapPin, QrCode } from "lucide-react";
 import { BakongPayment } from "@/app/components/BakongPayment";
+import { CheckoutUnavailable } from "@/app/components/CheckoutUnavailable";
+import { PAYMENT_ENABLED } from "@/lib/feature-flags";
 import { Button } from "@/app/components/ui/button";
 import {
   Card,
@@ -255,7 +257,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bakongVerified, bakongTransactionId]);
 
-  if (!user) {
+  if (PAYMENT_ENABLED && !user) {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4">
@@ -281,6 +283,10 @@ export function Checkout({ onNavigate }: CheckoutProps) {
         </div>
       </div>
     );
+  }
+
+  if (!PAYMENT_ENABLED) {
+    return <CheckoutUnavailable onNavigate={onNavigate} />;
   }
 
   if (step === "success") {

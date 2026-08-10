@@ -12,6 +12,7 @@ import { useStore } from "@/app/store/useStore";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { getImageUrl } from "@/utils/supabase/client";
 import { toast } from "sonner";
+import { PAYMENT_ENABLED } from "@/lib/feature-flags";
 
 interface CartProps {
   onNavigate: (view: string) => void;
@@ -32,7 +33,7 @@ export function Cart({ onNavigate }: CartProps) {
   const total = subtotal + shipping + tax;
 
   const handleCheckout = () => {
-    if (!user) {
+    if (PAYMENT_ENABLED && !user) {
       toast.error("Please login to checkout");
       onNavigate("login");
       return;

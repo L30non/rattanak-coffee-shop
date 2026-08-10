@@ -13,6 +13,7 @@ import {
   Send,
   ChevronDown,
   X,
+  Construction,
 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Badge } from "@/app/components/ui/badge";
@@ -83,6 +84,22 @@ export function Header({
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
+      {/* Site In Progress Notice */}
+      <div className="bg-amber-500 text-amber-950 text-xs sm:text-sm">
+        <div className="container mx-auto px-4 py-1.5 flex items-center justify-center gap-2 text-center">
+          <Construction className="h-4 w-4 flex-shrink-0" />
+          <span>
+            This website is still under development
+            <span className="hidden sm:inline">
+              {" "}
+              — some features, including online payment, are not yet
+              available
+            </span>
+            .
+          </span>
+        </div>
+      </div>
+
       {/* Top Bar */}
       <div className="bg-[#5F1B2C] text-white text-sm hidden md:block">
         <div className="container mx-auto px-4">
