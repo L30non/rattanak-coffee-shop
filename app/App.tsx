@@ -26,6 +26,7 @@ import { Gallery } from "@/app/components/Gallery";
 import { Contact } from "@/app/components/Contact";
 import { Footer } from "@/app/components/Footer";
 import ErrorBoundary from "@/app/components/ErrorBoundary";
+import { toast } from "sonner";
 
 // Create a client for React Query (TanStack Query)
 const queryClient = new QueryClient({
@@ -44,6 +45,28 @@ function AppContent() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [currentView]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const confirmed = params.get("confirmed");
+    const authError = params.get("auth_error");
+
+    if (confirmed || authError) {
+      if (confirmed) {
+        toast.success("Email confirmed — you're now signed in!");
+      } else if (authError) {
+        toast.error(`Sign-in link failed: ${authError}`);
+      }
+      params.delete("confirmed");
+      params.delete("auth_error");
+      const query = params.toString();
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + (query ? `?${query}` : ""),
+      );
+    }
+  }, []);
 
   const renderView = () => {
     // Product detail pages
