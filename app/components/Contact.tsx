@@ -101,7 +101,7 @@ export function Contact({ onNavigate }: ContactProps) {
               {
                 icon: Phone,
                 title: "Call Us",
-                info: "+855 17 667 778 +855 12 667 778",
+                info: "+855 12 667 778",
                 sub: "Mon - Sat, 8AM - 5PM",
               },
               {
