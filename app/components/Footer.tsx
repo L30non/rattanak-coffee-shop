@@ -70,10 +70,10 @@ export function Footer({ onNavigate }: FooterProps) {
               </li>
               <li>
                 <button
-                  onClick={() => onNavigate("blog")}
+                  onClick={() => onNavigate("business")}
                   className="hover:text-[#D4AF37] transition-colors"
                 >
-                  Blog
+                  Business
                 </button>
               </li>
             </ul>

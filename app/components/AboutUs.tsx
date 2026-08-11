@@ -10,51 +10,13 @@ import {
   Award,
   Heart,
   Target,
-  Clock,
+  Eye,
+  Compass,
 } from "lucide-react";
 
 interface AboutUsProps {
   onNavigate: (view: string) => void;
 }
-
-const milestones = [
-  {
-    year: "2015",
-    title: "The Beginning",
-    description:
-      "Rattanak Coffee Shop was founded in Phnom Penh with a simple mission: to bring premium coffee culture to Cambodia. Starting as a small roastery, we began sourcing and roasting specialty beans from local farms.",
-  },
-  {
-    year: "2017",
-    title: "Growing Roots",
-    description:
-      "We expanded our operations and started supplying freshly roasted beans to cafes and restaurants across Phnom Penh. Our dedication to quality quickly built a loyal customer base.",
-  },
-  {
-    year: "2019",
-    title: "Expanding Horizons",
-    description:
-      "We introduced a full range of coffee machines, accessories, and ingredients to help aspiring cafe owners start their journey. Rattanak became a one-stop shop for all things coffee.",
-  },
-  {
-    year: "2021",
-    title: "Digital Transformation",
-    description:
-      "We launched our online store, making it easier for customers across Cambodia to access premium coffee products. Our delivery network grew to serve customers nationwide.",
-  },
-  {
-    year: "2023",
-    title: "Community & Education",
-    description:
-      "We began hosting barista training workshops and coffee tasting events, building a vibrant community of coffee enthusiasts and professionals.",
-  },
-  {
-    year: "2025",
-    title: "The Future",
-    description:
-      "Today, Rattanak Coffee continues to grow, driven by our passion for quality and our commitment to supporting Cambodia's coffee industry from farm to cup.",
-  },
-];
 
 const values = [
   {
@@ -97,7 +59,7 @@ const teamMembers: TeamMember[] = [
     image:
       "https://qboxqdnuoqpsrmqtaaaf.supabase.co/storage/v1/object/public/Images/for%20websites/OuSengHongImage.jpg",
     description:
-      "With a deep passion for coffee and years of experience in the industry, I founded the company to share premium coffee culture with Cambodia.",
+      "Back in 1997, when I was in my early twenties and roasting coffee with my bare hands, I had a vision that the coffee industry in Cambodia would be filled with great opportunities. To me, coffee is an opportunity to create meaning — I want more people to enjoy and appreciate a great cup of coffee, well roasted and masterfully brewed. By amplifying the greatness of local coffee beans, I hope to contribute to the growing collaboration with local farmers and the rising demand for Cambodian coffee.",
   },
 ];
 
@@ -135,9 +97,9 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
           >
             <h1 className="text-4xl md:text-5xl font-bold mb-4">About Us</h1>
             <p className="text-xl text-rose-100">
-              The Starting Point of Your Cafe Journey &mdash; Rattanak Coffee
-              Shop has been serving premium coffee products and empowering cafe
-              owners across Cambodia since 2015.
+              Offering excellence in taste and quality. Rattanak Coffee offers
+              more than just coffee &mdash; since 1997, we&apos;re committed to
+              consistency, genuine taste, and quality in every cup.
             </p>
           </motion.div>
         </div>
@@ -159,13 +121,16 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
               </h2>
               <Separator className="w-24 mx-auto mb-6 bg-[#5F1B2C]" />
               <p className="text-gray-700 text-lg leading-relaxed">
-                Rattanak Coffee Shop is a Phnom Penh-based coffee company
-                dedicated to providing everything you need to start and run a
-                successful cafe. From premium roasted beans to
-                professional-grade machines, quality accessories, and essential
-                ingredients, we are your trusted partner in the coffee business.
-                Our goal is to make specialty coffee accessible and to support
-                the growing cafe culture in Cambodia.
+                Rattanak Coffee offers more than just coffee. We are committed
+                to our customers! Roasting coffee since 1997, we&apos;re known
+                for our consistency of genuine taste and quality. Since 2015,
+                our coffee beans have been certified by the Institute of
+                Standards of Cambodia and recognized as chemical-free,
+                preservative-free, and free of added coloring. Our coffee is
+                made by the people, for the people &mdash; for everyone, and
+                every palate, for the greatness in every sip. Today, Rattanak
+                Coffee provides fully integrated services for all your coffee
+                needs, from beans to machinery to business solutions.
               </p>
             </motion.div>
 
@@ -224,8 +189,83 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
         </div>
       </section>
 
-      {/* Our Values */}
+      {/* Vision & Mission */}
       <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.15 },
+              },
+            }}
+          >
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
+              <Card className="h-full border-none shadow-md hover:shadow-lg transition-shadow">
+                <CardContent className="pt-8 pb-6">
+                  <div className="bg-rose-50 p-3 rounded-full w-fit mb-4">
+                    <Eye className="h-6 w-6 text-[#5F1B2C]" />
+                  </div>
+                  <h2 className="text-2xl font-bold mb-3 text-[#3d1620]">
+                    Vision
+                  </h2>
+                  <p className="text-gray-600 leading-relaxed">
+                    Roasting greatness since 1997 with over 20 years of
+                    experience, Rattanak Coffee is an established coffee roaster
+                    trusted by even the most demanding business partners.
+                    Certified by the Institute of Standards of Cambodia since
+                    2015, our coffee beans meet international standards &mdash;
+                    free from chemicals, flavorings, preservatives, and
+                    colorings. Our three best sellers: Bronze, Titanium, and
+                    Platinum.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
+              <Card className="h-full border-none shadow-md hover:shadow-lg transition-shadow">
+                <CardContent className="pt-8 pb-6">
+                  <div className="bg-rose-50 p-3 rounded-full w-fit mb-4">
+                    <Compass className="h-6 w-6 text-[#5F1B2C]" />
+                  </div>
+                  <h2 className="text-2xl font-bold mb-3 text-[#3d1620]">
+                    Mission
+                  </h2>
+                  <p className="text-gray-600 leading-relaxed">
+                    The coffee industry is ever-growing, and we want to capture
+                    this opportunity to amplify the competitiveness of local
+                    coffee beans. Using our expertise in roasting and business
+                    connections, we aim to increase the export of local coffee
+                    beans to international markets. We fulfill all your coffee
+                    needs by crafting specialty blends for your signature taste,
+                    distributing coffee machines for every standard, and
+                    providing barista training for businesses.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Our Values */}
+      <section className="py-16 bg-rose-50">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -280,61 +320,6 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
         </div>
       </section>
 
-      {/* History Timeline */}
-      <section className="py-16 bg-rose-50">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#3d1620]">
-              Our Journey
-            </h2>
-            <Separator className="w-24 mx-auto mb-6 bg-[#5F1B2C]" />
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              From a small roastery to Cambodia&apos;s trusted coffee partner
-            </p>
-          </motion.div>
-
-          <div className="max-w-3xl mx-auto">
-            {milestones.map((milestone, index) => (
-              <motion.div
-                key={milestone.year}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="flex gap-6 mb-8"
-              >
-                <div className="flex flex-col items-center">
-                  <div className="bg-[#5F1B2C] text-white rounded-full w-16 h-16 flex items-center justify-center flex-shrink-0">
-                    <Clock className="h-5 w-5" />
-                  </div>
-                  {index < milestones.length - 1 && (
-                    <div className="w-0.5 h-full bg-[#5F1B2C]/20 mt-2" />
-                  )}
-                </div>
-                <Card className="flex-1 border-none shadow-md">
-                  <CardContent className="pt-6">
-                    <span className="text-sm font-bold text-[#5F1B2C] uppercase tracking-wide">
-                      {milestone.year}
-                    </span>
-                    <h3 className="text-xl font-semibold mt-1 mb-2">
-                      {milestone.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">
-                      {milestone.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Team */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
@@ -345,7 +330,7 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
             className="text-center mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#3d1620]">
-              Our Team
+              Meet The Founder
             </h2>
             <Separator className="w-24 mx-auto mb-6 bg-[#5F1B2C]" />
             <p className="text-gray-600 max-w-2xl mx-auto">

@@ -70,7 +70,7 @@ export function Header({
   const navItems = [
     { label: "Home", value: "home" },
     { label: "About Us", value: "about" },
-    { label: "Blog", value: "blog" },
+    { label: "Business", value: "business" },
     { label: "Gallery", value: "gallery" },
     { label: "Contact", value: "contact" },
   ];

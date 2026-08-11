@@ -24,7 +24,7 @@ const STATIC_VIEW_ROUTES: Record<string, string> = {
   privacy: "/privacy",
   refund: "/refund",
   about: "/about",
-  blog: "/blog",
+  business: "/business",
   gallery: "/gallery",
   contact: "/contact",
 };

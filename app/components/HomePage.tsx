@@ -1,4 +1,4 @@
-import { Coffee, ShoppingBag, Star, TrendingUp } from "lucide-react";
+import { Coffee, ShoppingBag, Settings, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/app/components/ui/button";
 import { Card, CardContent } from "@/app/components/ui/card";
@@ -35,15 +35,19 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
         <div className="container relative z-10 mx-auto px-4 py-24">
           <div className="max-w-3xl">
+            <p className="uppercase tracking-widest text-sm text-rose-200 mb-3">
+              Roasting greatness since 1997
+            </p>
             <h1 className="text-5xl md:text-6xl mb-6">
-              Premium Coffee
+              Roasting coffee
               <br />
-              <span className="text-rose-200">For Every Moment</span>
+              <span className="text-rose-200">with passion and expertise.</span>
             </h1>
             <p className="text-xl mb-8 text-rose-100">
-              Discover the finest coffee beans, machines, and accessories for
-              the perfect brew. From bean to cup, we have got everything you
-              need.
+              Made locally, distributed globally — Rattanak Coffee is your
+              trusted source and one of Cambodia&apos;s leading suppliers for
+              everything coffee, from beans to machines to business
+              consulting.
             </p>
             <div className="flex flex-wrap gap-4">
               <Button
@@ -97,10 +101,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     </div>
                     <div>
                       <h3 className="font-semibold text-lg mb-1">
-                        Premium Quality
+                        Coffee Beans
                       </h3>
                       <p className="text-sm text-gray-600">
-                        Sourced from the finest coffee regions worldwide
+                        Sourced from the hills of Cambodia to specialty
+                        blends from across the globe, we craft coffee for
+                        every palate.
                       </p>
                     </div>
                   </div>
@@ -118,14 +124,16 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-4">
                     <div className="bg-rose-50 p-3 rounded-full">
-                      <Star className="h-6 w-6 text-[#5F1B2C]" />
+                      <Settings className="h-6 w-6 text-[#5F1B2C]" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-lg mb-1">
-                        Expert Selection
+                        Coffee Machines
                       </h3>
                       <p className="text-sm text-gray-600">
-                        Curated by coffee professionals and enthusiasts
+                        Your one-stop shop for every coffee machine and
+                        accessory — tell us what you need and we&apos;ll
+                        find the perfect choice.
                       </p>
                     </div>
                   </div>
@@ -147,10 +155,11 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     </div>
                     <div>
                       <h3 className="font-semibold text-lg mb-1">
-                        Fresh Roasted
+                        Coffee Business
                       </h3>
                       <p className="text-sm text-gray-600">
-                        Beans roasted to order for maximum freshness
+                        Dream of starting your own café? Consult with us and
+                        launch your coffee brand for as low as $3,000.
                       </p>
                     </div>
                   </div>

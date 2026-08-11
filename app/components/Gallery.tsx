@@ -238,10 +238,11 @@ export function Gallery({ onNavigate }: GalleryProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Gallery</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              See What We&apos;ve Been Up To
+            </h1>
             <p className="text-xl text-rose-100 max-w-2xl">
-              A visual journey through Rattanak Coffee &mdash; our roastery,
-              products, events, and the people behind every cup.
+              From our barista training to our roastery.
             </p>
           </motion.div>
         </div>

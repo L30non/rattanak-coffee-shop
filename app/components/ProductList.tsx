@@ -113,12 +113,28 @@ export function ProductList({
     }
   };
 
+  const getCategoryDescription = () => {
+    switch (category) {
+      case "beans":
+        return "Sourcing quality beans for the perfect signature taste. We source quality green beans from across Cambodia and the globe, roasting them in-house for true Robusta and Arabica greatness.";
+      case "machines":
+        return "Coffee machines and accessories for every taste and budget — for your home, office, and commercial use.";
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl mb-2">{getCategoryTitle()}</h1>
+          {getCategoryDescription() && (
+            <p className="text-gray-600 max-w-2xl mb-2">
+              {getCategoryDescription()}
+            </p>
+          )}
           <p className="text-gray-600">
             {isLoading
               ? "Loading products…"

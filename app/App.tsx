@@ -21,7 +21,7 @@ import { TermsOfService } from "@/app/components/TermsOfService";
 import { PrivacyPolicy } from "@/app/components/PrivacyPolicy";
 import { RefundPolicy } from "@/app/components/RefundPolicy";
 import { AboutUs } from "@/app/components/AboutUs";
-import { Blog } from "@/app/components/Blog";
+import { Business } from "@/app/components/Business";
 import { Gallery } from "@/app/components/Gallery";
 import { Contact } from "@/app/components/Contact";
 import { Footer } from "@/app/components/Footer";
@@ -145,8 +145,8 @@ function AppContent() {
         return <RefundPolicy onNavigate={setCurrentView} />;
       case "about":
         return <AboutUs onNavigate={setCurrentView} />;
-      case "blog":
-        return <Blog onNavigate={setCurrentView} />;
+      case "business":
+        return <Business onNavigate={setCurrentView} />;
       case "gallery":
         return <Gallery onNavigate={setCurrentView} />;
       case "contact":
