@@ -14,12 +14,13 @@ export const useSearchProducts = (search: string) => {
   });
 };
 
-export const useMultipleProducts = (category?: string) => {
+export const useMultipleProducts = (category?: string, subcategory?: string) => {
   return useQuery({
-    queryKey: ["products", category],
+    queryKey: ["products", category, subcategory],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (category && category !== "all") params.append("category", category);
+      if (subcategory) params.append("subcategory", subcategory);
 
       const response = await fetch(`/api/products?${params.toString()}`);
       if (!response.ok) throw new Error("Failed to fetch products");

@@ -3,14 +3,17 @@ import { createPublicClient } from "@/lib/supabase-public";
 import type { Product } from "@/app/store/useStore";
 
 export const getProducts = cache(
-  async (options: { category?: string; search?: string } = {}): Promise<
-    Product[]
-  > => {
+  async (
+    options: { category?: string; subcategory?: string; search?: string } = {},
+  ): Promise<Product[]> => {
     const supabase = createPublicClient();
     let query = supabase.from("products").select("*");
 
     if (options.category && options.category !== "all") {
       query = query.eq("category", options.category);
+    }
+    if (options.subcategory) {
+      query = query.eq("subcategory", options.subcategory);
     }
     if (options.search) {
       query = query.or(

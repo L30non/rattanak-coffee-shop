@@ -1,13 +1,5 @@
 import { useState } from "react";
-import {
-  ArrowLeft,
-  ShoppingCart,
-  Minus,
-  Plus,
-  Package,
-  Truck,
-  Shield,
-} from "lucide-react";
+import { ArrowLeft, ShoppingCart, Minus, Plus } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Badge } from "@/app/components/ui/badge";
@@ -113,7 +105,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                   variant="outline"
                   className="text-green-600 border-green-600"
                 >
-                  In Stock ({product.stock} available)
+                  In Stock
                 </Badge>
               ) : (
                 <Badge
@@ -213,22 +205,6 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
               <ShoppingCart className="h-5 w-5 mr-2" />
               {product.stock === 0 ? "Out of Stock" : "Add to Cart"}
             </Button>
-
-            {/* Benefits */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="flex items-center gap-2 text-sm">
-                <Package className="h-5 w-5 text-[#5F1B2C]" />
-                <span>Free Shipping</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Truck className="h-5 w-5 text-[#5F1B2C]" />
-                <span>Fast Delivery</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Shield className="h-5 w-5 text-[#5F1B2C]" />
-                <span>Secure Payment</span>
-              </div>
-            </div>
           </div>
         </div>
 

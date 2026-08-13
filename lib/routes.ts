@@ -2,12 +2,7 @@
 // real URLs. Used while migrating onNavigate-prop components to next/link —
 // delete once every component navigates via Link/router directly.
 
-const PRODUCT_CATEGORIES = new Set([
-  "machines",
-  "beans",
-  "accessories",
-  "ingredients",
-]);
+import { parseCatalogView } from "@/lib/categories";
 
 const STATIC_VIEW_ROUTES: Record<string, string> = {
   home: "/",
@@ -33,8 +28,11 @@ export function viewToHref(view: string): string {
   if (view.startsWith("product-")) {
     return `/product/${view.replace("product-", "")}`;
   }
-  if (PRODUCT_CATEGORIES.has(view)) {
-    return `/products/${view}`;
+  const catalog = parseCatalogView(view);
+  if (catalog) {
+    return catalog.subcategory
+      ? `/products/${catalog.category}/${catalog.subcategory}`
+      : `/products/${catalog.category}`;
   }
   return STATIC_VIEW_ROUTES[view] ?? "/";
 }

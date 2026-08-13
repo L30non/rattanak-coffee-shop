@@ -27,6 +27,7 @@ import { Contact } from "@/app/components/Contact";
 import { Footer } from "@/app/components/Footer";
 import ErrorBoundary from "@/app/components/ErrorBoundary";
 import { toast } from "sonner";
+import { parseCatalogView } from "@/lib/categories";
 
 // Create a client for React Query (TanStack Query)
 const queryClient = new QueryClient({
@@ -77,6 +78,19 @@ function AppContent() {
       );
     }
 
+    // Category / sub-category product pages, e.g. "machines" or "machines/2-group"
+    const catalog = parseCatalogView(currentView);
+    if (catalog) {
+      return (
+        <ProductList
+          category={catalog.category}
+          subcategory={catalog.subcategory}
+          searchQuery={searchQuery}
+          onNavigate={setCurrentView}
+        />
+      );
+    }
+
     // Other views
     switch (currentView) {
       case "home":
@@ -85,38 +99,6 @@ function AppContent() {
         return (
           <ProductList
             category="all"
-            searchQuery={searchQuery}
-            onNavigate={setCurrentView}
-          />
-        );
-      case "machines":
-        return (
-          <ProductList
-            category="machines"
-            searchQuery={searchQuery}
-            onNavigate={setCurrentView}
-          />
-        );
-      case "beans":
-        return (
-          <ProductList
-            category="beans"
-            searchQuery={searchQuery}
-            onNavigate={setCurrentView}
-          />
-        );
-      case "accessories":
-        return (
-          <ProductList
-            category="accessories"
-            searchQuery={searchQuery}
-            onNavigate={setCurrentView}
-          />
-        );
-      case "ingredients":
-        return (
-          <ProductList
-            category="ingredients"
             searchQuery={searchQuery}
             onNavigate={setCurrentView}
           />

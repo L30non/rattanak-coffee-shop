@@ -1,10 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { CategoryValue, SubcategoryValue } from "@/lib/categories";
 
 export interface Product {
   id: string;
   name: string;
-  category: "machines" | "beans" | "accessories" | "ingredients";
+  category: CategoryValue;
+  subcategory: SubcategoryValue | null;
   price: number;
   description: string;
   image: string | null;

@@ -8,9 +8,10 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category") ?? undefined;
+    const subcategory = searchParams.get("subcategory") ?? undefined;
     const search = searchParams.get("search") ?? undefined;
 
-    const data = await getProducts({ category, search });
+    const data = await getProducts({ category, subcategory, search });
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(

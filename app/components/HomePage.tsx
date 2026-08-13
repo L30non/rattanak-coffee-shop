@@ -5,6 +5,14 @@ import { Card, CardContent } from "@/app/components/ui/card";
 import { useMultipleProducts } from "@/app/hooks/useProducts";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { getImageUrl } from "@/utils/supabase/client";
+import { CATEGORIES, type CategoryValue } from "@/lib/categories";
+
+const CATEGORY_ICONS: Record<CategoryValue, string> = {
+  machines: "☕",
+  beans: "🫘",
+  accessories: "🔧",
+  ingredients: "🍯",
+};
 
 interface HomePageProps {
   onNavigate: (view: string) => void;
@@ -304,14 +312,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
               },
             }}
           >
-            {[
-              { name: "Machines", view: "machines", icon: "☕" },
-              { name: "Coffee Beans", view: "beans", icon: "🫘" },
-              { name: "Accessories", view: "accessories", icon: "🔧" },
-              { name: "Ingredients", view: "ingredients", icon: "🍯" },
-            ].map((category) => (
+            {CATEGORIES.map((category) => (
               <motion.div
-                key={category.view}
+                key={category.value}
                 variants={{
                   hidden: { opacity: 0, scale: 0.9 },
                   visible: { opacity: 1, scale: 1 },
@@ -321,12 +324,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
               >
                 <Card
                   className="cursor-pointer hover:shadow-lg transition-shadow group"
-                  onClick={() => onNavigate(category.view)}
+                  onClick={() => onNavigate(category.value)}
                 >
                   <CardContent className="p-8 text-center">
-                    <div className="text-6xl mb-4">{category.icon}</div>
+                    <div className="text-6xl mb-4">
+                      {CATEGORY_ICONS[category.value]}
+                    </div>
                     <h3 className="font-semibold text-xl group-hover:text-[#5F1B2C] transition-colors">
-                      {category.name}
+                      {category.label}
                     </h3>
                   </CardContent>
                 </Card>

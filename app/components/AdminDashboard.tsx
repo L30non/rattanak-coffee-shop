@@ -73,6 +73,13 @@ import {
 import type { Product } from "@/app/store/useStore";
 import { toast } from "sonner";
 import { uploadImage, getImageUrl } from "@/utils/supabase/client";
+import {
+  CATEGORIES,
+  getSubcategories,
+  getSubcategory,
+  type CategoryValue,
+  type SubcategoryValue,
+} from "@/lib/categories";
 
 interface AdminDashboardProps {
   onNavigate: (view: string) => void;
@@ -98,7 +105,8 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: "",
-    category: "beans" as "machines" | "beans" | "accessories" | "ingredients",
+    category: "beans" as CategoryValue,
+    subcategory: null as SubcategoryValue | null,
     price: "",
     description: "",
     image: null as string | null,
@@ -170,6 +178,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
     const productData = {
       name: newProduct.name,
       category: newProduct.category,
+      subcategory: newProduct.subcategory,
       price: parseFloat(newProduct.price),
       description: newProduct.description,
       image: newProduct.image || null,
@@ -189,6 +198,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
         setNewProduct({
           name: "",
           category: "beans",
+          subcategory: null,
           price: "",
           description: "",
           image: null,
@@ -418,31 +428,58 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                           <Label htmlFor="category">Category *</Label>
                           <Select
                             value={newProduct.category}
-                            onValueChange={(
-                              value:
-                                | "machines"
-                                | "beans"
-                                | "accessories"
-                                | "ingredients",
-                            ) =>
-                              setNewProduct({ ...newProduct, category: value })
+                            onValueChange={(value: CategoryValue) =>
+                              setNewProduct({
+                                ...newProduct,
+                                category: value,
+                                subcategory: null,
+                              })
                             }
                           >
                             <SelectTrigger>
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="machines">Machines</SelectItem>
-                              <SelectItem value="beans">Beans</SelectItem>
-                              <SelectItem value="accessories">
-                                Accessories
-                              </SelectItem>
-                              <SelectItem value="ingredients">
-                                Ingredients
-                              </SelectItem>
+                              {CATEGORIES.map((cat) => (
+                                <SelectItem key={cat.value} value={cat.value}>
+                                  {cat.label}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                         </div>
+
+                        {getSubcategories(newProduct.category).length > 0 && (
+                          <div>
+                            <Label htmlFor="subcategory">Sub-category</Label>
+                            <Select
+                              value={newProduct.subcategory ?? "none"}
+                              onValueChange={(value: string) =>
+                                setNewProduct({
+                                  ...newProduct,
+                                  subcategory:
+                                    value === "none"
+                                      ? null
+                                      : (value as SubcategoryValue),
+                                })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">None</SelectItem>
+                                {getSubcategories(newProduct.category).map(
+                                  (sub) => (
+                                    <SelectItem key={sub.value} value={sub.value}>
+                                      {sub.label}
+                                    </SelectItem>
+                                  ),
+                                )}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        )}
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
@@ -600,6 +637,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                       <TableRow>
                         <TableHead>Name</TableHead>
                         <TableHead>Category</TableHead>
+                        <TableHead>Sub-category</TableHead>
                         <TableHead>Price</TableHead>
                         <TableHead>Stock</TableHead>
                         <TableHead>Actions</TableHead>
@@ -613,6 +651,10 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                           </TableCell>
                           <TableCell className="capitalize">
                             {product.category}
+                          </TableCell>
+                          <TableCell className="text-gray-500">
+                            {getSubcategory(product.category, product.subcategory ?? "")
+                              ?.label ?? "—"}
                           </TableCell>
                           <TableCell>${product.price.toFixed(2)}</TableCell>
                           <TableCell>
@@ -865,27 +907,58 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                   <Label htmlFor="edit-category">Category *</Label>
                   <Select
                     value={editingProduct.category}
-                    onValueChange={(
-                      value:
-                        | "machines"
-                        | "beans"
-                        | "accessories"
-                        | "ingredients",
-                    ) =>
-                      setEditingProduct({ ...editingProduct, category: value })
+                    onValueChange={(value: CategoryValue) =>
+                      setEditingProduct({
+                        ...editingProduct,
+                        category: value,
+                        subcategory: null,
+                      })
                     }
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="machines">Machines</SelectItem>
-                      <SelectItem value="beans">Beans</SelectItem>
-                      <SelectItem value="accessories">Accessories</SelectItem>
-                      <SelectItem value="ingredients">Ingredients</SelectItem>
+                      {CATEGORIES.map((cat) => (
+                        <SelectItem key={cat.value} value={cat.value}>
+                          {cat.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
+
+                {getSubcategories(editingProduct.category).length > 0 && (
+                  <div>
+                    <Label htmlFor="edit-subcategory">Sub-category</Label>
+                    <Select
+                      value={editingProduct.subcategory ?? "none"}
+                      onValueChange={(value: string) =>
+                        setEditingProduct({
+                          ...editingProduct,
+                          subcategory:
+                            value === "none"
+                              ? null
+                              : (value as SubcategoryValue),
+                        })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">None</SelectItem>
+                        {getSubcategories(editingProduct.category).map(
+                          (sub) => (
+                            <SelectItem key={sub.value} value={sub.value}>
+                              {sub.label}
+                            </SelectItem>
+                          ),
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>

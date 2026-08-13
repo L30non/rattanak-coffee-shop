@@ -17,20 +17,26 @@ import type { Product } from "@/app/store/useStore";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { toast } from "sonner";
 import { getImageUrl } from "@/utils/supabase/client";
+import { getCategory, type SubcategoryValue } from "@/lib/categories";
 
 interface ProductListProps {
   category?: "machines" | "beans" | "accessories" | "ingredients" | "all";
+  subcategory?: SubcategoryValue;
   searchQuery?: string;
   onNavigate: (view: string) => void;
 }
 
 export function ProductList({
   category = "all",
+  subcategory,
   searchQuery = "",
   onNavigate,
 }: ProductListProps) {
   // Use React Query hook instead of local store
-  const { data: products = [], isLoading } = useMultipleProducts(category);
+  const { data: products = [], isLoading } = useMultipleProducts(
+    category,
+    subcategory,
+  );
 
   const addToCart = useStore((state) => state.addToCart);
   const [priceFilter, setPriceFilter] = useState<string>("all");
@@ -42,6 +48,11 @@ export function ProductList({
     // Category filter is already handled by useProducts query, but we might need clientside filter if 'all' was fetched
     if (category !== "all") {
       filtered = filtered.filter((p) => p.category === category);
+    }
+
+    // Subcategory filter is already handled by useProducts query; mirror defensively
+    if (subcategory) {
+      filtered = filtered.filter((p) => p.subcategory === subcategory);
     }
 
     // Search filter
@@ -90,7 +101,7 @@ export function ProductList({
     }
 
     return filtered;
-  }, [products, category, searchQuery, priceFilter, sortBy]);
+  }, [products, category, subcategory, searchQuery, priceFilter, sortBy]);
 
   const handleAddToCart = (product: Product, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -98,30 +109,17 @@ export function ProductList({
     toast.success(`${product.name} added to cart!`);
   };
 
+  const activeCategory = category !== "all" ? getCategory(category) : undefined;
+  const activeSubcategory = subcategory
+    ? activeCategory?.subcategories.find((s) => s.value === subcategory)
+    : undefined;
+
   const getCategoryTitle = () => {
-    switch (category) {
-      case "machines":
-        return "Coffee Machines";
-      case "beans":
-        return "Coffee Beans";
-      case "accessories":
-        return "Accessories";
-      case "ingredients":
-        return "Ingredients";
-      default:
-        return "All Products";
-    }
+    return activeSubcategory?.title ?? activeCategory?.title ?? "All Products";
   };
 
   const getCategoryDescription = () => {
-    switch (category) {
-      case "beans":
-        return "Sourcing quality beans for the perfect signature taste. We source quality green beans from across Cambodia and the globe, roasting them in-house for true Robusta and Arabica greatness.";
-      case "machines":
-        return "Coffee machines and accessories for every taste and budget — for your home, office, and commercial use.";
-      default:
-        return null;
-    }
+    return activeSubcategory?.description ?? activeCategory?.description ?? null;
   };
 
   return (

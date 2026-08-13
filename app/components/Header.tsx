@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ShoppingCart,
   User,
@@ -31,6 +31,12 @@ import { useAuth } from "@/app/hooks/useAuth";
 import { Sheet, SheetContent, SheetTrigger } from "@/app/components/ui/sheet";
 import { toast } from "sonner";
 import { getImageUrl } from "@/utils/supabase/client";
+import {
+  CATEGORIES,
+  getSubcategories,
+  catalogView,
+  parseCatalogView,
+} from "@/lib/categories";
 
 interface HeaderProps {
   onNavigate: (view: string) => void;
@@ -44,8 +50,24 @@ export function Header({
   onSearchChange,
 }: HeaderProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  const [isProductsOpen, setIsProductsOpen] = useState(false);
+  const productsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cart = useStore((state) => state.cart);
   const { user, signOut } = useAuth();
+
+  const openProductsMenu = () => {
+    if (productsCloseTimer.current) clearTimeout(productsCloseTimer.current);
+    setIsProductsOpen(true);
+  };
+
+  const scheduleCloseProductsMenu = () => {
+    if (productsCloseTimer.current) clearTimeout(productsCloseTimer.current);
+    productsCloseTimer.current = setTimeout(() => {
+      setIsProductsOpen(false);
+      setHoveredCategory(null);
+    }, 150);
+  };
 
   const handleSearchChange = (value: string) => {
     onSearchChange(value);
@@ -75,31 +97,8 @@ export function Header({
     { label: "Contact", value: "contact" },
   ];
 
-  const productCategories = [
-    { label: "Machines", value: "machines" },
-    { label: "Beans", value: "beans" },
-    { label: "Accessories", value: "accessories" },
-    { label: "Ingredients", value: "ingredients" },
-  ];
-
   return (
     <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
-      {/* Site In Progress Notice */}
-      <div className="bg-amber-500 text-amber-950 text-xs sm:text-sm">
-        <div className="container mx-auto px-4 py-1.5 flex items-center justify-center gap-2 text-center">
-          <Construction className="h-4 w-4 flex-shrink-0" />
-          <span>
-            This website is still under development
-            <span className="hidden sm:inline">
-              {" "}
-              — some features, including online payment, are not yet
-              available
-            </span>
-            .
-          </span>
-        </div>
-      </div>
-
       {/* Top Bar */}
       <div className="bg-[#5F1B2C] text-white text-sm hidden md:block">
         <div className="container mx-auto px-4">
@@ -205,12 +204,18 @@ export function Header({
               ))}
 
               {/* Products Dropdown */}
-              <DropdownMenu>
+              <DropdownMenu
+                open={isProductsOpen}
+                onOpenChange={setIsProductsOpen}
+                modal={false}
+              >
                 <DropdownMenuTrigger asChild>
                   <button
+                    onMouseEnter={openProductsMenu}
+                    onMouseLeave={scheduleCloseProductsMenu}
                     className={`text-sm font-medium transition-colors hover:text-[#5F1B2C] flex items-center gap-1 ${
                       currentView === "products" ||
-                      productCategories.some((cat) => cat.value === currentView)
+                      parseCatalogView(currentView)
                         ? "text-[#5F1B2C] font-semibold"
                         : "text-gray-600"
                     }`}
@@ -219,18 +224,63 @@ export function Header({
                     <ChevronDown className="h-4 w-4" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48">
-                  <DropdownMenuItem onClick={() => onNavigate("products")}>
+                <DropdownMenuContent
+                  align="start"
+                  className="w-56 overflow-visible"
+                  onMouseEnter={openProductsMenu}
+                  onMouseLeave={scheduleCloseProductsMenu}
+                >
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => onNavigate("products")}
+                  >
                     All Products
                   </DropdownMenuItem>
-                  {productCategories.map((category) => (
-                    <DropdownMenuItem
-                      key={category.value}
-                      onClick={() => onNavigate(category.value)}
-                    >
-                      {category.label}
-                    </DropdownMenuItem>
-                  ))}
+                  {CATEGORIES.map((category) => {
+                    const subcategories = getSubcategories(category.value);
+                    return (
+                      <div
+                        key={category.value}
+                        className="relative"
+                        onMouseEnter={() => setHoveredCategory(category.value)}
+                        onFocus={() => setHoveredCategory(category.value)}
+                      >
+                        <DropdownMenuItem
+                          className="cursor-pointer"
+                          onClick={() => onNavigate(category.value)}
+                        >
+                          {category.label}
+                        </DropdownMenuItem>
+                        {subcategories.length > 0 && (
+                          <AnimatePresence>
+                            {hoveredCategory === category.value && (
+                              <motion.div
+                                initial={{ opacity: 0, x: -8 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -8 }}
+                                transition={{ duration: 0.2, ease: "easeOut" }}
+                                className="absolute left-full top-0 ml-1 w-48 rounded-md border bg-popover p-1 text-popover-foreground shadow-md"
+                              >
+                                {subcategories.map((sub) => (
+                                  <DropdownMenuItem
+                                    key={sub.value}
+                                    className="cursor-pointer"
+                                    onClick={() =>
+                                      onNavigate(
+                                        catalogView(category.value, sub.value),
+                                      )
+                                    }
+                                  >
+                                    {sub.label}
+                                  </DropdownMenuItem>
+                                ))}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        )}
+                      </div>
+                    );
+                  })}
                 </DropdownMenuContent>
               </DropdownMenu>
 
@@ -460,18 +510,38 @@ export function Header({
                       >
                         All Products
                       </button>
-                      {productCategories.map((category) => (
-                        <button
-                          key={category.value}
-                          onClick={() => onNavigate(category.value)}
-                          className={`text-left px-4 py-2 rounded-md transition-colors w-full ${
-                            currentView === category.value
-                              ? "bg-rose-50 text-[#5F1B2C] font-semibold"
-                              : "hover:bg-gray-100"
-                          }`}
-                        >
-                          {category.label}
-                        </button>
+                      {CATEGORIES.map((category) => (
+                        <div key={category.value}>
+                          <button
+                            onClick={() => onNavigate(category.value)}
+                            className={`text-left px-4 py-2 rounded-md transition-colors w-full ${
+                              currentView === category.value
+                                ? "bg-rose-50 text-[#5F1B2C] font-semibold"
+                                : "hover:bg-gray-100"
+                            }`}
+                          >
+                            {category.label}
+                          </button>
+                          {getSubcategories(category.value).map((sub) => {
+                            const subView = catalogView(
+                              category.value,
+                              sub.value,
+                            );
+                            return (
+                              <button
+                                key={sub.value}
+                                onClick={() => onNavigate(subView)}
+                                className={`text-left pl-8 pr-4 py-2 rounded-md transition-colors w-full text-sm ${
+                                  currentView === subView
+                                    ? "bg-rose-50 text-[#5F1B2C] font-semibold"
+                                    : "hover:bg-gray-100 text-gray-600"
+                                }`}
+                              >
+                                {sub.label}
+                              </button>
+                            );
+                          })}
+                        </div>
                       ))}
                     </div>
 
