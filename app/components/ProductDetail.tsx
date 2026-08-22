@@ -8,6 +8,15 @@ import { useSingleProduct } from "@/app/hooks/useProducts";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { ProductReviews } from "@/app/components/ProductReviews";
 import { getImageUrl } from "@/utils/supabase/client";
+import {
+  defaultVariant,
+  formatVariant,
+  getGrindOptions,
+  getWeightOptions,
+  resolveUnitPrice,
+  type CartVariant,
+  type GrindType,
+} from "@/lib/beans";
 import { toast } from "sonner";
 
 interface ProductDetailProps {
@@ -19,6 +28,11 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
   const { data: product, isLoading } = useSingleProduct(productId);
   const addToCart = useStore((state) => state.addToCart);
   const [quantity, setQuantity] = useState(1);
+  // null means "not chosen yet" — the admin's default applies until the
+  // customer picks. Derived rather than synced so switching products can't
+  // leave a stale selection behind.
+  const [weightChoice, setWeightChoice] = useState<string | null>(null);
+  const [grindChoice, setGrindChoice] = useState<GrindType | null>(null);
 
   if (isLoading)
     return <div className="p-8 text-center">Loading product details...</div>;
@@ -36,9 +50,29 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     );
   }
 
+  const weightOptions = getWeightOptions(product);
+  const grindOptions = getGrindOptions(product);
+  const hasOptions = weightOptions.length > 0 || grindOptions.length > 0;
+  const preset = defaultVariant(product);
+  // Ignore a choice that this product does not offer (e.g. after navigating
+  // from another product without a remount).
+  const selectedWeight = weightOptions.some((o) => o.label === weightChoice)
+    ? (weightChoice as string)
+    : preset?.weightLabel;
+  const selectedGrind = grindOptions.some((o) => o.value === grindChoice)
+    ? (grindChoice as GrindType)
+    : preset?.grind;
+  const variant: CartVariant | undefined = hasOptions
+    ? { grind: selectedGrind, weightLabel: selectedWeight }
+    : undefined;
+  const unitPrice = resolveUnitPrice(product, variant);
+  const variantSummary = formatVariant(variant);
+
   const handleAddToCart = () => {
-    addToCart(product, quantity);
-    toast.success(`${quantity} ${product.name} added to cart!`);
+    addToCart(product, quantity, variant, unitPrice);
+    toast.success(
+      `${quantity} ${product.name}${variantSummary ? ` (${variantSummary})` : ""} added to cart!`,
+    );
   };
 
   const incrementQuantity = () => {
@@ -98,7 +132,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
 
             <div className="flex items-center gap-4 mb-6">
               <p className="text-3xl font-bold text-[#3d1620]">
-                ${product.price.toFixed(2)}
+                ${unitPrice.toFixed(2)}
               </p>
               {product.stock > 0 ? (
                 <Badge
@@ -138,7 +172,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                       <span className="font-medium">{product.origin}</span>
                     </div>
                   )}
-                  {product.weight && (
+                  {product.weight && weightOptions.length === 0 && (
                     <div className="flex justify-between">
                       <span className="text-gray-600">Weight/Size:</span>
                       <span className="font-medium">{product.weight}</span>
@@ -169,6 +203,72 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
               </div>
             )}
 
+            {/* Grind Type — beans only */}
+            {grindOptions.length > 0 && (
+              <div className="mb-6">
+                <label className="block text-sm font-medium mb-2">
+                  Grind Type
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  {grindOptions.map((option) => {
+                    const isSelected = selectedGrind === option.value;
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setGrindChoice(option.value)}
+                        aria-pressed={isSelected}
+                        className={`rounded-md border p-3 text-left transition-colors ${
+                          isSelected
+                            ? "border-[#5F1B2C] bg-[#5F1B2C]/5 ring-1 ring-[#5F1B2C]"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <span className="block text-sm font-medium">
+                          {option.label}
+                        </span>
+                        <span className="block text-xs text-gray-500 mt-0.5">
+                          {option.description}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Weight — beans only, each weight carries its own price */}
+            {weightOptions.length > 0 && (
+              <div className="mb-6">
+                <label className="block text-sm font-medium mb-2">Weight</label>
+                <div className="flex flex-wrap gap-3">
+                  {weightOptions.map((option) => {
+                    const isSelected = selectedWeight === option.label;
+                    return (
+                      <button
+                        key={option.label}
+                        type="button"
+                        onClick={() => setWeightChoice(option.label)}
+                        aria-pressed={isSelected}
+                        className={`rounded-md border px-4 py-2 text-left transition-colors ${
+                          isSelected
+                            ? "border-[#5F1B2C] bg-[#5F1B2C]/5 ring-1 ring-[#5F1B2C]"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <span className="block text-sm font-medium">
+                          {option.label}
+                        </span>
+                        <span className="block text-xs text-gray-600">
+                          ${option.price.toFixed(2)}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Quantity Selector */}
             <div className="mb-6">
               <label className="block text-sm font-medium mb-2">Quantity</label>
@@ -194,6 +294,19 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                 </div>
               </div>
             </div>
+
+            {/* Line Total */}
+            {hasOptions && (
+              <div className="flex items-center justify-between mb-4 text-sm">
+                <span className="text-gray-600">
+                  {variantSummary || "Total"}
+                  {quantity > 1 && ` x${quantity}`}
+                </span>
+                <span className="text-lg font-bold text-[#3d1620]">
+                  ${(unitPrice * quantity).toFixed(2)}
+                </span>
+              </div>
+            )}
 
             {/* Add to Cart Button */}
             <Button

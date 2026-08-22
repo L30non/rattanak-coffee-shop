@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { CategoryValue, SubcategoryValue } from "@/lib/categories";
+import { formatVariant } from "@/lib/beans";
+import type { CartVariant, GrindType, WeightOption } from "@/lib/beans";
 
 export interface Product {
   id: string;
@@ -14,6 +16,10 @@ export interface Product {
   roast_level: string | null;
   origin: string | null;
   weight: string | null;
+  /** Beans only: admin-defined weights, each with its own price. */
+  weight_options: WeightOption[] | null;
+  /** Beans only: which grind types the customer may pick. */
+  grind_options: GrindType[] | null;
   features: string[] | null;
   average_rating?: number;
   review_count?: number;
@@ -49,6 +55,40 @@ export interface ProductReview {
 export interface CartItem {
   product: Product;
   quantity: number;
+  /** Beans only: the grind/weight the customer selected. */
+  variant?: CartVariant;
+  /** Price for the selected variant; falls back to the product price. */
+  unitPrice?: number;
+  /**
+   * Pre-formatted variant text on order lines loaded from the database, where
+   * only the snapshot label survives. Display only — never re-priced.
+   */
+  variantLabel?: string;
+}
+
+/**
+ * Cart identity. The same product in two different weights (or grinds) is two
+ * separate lines, so the key folds the variant in. Derived rather than stored
+ * so carts persisted before variants existed still resolve correctly.
+ */
+export function cartItemKey(item: {
+  product: Pick<Product, "id">;
+  variant?: CartVariant;
+}): string {
+  return [
+    item.product.id,
+    item.variant?.grind ?? "",
+    item.variant?.weightLabel ?? "",
+  ].join("|");
+}
+
+export function cartItemUnitPrice(item: CartItem): number {
+  return item.unitPrice ?? item.product.price;
+}
+
+/** Variant text for display, from a live selection or an order snapshot. */
+export function cartItemVariantLabel(item: CartItem): string {
+  return item.variantLabel ?? formatVariant(item.variant);
 }
 
 export interface User {
@@ -105,9 +145,14 @@ interface StoreState {
   user: User | null;
   orders: Order[]; // Local cache of orders for demo/UI
   addresses: Address[]; // Local cache of addresses
-  addToCart: (product: Product, quantity: number) => void;
-  removeFromCart: (productId: string) => void;
-  updateCartQuantity: (productId: string, quantity: number) => void;
+  addToCart: (
+    product: Product,
+    quantity: number,
+    variant?: CartVariant,
+    unitPrice?: number,
+  ) => void;
+  removeFromCart: (itemKey: string) => void;
+  updateCartQuantity: (itemKey: string, quantity: number) => void;
   clearCart: () => void;
   setUser: (user: User | null) => void;
   addOrder: (order: Order) => void;
@@ -126,30 +171,37 @@ export const useStore = create<StoreState>()(
       user: null,
       orders: [],
       addresses: [],
-      addToCart: (product, quantity) =>
+      addToCart: (product, quantity, variant, unitPrice) =>
         set((state) => {
+          const newItem: CartItem = {
+            product,
+            quantity,
+            variant,
+            unitPrice: unitPrice ?? product.price,
+          };
+          const key = cartItemKey(newItem);
           const existingItem = state.cart.find(
-            (item) => item.product.id === product.id,
+            (item) => cartItemKey(item) === key,
           );
           if (existingItem) {
             return {
               cart: state.cart.map((item) =>
-                item.product.id === product.id
+                cartItemKey(item) === key
                   ? { ...item, quantity: item.quantity + quantity }
                   : item,
               ),
             };
           }
-          return { cart: [...state.cart, { product, quantity }] };
+          return { cart: [...state.cart, newItem] };
         }),
-      removeFromCart: (productId) =>
+      removeFromCart: (itemKey) =>
         set((state) => ({
-          cart: state.cart.filter((item) => item.product.id !== productId),
+          cart: state.cart.filter((item) => cartItemKey(item) !== itemKey),
         })),
-      updateCartQuantity: (productId, quantity) =>
+      updateCartQuantity: (itemKey, quantity) =>
         set((state) => ({
           cart: state.cart.map((item) =>
-            item.product.id === productId ? { ...item, quantity } : item,
+            cartItemKey(item) === itemKey ? { ...item, quantity } : item,
           ),
         })),
       clearCart: () => set({ cart: [] }),

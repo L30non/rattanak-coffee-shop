@@ -18,6 +18,14 @@ import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { toast } from "sonner";
 import { getImageUrl } from "@/utils/supabase/client";
 import { getCategory, type SubcategoryValue } from "@/lib/categories";
+import {
+  defaultVariant,
+  formatVariant,
+  getWeightOptions,
+  lowestPrice,
+  needsSelection,
+  resolveUnitPrice,
+} from "@/lib/beans";
 
 interface ProductListProps {
   category?: "machines" | "beans" | "accessories" | "ingredients" | "all";
@@ -105,8 +113,19 @@ export function ProductList({
 
   const handleAddToCart = (product: Product, e: React.MouseEvent) => {
     e.stopPropagation();
-    addToCart(product, 1);
-    toast.success(`${product.name} added to cart!`);
+    // With a real choice open (several weights or both grinds), send the
+    // customer to the detail page rather than guessing for them.
+    if (needsSelection(product)) {
+      onNavigate(`product-${product.id}`);
+      return;
+    }
+    const variant = defaultVariant(product);
+    const unitPrice = resolveUnitPrice(product, variant);
+    addToCart(product, 1, variant, unitPrice);
+    const summary = formatVariant(variant);
+    toast.success(
+      `${product.name}${summary ? ` (${summary})` : ""} added to cart!`,
+    );
   };
 
   const activeCategory = category !== "all" ? getCategory(category) : undefined;
@@ -295,7 +314,12 @@ export function ProductList({
 
                       <div className="flex items-center justify-between mt-4">
                         <p className="text-xl font-bold text-[#3d1620]">
-                          ${product.price.toFixed(2)}
+                          {getWeightOptions(product).length > 1 && (
+                            <span className="text-xs font-normal text-gray-500 mr-1">
+                              from
+                            </span>
+                          )}
+                          ${lowestPrice(product).toFixed(2)}
                         </p>
                         <motion.div whileTap={{ scale: 0.95 }}>
                           <Button
@@ -305,7 +329,7 @@ export function ProductList({
                             className="bg-[#5F1B2C] hover:bg-[#4a1523]"
                           >
                             <ShoppingCart className="h-4 w-4 mr-1" />
-                            Add
+                            {needsSelection(product) ? "Options" : "Add"}
                           </Button>
                         </motion.div>
                       </div>

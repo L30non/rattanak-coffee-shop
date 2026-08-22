@@ -60,7 +60,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
-import { type Order } from "@/app/store/useStore";
+import { cartItemVariantLabel, type Order } from "@/app/store/useStore";
 import { useAuth } from "@/app/hooks/useAuth";
 import {
   useMultipleProducts,
@@ -80,6 +80,13 @@ import {
   type CategoryValue,
   type SubcategoryValue,
 } from "@/lib/categories";
+import { BeanOptionsEditor } from "@/app/components/BeanOptionsEditor";
+import {
+  getWeightOptions,
+  lowestPrice,
+  type GrindType,
+  type WeightOption,
+} from "@/lib/beans";
 
 interface AdminDashboardProps {
   onNavigate: (view: string) => void;
@@ -114,6 +121,8 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
     roast_level: "",
     origin: "",
     weight: "",
+    weight_options: [] as WeightOption[],
+    grind_options: [] as GrindType[],
   });
 
   const handleImageUpload = async (
@@ -175,6 +184,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
   const handleAddProduct = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const isBean = newProduct.category === "beans";
     const productData = {
       name: newProduct.name,
       category: newProduct.category,
@@ -186,6 +196,9 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
       roast_level: newProduct.roast_level || null,
       origin: newProduct.origin || null,
       weight: newProduct.weight || null,
+      // Bean options are meaningless outside the beans category.
+      weight_options: isBean ? newProduct.weight_options : [],
+      grind_options: isBean ? newProduct.grind_options : [],
       features: [] as string[] | null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -206,6 +219,8 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
           roast_level: "",
           origin: "",
           weight: "",
+          weight_options: [],
+          grind_options: [],
         });
       },
       onError: (error) => {
@@ -217,10 +232,13 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
   const handleUpdateProduct = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingProduct) {
+      const isBean = editingProduct.category === "beans";
       updateProductMutation.mutate(
         {
           ...editingProduct,
           id: editingProduct.id,
+          weight_options: isBean ? (editingProduct.weight_options ?? []) : [],
+          grind_options: isBean ? (editingProduct.grind_options ?? []) : [],
         },
         {
           onSuccess: () => {
@@ -619,6 +637,17 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                           </div>
                         </div>
 
+                        {newProduct.category === "beans" && (
+                          <BeanOptionsEditor
+                            idPrefix="add"
+                            weightOptions={newProduct.weight_options}
+                            grindOptions={newProduct.grind_options}
+                            onChange={(next) =>
+                              setNewProduct((prev) => ({ ...prev, ...next }))
+                            }
+                          />
+                        )}
+
                         <Button
                           type="submit"
                           className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
@@ -656,7 +685,15 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                             {getSubcategory(product.category, product.subcategory ?? "")
                               ?.label ?? "—"}
                           </TableCell>
-                          <TableCell>${product.price.toFixed(2)}</TableCell>
+                          <TableCell>
+                            {getWeightOptions(product).length > 1 ? (
+                              <span title="Price varies by weight">
+                                from ${lowestPrice(product).toFixed(2)}
+                              </span>
+                            ) : (
+                              `$${lowestPrice(product).toFixed(2)}`
+                            )}
+                          </TableCell>
                           <TableCell>
                             <Badge
                               variant={
@@ -819,14 +856,24 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                           <div className="text-sm space-y-2">
                             <div>
                               <span className="font-medium">Items:</span>
-                              {order.items?.map((item) => (
-                                <p
-                                  key={item.product.id}
-                                  className="text-gray-600"
-                                >
-                                  {item.product.name} x{item.quantity}
-                                </p>
-                              ))}
+                              {order.items?.map((item, index) => {
+                                const variantSummary =
+                                  cartItemVariantLabel(item);
+                                return (
+                                  <p
+                                    key={`${item.product?.id ?? index}-${variantSummary}`}
+                                    className="text-gray-600"
+                                  >
+                                    {item.product?.name} x{item.quantity}
+                                    {variantSummary && (
+                                      <span className="text-gray-500">
+                                        {" "}
+                                        ({variantSummary})
+                                      </span>
+                                    )}
+                                  </p>
+                                );
+                              })}
                             </div>
                             {order.tracking_number && (
                               <div>
@@ -1055,6 +1102,20 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                     )}
                   </div>
                 </div>
+
+                {editingProduct.category === "beans" && (
+                  <BeanOptionsEditor
+                    key={editingProduct.id}
+                    idPrefix="edit"
+                    weightOptions={editingProduct.weight_options ?? []}
+                    grindOptions={editingProduct.grind_options ?? []}
+                    onChange={(next) =>
+                      setEditingProduct((prev) =>
+                        prev ? { ...prev, ...next } : prev,
+                      )
+                    }
+                  />
+                )}
 
                 <Button
                   type="submit"

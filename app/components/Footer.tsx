@@ -1,11 +1,4 @@
-import {
-  Facebook,
-  Instagram,
-  Twitter,
-  Mail,
-  Phone,
-  MapPin,
-} from "lucide-react";
+import { Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react";
 import { Separator } from "@/app/components/ui/separator";
 
 interface FooterProps {

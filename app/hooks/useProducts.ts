@@ -132,7 +132,12 @@ export interface CreateOrderInput {
   payment_method: Order["payment_method"];
   date: string;
   updated_at: string;
-  items?: Array<{ product_id: string; quantity: number; price: number }>;
+  items?: Array<{
+    product_id: string;
+    quantity: number;
+    price: number;
+    variant_label?: string | null;
+  }>;
 }
 
 export const useCreateOrder = () => {

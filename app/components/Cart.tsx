@@ -8,7 +8,12 @@ import {
   CardTitle,
 } from "@/app/components/ui/card";
 import { Separator } from "@/app/components/ui/separator";
-import { useStore } from "@/app/store/useStore";
+import {
+  cartItemKey,
+  cartItemUnitPrice,
+  cartItemVariantLabel,
+  useStore,
+} from "@/app/store/useStore";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { getImageUrl } from "@/utils/supabase/client";
 import { toast } from "sonner";
@@ -25,7 +30,7 @@ export function Cart({ onNavigate }: CartProps) {
   const user = useStore((state) => state.user);
 
   const subtotal = cart.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
+    (sum, item) => sum + cartItemUnitPrice(item) * item.quantity,
     0,
   );
   const shipping = subtotal > 100 ? 0 : 10;
@@ -41,8 +46,8 @@ export function Cart({ onNavigate }: CartProps) {
     onNavigate("checkout");
   };
 
-  const handleRemove = (productId: string, productName: string) => {
-    removeFromCart(productId);
+  const handleRemove = (itemKey: string, productName: string) => {
+    removeFromCart(itemKey);
     toast.success(`${productName} removed from cart`);
   };
 
@@ -77,9 +82,13 @@ export function Cart({ onNavigate }: CartProps) {
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             <AnimatePresence>
-              {cart.map((item) => (
+              {cart.map((item) => {
+                const itemKey = cartItemKey(item);
+                const unitPrice = cartItemUnitPrice(item);
+                const variantSummary = cartItemVariantLabel(item);
+                return (
                 <motion.div
-                  key={item.product.id}
+                  key={itemKey}
                   initial={{ opacity: 0, height: 0, y: -20 }}
                   animate={{ opacity: 1, height: "auto", y: 0 }}
                   exit={{ opacity: 0, x: -100, height: 0 }}
@@ -117,8 +126,13 @@ export function Cart({ onNavigate }: CartProps) {
                           <p className="text-sm text-gray-600 mb-2 capitalize">
                             {item.product.category}
                           </p>
+                          {variantSummary && (
+                            <p className="text-sm text-gray-500 mb-2">
+                              {variantSummary}
+                            </p>
+                          )}
                           <p className="text-lg font-bold text-[#3d1620]">
-                            ${item.product.price.toFixed(2)}
+                            ${unitPrice.toFixed(2)}
                           </p>
                         </div>
 
@@ -128,7 +142,7 @@ export function Cart({ onNavigate }: CartProps) {
                             variant="ghost"
                             size="icon"
                             onClick={() =>
-                              handleRemove(item.product.id, item.product.name)
+                              handleRemove(itemKey, item.product.name)
                             }
                           >
                             <Trash2 className="h-4 w-4 text-red-500" />
@@ -140,10 +154,7 @@ export function Cart({ onNavigate }: CartProps) {
                               size="icon"
                               className="h-8 w-8"
                               onClick={() =>
-                                updateCartQuantity(
-                                  item.product.id,
-                                  item.quantity - 1,
-                                )
+                                updateCartQuantity(itemKey, item.quantity - 1)
                               }
                               disabled={item.quantity <= 1}
                             >
@@ -157,10 +168,7 @@ export function Cart({ onNavigate }: CartProps) {
                               size="icon"
                               className="h-8 w-8"
                               onClick={() =>
-                                updateCartQuantity(
-                                  item.product.id,
-                                  item.quantity + 1,
-                                )
+                                updateCartQuantity(itemKey, item.quantity + 1)
                               }
                               disabled={item.quantity >= item.product.stock}
                             >
@@ -169,14 +177,15 @@ export function Cart({ onNavigate }: CartProps) {
                           </div>
 
                           <p className="text-sm font-semibold">
-                            ${(item.product.price * item.quantity).toFixed(2)}
+                            ${(unitPrice * item.quantity).toFixed(2)}
                           </p>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
                 </motion.div>
-              ))}
+                );
+              })}
             </AnimatePresence>
           </div>
 

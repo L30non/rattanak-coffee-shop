@@ -22,7 +22,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/components/ui/select";
-import { useStore, Address } from "@/app/store/useStore";
+import {
+  cartItemKey,
+  cartItemUnitPrice,
+  cartItemVariantLabel,
+  useStore,
+  Address,
+} from "@/app/store/useStore";
+import { formatVariant } from "@/lib/beans";
 import { useCreateOrder } from "@/app/hooks/useProducts";
 import { toast } from "sonner";
 
@@ -62,7 +69,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
   });
 
   const subtotal = cart.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
+    (sum, item) => sum + cartItemUnitPrice(item) * item.quantity,
     0,
   );
   const shipping = subtotal > 100 ? 0 : 1;
@@ -228,7 +235,8 @@ export function Checkout({ onNavigate }: CheckoutProps) {
         items: cart.map((item) => ({
           product_id: item.product.id,
           quantity: item.quantity,
-          price: item.product.price,
+          price: cartItemUnitPrice(item),
+          variant_label: formatVariant(item.variant) || null,
         })),
       };
 
@@ -718,19 +726,27 @@ export function Checkout({ onNavigate }: CheckoutProps) {
               <CardContent>
                 <div className="space-y-3">
                   <div className="space-y-2">
-                    {cart.map((item) => (
-                      <div
-                        key={item.product.id}
-                        className="flex justify-between text-sm"
-                      >
-                        <span className="text-gray-600">
-                          {item.product.name} x{item.quantity}
-                        </span>
-                        <span className="font-medium">
-                          ${(item.product.price * item.quantity).toFixed(2)}
-                        </span>
-                      </div>
-                    ))}
+                    {cart.map((item) => {
+                      const variantSummary = cartItemVariantLabel(item);
+                      return (
+                        <div
+                          key={cartItemKey(item)}
+                          className="flex justify-between text-sm"
+                        >
+                          <span className="text-gray-600">
+                            {item.product.name}
+                            {variantSummary && ` (${variantSummary})`} x
+                            {item.quantity}
+                          </span>
+                          <span className="font-medium">
+                            $
+                            {(cartItemUnitPrice(item) * item.quantity).toFixed(
+                              2,
+                            )}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
 
                   <Separator />

@@ -25,6 +25,7 @@ export async function GET(request: NextRequest) {
           product_id,
           quantity,
           price,
+          variant_label,
           created_at,
           products (
             id,
@@ -37,6 +38,8 @@ export async function GET(request: NextRequest) {
             roast_level,
             origin,
             weight,
+            weight_options,
+            grind_options,
             features,
             created_at,
             updated_at
@@ -68,6 +71,8 @@ export async function GET(request: NextRequest) {
         order.order_items?.map((item: any) => ({
           product: item.products,
           quantity: item.quantity,
+          unitPrice: item.price,
+          variantLabel: item.variant_label ?? undefined,
         })) || [],
     }));
 
@@ -85,7 +90,12 @@ export async function POST(request: NextRequest) {
     const supabase = await createClient();
     const body = await request.json();
 
-    type OrderItem = { product_id: string; quantity: number; price: number };
+    type OrderItem = {
+      product_id: string;
+      quantity: number;
+      price: number;
+      variant_label?: string | null;
+    };
     const { items, ...orderData } = body as Omit<Order, "id" | "created_at"> & {
       items?: OrderItem[];
     };
