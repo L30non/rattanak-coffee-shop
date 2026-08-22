@@ -42,11 +42,12 @@ const queryClient = new QueryClient({
 
 interface AppContentProps {
   initialView: string;
+  initialSearchQuery?: string;
 }
 
-function AppContent({ initialView }: AppContentProps) {
+function AppContent({ initialView, initialSearchQuery = "" }: AppContentProps) {
   const [currentView, setCurrentView] = useState(initialView);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
 
   // The single navigation entry point: updates the visible view and keeps
   // the URL (and therefore the back/forward button and refresh) in sync.
@@ -197,13 +198,25 @@ function AppContent({ initialView }: AppContentProps) {
 interface AppProps {
   /** The view to render on first paint, resolved server-side from the URL. */
   initialView?: string;
+  /**
+   * Seeds the product search box from ?search= on first paint — what the
+   * WebSite SearchAction JSON-LD (app/layout.tsx) promises a search-box query
+   * against /products actually does.
+   */
+  initialSearchQuery?: string;
 }
 
-export default function App({ initialView = "home" }: AppProps) {
+export default function App({
+  initialView = "home",
+  initialSearchQuery,
+}: AppProps) {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <AppContent initialView={initialView} />
+        <AppContent
+          initialView={initialView}
+          initialSearchQuery={initialSearchQuery}
+        />
       </QueryClientProvider>
     </ErrorBoundary>
   );
