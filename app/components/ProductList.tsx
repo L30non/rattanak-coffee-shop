@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Button } from "@/app/components/ui/button";
@@ -10,6 +10,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/app/components/ui/pagination";
 import { Filter, ShoppingCart, Star } from "lucide-react";
 import { useStore } from "@/app/store/useStore";
 import { useMultipleProducts } from "@/app/hooks/useProducts";
@@ -34,6 +43,29 @@ interface ProductListProps {
   onNavigate: (view: string) => void;
 }
 
+// 3 rows at the widest grid breakpoint (xl: 4 columns) — see the grid's
+// className below. Narrower breakpoints just show more visual rows per page,
+// which is the standard tradeoff for a fixed page size across a responsive
+// grid rather than a page size that changes with viewport width.
+const PRODUCTS_PER_PAGE = 12;
+
+/** Page numbers to render, with `null` standing in for an ellipsis gap. */
+function getPageNumbers(current: number, total: number): (number | null)[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+
+  const pages = new Set([1, 2, total - 1, total, current - 1, current, current + 1]);
+  const sorted = [...pages].filter((p) => p >= 1 && p <= total).sort((a, b) => a - b);
+
+  const result: (number | null)[] = [];
+  let prev = 0;
+  for (const page of sorted) {
+    if (prev && page - prev > 1) result.push(null);
+    result.push(page);
+    prev = page;
+  }
+  return result;
+}
+
 export function ProductList({
   category = "all",
   subcategory,
@@ -49,6 +81,7 @@ export function ProductList({
   const addToCart = useStore((state) => state.addToCart);
   const [priceFilter, setPriceFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("name");
+  const [rawCurrentPage, setCurrentPage] = useState(1);
 
   const filteredProducts = useMemo(() => {
     let filtered = products;
@@ -111,6 +144,37 @@ export function ProductList({
     return filtered;
   }, [products, category, subcategory, searchQuery, priceFilter, sortBy]);
 
+  // A new filter/sort/category selection invalidates whatever page the user
+  // was on — reset to page 1. Adjusting state during render (rather than in
+  // an effect) per https://react.dev/learn/you-might-not-need-an-effect —
+  // React re-renders immediately with the reset value, so there's no extra
+  // frame where stale, filtered-out products are visible on a stale page.
+  const filterSignature = `${category}|${subcategory ?? ""}|${searchQuery}|${priceFilter}|${sortBy}`;
+  const [prevFilterSignature, setPrevFilterSignature] = useState(filterSignature);
+  if (filterSignature !== prevFilterSignature) {
+    setPrevFilterSignature(filterSignature);
+    setCurrentPage(1);
+  }
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE),
+  );
+  // Clamped rather than stored: if the result set shrinks out from under an
+  // already-open later page, this settles back on the last valid page on its
+  // own, with no separate effect needed to keep it in sync.
+  const currentPage = Math.min(rawCurrentPage, totalPages);
+
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
+    return filteredProducts.slice(start, start + PRODUCTS_PER_PAGE);
+  }, [filteredProducts, currentPage]);
+
+  const goToPage = (page: number) => {
+    setCurrentPage(Math.min(Math.max(page, 1), totalPages));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const handleAddToCart = (product: Product, e: React.MouseEvent) => {
     e.stopPropagation();
     // With a real choice open (several weights or both grinds), send the
@@ -155,7 +219,9 @@ export function ProductList({
           <p className="text-gray-600">
             {isLoading
               ? "Loading products…"
-              : `${filteredProducts.length} product${filteredProducts.length !== 1 ? "s" : ""} found`}
+              : totalPages > 1
+                ? `Showing ${(currentPage - 1) * PRODUCTS_PER_PAGE + 1}–${Math.min(currentPage * PRODUCTS_PER_PAGE, filteredProducts.length)} of ${filteredProducts.length} products`
+                : `${filteredProducts.length} product${filteredProducts.length !== 1 ? "s" : ""} found`}
           </p>
         </div>
 
@@ -194,7 +260,7 @@ export function ProductList({
 
         {/* Products Grid */}
         <motion.div
-          key={isLoading ? "loading" : "loaded"}
+          key={isLoading ? "loading" : `page-${currentPage}`}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
           variants={{
             hidden: { opacity: 0 },
@@ -237,7 +303,7 @@ export function ProductList({
               </Button>
             </div>
           ) : (
-            filteredProducts.map((product) => (
+            paginatedProducts.map((product) => (
               <motion.div
                 key={product.id}
                 variants={{
@@ -340,6 +406,64 @@ export function ProductList({
             ))
           )}
         </motion.div>
+
+        {/* Pagination */}
+        {!isLoading && totalPages > 1 && (
+          <Pagination className="mt-10">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  aria-disabled={currentPage === 1}
+                  className={
+                    currentPage === 1 ? "pointer-events-none opacity-50" : undefined
+                  }
+                  onClick={(e) => {
+                    e.preventDefault();
+                    goToPage(currentPage - 1);
+                  }}
+                />
+              </PaginationItem>
+
+              {getPageNumbers(currentPage, totalPages).map((page, index) =>
+                page === null ? (
+                  <PaginationItem key={`ellipsis-${index}`}>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                ) : (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      href="#"
+                      isActive={page === currentPage}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        goToPage(page);
+                      }}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                ),
+              )}
+
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  aria-disabled={currentPage === totalPages}
+                  className={
+                    currentPage === totalPages
+                      ? "pointer-events-none opacity-50"
+                      : undefined
+                  }
+                  onClick={(e) => {
+                    e.preventDefault();
+                    goToPage(currentPage + 1);
+                  }}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </div>
     </div>
   );
