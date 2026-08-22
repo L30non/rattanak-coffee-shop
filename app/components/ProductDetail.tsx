@@ -259,9 +259,6 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                         <span className="block text-sm font-medium">
                           {option.label}
                         </span>
-                        <span className="block text-xs text-gray-600">
-                          ${option.price.toFixed(2)}
-                        </span>
                       </button>
                     );
                   })}
