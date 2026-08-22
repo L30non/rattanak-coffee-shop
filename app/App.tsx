@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/app/components/Header";
@@ -28,6 +28,7 @@ import { Footer } from "@/app/components/Footer";
 import ErrorBoundary from "@/app/components/ErrorBoundary";
 import { toast } from "sonner";
 import { parseCatalogView } from "@/lib/categories";
+import { hrefToView, viewToHref } from "@/lib/routes";
 
 // Create a client for React Query (TanStack Query)
 const queryClient = new QueryClient({
@@ -39,9 +40,38 @@ const queryClient = new QueryClient({
   },
 });
 
-function AppContent() {
-  const [currentView, setCurrentView] = useState("home");
+interface AppContentProps {
+  initialView: string;
+}
+
+function AppContent({ initialView }: AppContentProps) {
+  const [currentView, setCurrentView] = useState(initialView);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // The single navigation entry point: updates the visible view and keeps
+  // the URL (and therefore the back/forward button and refresh) in sync.
+  // Skip the pushState when the URL already matches — e.g. re-selecting the
+  // current nav item — so we don't pile up no-op history entries.
+  const navigate = useCallback((view: string) => {
+    setCurrentView(view);
+    const href = viewToHref(view);
+    if (href !== window.location.pathname) {
+      window.history.pushState({ view }, "", href);
+    }
+  }, []);
+
+  // Browser back/forward: derive the view from the URL popstate lands on
+  // rather than from event.state, so it also works for entries created
+  // before this history sync existed.
+  useEffect(() => {
+    // setCurrentView directly, not navigate() — the URL has already moved,
+    // so there is nothing to push back onto history.
+    const onPopState = () => {
+      setCurrentView(hrefToView(window.location.pathname));
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -74,7 +104,7 @@ function AppContent() {
     if (currentView.startsWith("product-")) {
       const productId = currentView.replace("product-", "");
       return (
-        <ProductDetail productId={productId} onNavigate={setCurrentView} />
+        <ProductDetail productId={productId} onNavigate={navigate} />
       );
     }
 
@@ -86,7 +116,7 @@ function AppContent() {
           category={catalog.category}
           subcategory={catalog.subcategory}
           searchQuery={searchQuery}
-          onNavigate={setCurrentView}
+          onNavigate={navigate}
         />
       );
     }
@@ -94,54 +124,54 @@ function AppContent() {
     // Other views
     switch (currentView) {
       case "home":
-        return <HomePage onNavigate={setCurrentView} />;
+        return <HomePage onNavigate={navigate} />;
       case "products":
         return (
           <ProductList
             category="all"
             searchQuery={searchQuery}
-            onNavigate={setCurrentView}
+            onNavigate={navigate}
           />
         );
       case "cart":
-        return <Cart onNavigate={setCurrentView} />;
+        return <Cart onNavigate={navigate} />;
       case "checkout":
-        return <Checkout onNavigate={setCurrentView} />;
+        return <Checkout onNavigate={navigate} />;
       case "login":
-        return <Auth onNavigate={setCurrentView} />;
+        return <Auth onNavigate={navigate} />;
       case "account":
-        return <Account onNavigate={setCurrentView} />;
+        return <Account onNavigate={navigate} />;
       case "profile":
-        return <Profile onNavigate={setCurrentView} />;
+        return <Profile onNavigate={navigate} />;
       case "admin":
-        return <AdminDashboard onNavigate={setCurrentView} />;
+        return <AdminDashboard onNavigate={navigate} />;
       case "address":
-        return <AddressManagement onNavigate={setCurrentView} />;
+        return <AddressManagement onNavigate={navigate} />;
       case "settings":
-        return <Settings onNavigate={setCurrentView} />;
+        return <Settings onNavigate={navigate} />;
       case "terms":
-        return <TermsOfService onNavigate={setCurrentView} />;
+        return <TermsOfService onNavigate={navigate} />;
       case "privacy":
-        return <PrivacyPolicy onNavigate={setCurrentView} />;
+        return <PrivacyPolicy onNavigate={navigate} />;
       case "refund":
-        return <RefundPolicy onNavigate={setCurrentView} />;
+        return <RefundPolicy onNavigate={navigate} />;
       case "about":
-        return <AboutUs onNavigate={setCurrentView} />;
+        return <AboutUs onNavigate={navigate} />;
       case "business":
-        return <Business onNavigate={setCurrentView} />;
+        return <Business onNavigate={navigate} />;
       case "gallery":
-        return <Gallery onNavigate={setCurrentView} />;
+        return <Gallery onNavigate={navigate} />;
       case "contact":
-        return <Contact onNavigate={setCurrentView} />;
+        return <Contact onNavigate={navigate} />;
       default:
-        return <HomePage onNavigate={setCurrentView} />;
+        return <HomePage onNavigate={navigate} />;
     }
   };
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Header
-        onNavigate={setCurrentView}
+        onNavigate={navigate}
         currentView={currentView}
         onSearchChange={setSearchQuery}
       />
@@ -158,17 +188,22 @@ function AppContent() {
           </motion.div>
         </AnimatePresence>
       </main>
-      <Footer onNavigate={setCurrentView} />
+      <Footer onNavigate={navigate} />
       <Toaster position="top-center" closeButton />
     </div>
   );
 }
 
-export default function App() {
+interface AppProps {
+  /** The view to render on first paint, resolved server-side from the URL. */
+  initialView?: string;
+}
+
+export default function App({ initialView = "home" }: AppProps) {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <AppContent />
+        <AppContent initialView={initialView} />
       </QueryClientProvider>
     </ErrorBoundary>
   );
