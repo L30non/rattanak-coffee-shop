@@ -58,12 +58,14 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
               </CardHeader>
               <CardContent className="space-y-6">
                 <Alert className="bg-amber-50 border-amber-200">
-                  <AlertTitle>Online payment is currently unavailable</AlertTitle>
+                  <AlertTitle>
+                    Online payment is currently unavailable
+                  </AlertTitle>
                   <AlertDescription>
                     We&apos;re not able to take payments through the website
-                    right now. Please reach out to us directly using the
-                    items in your cart below, and we&apos;ll help you
-                    complete your order.
+                    right now. Please reach out to us directly using the items
+                    in your cart below, and we&apos;ll help you complete your
+                    order.
                   </AlertDescription>
                 </Alert>
 
@@ -116,7 +118,7 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
                         Facebook
                       </a>
                       <a
-                        href="https://t.me/rattanakcoffee"
+                        href="https://t.me/ousenghong"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-gray-700 hover:text-[#5F1B2C] transition-colors"
@@ -165,8 +167,8 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
                     </span>
                   </div>
                   <p className="text-xs text-gray-500">
-                    Final total (including shipping) will be confirmed when
-                    we get in touch with you.
+                    Final total (including shipping) will be confirmed when we
+                    get in touch with you.
                   </p>
                 </div>
               </CardContent>

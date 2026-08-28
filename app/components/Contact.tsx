@@ -296,7 +296,7 @@ export function Contact({ onNavigate }: ContactProps) {
                       </span>
                     </a>
                     <a
-                      href="https://t.me/rattanakcoffee"
+                      href="https://t.me/ousenghong"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-3 p-3 rounded-lg bg-sky-50 hover:bg-sky-100 transition-colors"
