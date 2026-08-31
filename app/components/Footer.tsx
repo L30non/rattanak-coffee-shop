@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react";
+import { Clock, Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react";
 import { Separator } from "@/app/components/ui/separator";
 
 interface FooterProps {
@@ -72,33 +72,17 @@ export function Footer({ onNavigate }: FooterProps) {
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Store Hours */}
           <div>
-            <h4 className="font-semibold mb-4">Legal</h4>
+            <h4 className="font-semibold mb-4">Store Hours</h4>
             <ul className="space-y-2 text-sm">
-              <li>
-                <button
-                  onClick={() => onNavigate("terms")}
-                  className="hover:text-[#D4AF37] transition-colors"
-                >
-                  Terms of Service
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate("privacy")}
-                  className="hover:text-[#D4AF37] transition-colors"
-                >
-                  Privacy Policy
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate("refund")}
-                  className="hover:text-[#D4AF37] transition-colors"
-                >
-                  Refund Policy
-                </button>
+              <li className="flex items-start gap-2">
+                <Clock className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <span>
+                  Mon &ndash; Sat: 8:00 AM &ndash; 5:00 PM
+                  <br />
+                  Sunday: Closed
+                </span>
               </li>
             </ul>
           </div>
@@ -127,10 +111,32 @@ export function Footer({ onNavigate }: FooterProps) {
 
         <Separator className="my-8 bg-gray-600" />
 
-        <div className="text-center text-sm text-gray-400">
+        <div className="text-center text-sm text-gray-400 space-y-2">
           <p>
             © {new Date().getFullYear()} Rattanak Coffee Shop. All rights
             reserved.
+          </p>
+          <p className="flex items-center justify-center gap-2 flex-wrap">
+            <button
+              onClick={() => onNavigate("privacy")}
+              className="hover:text-[#D4AF37] transition-colors"
+            >
+              Privacy Policy
+            </button>
+            <span aria-hidden="true">·</span>
+            <button
+              onClick={() => onNavigate("terms")}
+              className="hover:text-[#D4AF37] transition-colors"
+            >
+              Terms of Service
+            </button>
+            <span aria-hidden="true">·</span>
+            <button
+              onClick={() => onNavigate("refund")}
+              className="hover:text-[#D4AF37] transition-colors"
+            >
+              Refund Policy
+            </button>
           </p>
         </div>
       </div>
