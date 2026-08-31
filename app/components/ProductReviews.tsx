@@ -29,6 +29,7 @@ import {
 import { useAuth } from "@/app/hooks/useAuth";
 import { toast } from "sonner";
 import type { ProductReview } from "@/app/store/useStore";
+import { useI18n } from "@/lib/i18n";
 
 interface ProductReviewsProps {
   productId: string;
@@ -39,6 +40,8 @@ export function ProductReviews({
   productId,
   productName,
 }: ProductReviewsProps) {
+  const { t } = useI18n();
+
   const { user } = useAuth();
   const { data: reviews = [], isLoading } = useProductReviews(productId);
   const createReviewMutation = useCreateReview();
@@ -61,17 +64,17 @@ export function ProductReviews({
     e.preventDefault();
 
     if (!user) {
-      toast.error("Please login to submit a review");
+      toast.error(t("Please login to submit a review"));
       return;
     }
 
     if (rating < 1 || rating > 5) {
-      toast.error("Please select a rating");
+      toast.error(t("Please select a rating"));
       return;
     }
 
     if (!comment.trim()) {
-      toast.error("Please write a review");
+      toast.error(t("Please write a review"));
       return;
     }
 
@@ -83,7 +86,7 @@ export function ProductReviews({
           title: title.trim() || null,
           comment: comment.trim(),
         });
-        toast.success("Review updated successfully!");
+        toast.success(t("Review updated successfully!"));
       } else {
         await createReviewMutation.mutateAsync({
           product_id: productId,
@@ -92,7 +95,7 @@ export function ProductReviews({
           title: title.trim() || null,
           comment: comment.trim(),
         });
-        toast.success("Review submitted successfully!");
+        toast.success(t("Review submitted successfully!"));
       }
 
       setIsDialogOpen(false);
@@ -118,9 +121,9 @@ export function ProductReviews({
 
     try {
       await deleteReviewMutation.mutateAsync({ id: reviewId, productId });
-      toast.success("Review deleted successfully!");
+      toast.success(t("Review deleted successfully!"));
     } catch {
-      toast.error("Failed to delete review");
+      toast.error(t("Failed to delete review"));
     }
   };
 
@@ -185,7 +188,7 @@ export function ProductReviews({
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Customer Reviews</CardTitle>
+            <CardTitle>{t("Customer Reviews")}</CardTitle>
             {user && !userReview && (
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
@@ -195,7 +198,7 @@ export function ProductReviews({
                       resetForm();
                     }}
                   >
-                    Write a Review
+                    {t("Write a Review")}
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
@@ -206,7 +209,7 @@ export function ProductReviews({
                   </DialogHeader>
                   <form onSubmit={handleSubmitReview} className="space-y-4">
                     <div>
-                      <Label htmlFor="product-name">Product</Label>
+                      <Label htmlFor="product-name">{t("Product")}</Label>
                       <Input
                         id="product-name"
                         value={productName}
@@ -216,35 +219,35 @@ export function ProductReviews({
                     </div>
 
                     <div>
-                      <Label>Rating *</Label>
+                      <Label>{t("Rating *")}</Label>
                       <div className="mt-1">{renderStars(rating, true)}</div>
                     </div>
 
                     <div>
-                      <Label htmlFor="title">Title (Optional)</Label>
+                      <Label htmlFor="title">{t("Title (Optional)")}</Label>
                       <Input
                         id="title"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        placeholder="Summarize your review"
+                        placeholder={t("Summarize your review")}
                         maxLength={100}
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="comment">Review *</Label>
+                      <Label htmlFor="comment">{t("Review *")}</Label>
                       <Textarea
                         id="comment"
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
-                        placeholder="Share your experience with this product"
+                        placeholder={t("Share your experience with this product")}
                         rows={5}
                         required
                         minLength={10}
                         maxLength={1000}
                       />
                       <p className="text-xs text-gray-500 mt-1">
-                        {comment.length}/1000 characters
+                        {t("{count}/1000 characters", { count: comment.length })}
                       </p>
                     </div>
 
@@ -272,7 +275,7 @@ export function ProductReviews({
                           resetForm();
                         }}
                       >
-                        Cancel
+                        {t("Cancel")}
                       </Button>
                     </div>
                   </form>
@@ -288,8 +291,8 @@ export function ProductReviews({
             </div>
           ) : reviews.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
-              <p className="mb-2">No reviews yet</p>
-              <p className="text-sm">Be the first to review this product!</p>
+              <p className="mb-2">{t("No reviews yet")}</p>
+              <p className="text-sm">{t("Be the first to review this product!")}</p>
             </div>
           ) : (
             <div className="space-y-6">
@@ -301,7 +304,7 @@ export function ProductReviews({
                   </div>
                   {renderStars(Math.round(parseFloat(averageRating)))}
                   <p className="text-sm text-gray-600 mt-2">
-                    Based on {reviews.length} review
+                    {t("Based on {count} review", { count: reviews.length })}
                     {reviews.length !== 1 ? "s" : ""}
                   </p>
                 </div>
@@ -353,7 +356,7 @@ export function ProductReviews({
                               </span>
                               {review.user_id === user?.id && (
                                 <Badge variant="secondary" className="text-xs">
-                                  Your review
+                                  {t("Your review")}
                                 </Badge>
                               )}
                             </div>

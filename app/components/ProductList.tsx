@@ -35,6 +35,7 @@ import {
   needsSelection,
   resolveUnitPrice,
 } from "@/lib/beans";
+import { useI18n } from "@/lib/i18n";
 
 interface ProductListProps {
   category?: "machines" | "beans" | "accessories" | "ingredients" | "all";
@@ -72,6 +73,8 @@ export function ProductList({
   searchQuery = "",
   onNavigate,
 }: ProductListProps) {
+  const { t } = useI18n();
+
   // Use React Query hook instead of local store
   const { data: products = [], isLoading } = useMultipleProducts(
     category,
@@ -188,7 +191,9 @@ export function ProductList({
     addToCart(product, 1, variant, unitPrice);
     const summary = formatVariant(variant);
     toast.success(
-      `${product.name}${summary ? ` (${summary})` : ""} added to cart!`,
+      t("{name} added to cart!", {
+        name: `${product.name}${summary ? ` (${summary})` : ""}`,
+      }),
     );
   };
 
@@ -198,11 +203,15 @@ export function ProductList({
     : undefined;
 
   const getCategoryTitle = () => {
-    return activeSubcategory?.title ?? activeCategory?.title ?? "All Products";
+    return t(
+      activeSubcategory?.title ?? activeCategory?.title ?? "All Products",
+    );
   };
 
   const getCategoryDescription = () => {
-    return activeSubcategory?.description ?? activeCategory?.description ?? null;
+    const description =
+      activeSubcategory?.description ?? activeCategory?.description;
+    return description ? t(description) : null;
   };
 
   return (
@@ -220,8 +229,17 @@ export function ProductList({
             {isLoading
               ? "Loading products…"
               : totalPages > 1
-                ? `Showing ${(currentPage - 1) * PRODUCTS_PER_PAGE + 1}–${Math.min(currentPage * PRODUCTS_PER_PAGE, filteredProducts.length)} of ${filteredProducts.length} products`
-                : `${filteredProducts.length} product${filteredProducts.length !== 1 ? "s" : ""} found`}
+                ? t("Showing {from}–{to} of {total} products", {
+                    from: (currentPage - 1) * PRODUCTS_PER_PAGE + 1,
+                    to: Math.min(
+                      currentPage * PRODUCTS_PER_PAGE,
+                      filteredProducts.length,
+                    ),
+                    total: filteredProducts.length,
+                  })
+                : t("{count} products found", {
+                    count: filteredProducts.length,
+                  })}
           </p>
         </div>
 
@@ -232,14 +250,14 @@ export function ProductList({
               <Filter className="h-4 w-4 text-gray-500" />
               <Select value={priceFilter} onValueChange={setPriceFilter}>
                 <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="Price Range" />
+                  <SelectValue placeholder={t("Price Range")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Prices</SelectItem>
-                  <SelectItem value="under50">Under $50</SelectItem>
+                  <SelectItem value="all">{t("All Prices")}</SelectItem>
+                  <SelectItem value="under50">{t("Under $50")}</SelectItem>
                   <SelectItem value="50to100">$50 - $100</SelectItem>
                   <SelectItem value="100to500">$100 - $500</SelectItem>
-                  <SelectItem value="over500">Over $500</SelectItem>
+                  <SelectItem value="over500">{t("Over $500")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -247,13 +265,13 @@ export function ProductList({
 
           <Select value={sortBy} onValueChange={setSortBy}>
             <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Sort By" />
+              <SelectValue placeholder={t("Sort By")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="name">Name (A-Z)</SelectItem>
-              <SelectItem value="price-low">Price (Low to High)</SelectItem>
-              <SelectItem value="price-high">Price (High to Low)</SelectItem>
-              <SelectItem value="rating">Highest Rated</SelectItem>
+              <SelectItem value="name">{t("Name (A-Z)")}</SelectItem>
+              <SelectItem value="price-low">{t("Price (Low to High)")}</SelectItem>
+              <SelectItem value="price-high">{t("Price (High to Low)")}</SelectItem>
+              <SelectItem value="rating">{t("Highest Rated")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -297,9 +315,9 @@ export function ProductList({
             ))
           ) : filteredProducts.length === 0 ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-gray-500 text-lg mb-4">No products found</p>
+              <p className="text-gray-500 text-lg mb-4">{t("No products found")}</p>
               <Button onClick={() => onNavigate("products")} variant="outline">
-                View All Products
+                {t("View All Products")}
               </Button>
             </div>
           ) : (
@@ -327,12 +345,12 @@ export function ProductList({
                       />
                       {product.stock < 10 && product.stock > 0 && (
                         <Badge className="absolute top-2 right-2 bg-orange-500 z-10">
-                          Low Stock
+                          {t("Low Stock")}
                         </Badge>
                       )}
                       {product.stock === 0 && (
                         <Badge className="absolute top-2 right-2 bg-red-500 z-10">
-                          Out of Stock
+                          {t("Out of Stock")}
                         </Badge>
                       )}
                     </div>
@@ -369,12 +387,12 @@ export function ProductList({
                       {/* Additional Info */}
                       {product.roast_level && (
                         <p className="text-xs text-gray-500 mb-2">
-                          Roast: {product.roast_level}
+                          {t("Roast: {value}", { value: product.roast_level })}
                         </p>
                       )}
                       {product.origin && (
                         <p className="text-xs text-gray-500 mb-2">
-                          Origin: {product.origin}
+                          {t("Origin: {value}", { value: product.origin })}
                         </p>
                       )}
 
@@ -382,7 +400,7 @@ export function ProductList({
                         <p className="text-xl font-bold text-[#3d1620]">
                           {getWeightOptions(product).length > 1 && (
                             <span className="text-xs font-normal text-gray-500 mr-1">
-                              from
+                              {t("from")}
                             </span>
                           )}
                           ${lowestPrice(product).toFixed(2)}

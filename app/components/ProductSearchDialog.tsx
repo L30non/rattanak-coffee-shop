@@ -12,6 +12,7 @@ import { Badge } from "@/app/components/ui/badge";
 import { getImageUrl } from "@/utils/supabase/client";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { useSearchProducts } from "@/app/hooks/useProducts";
+import { useI18n } from "@/lib/i18n";
 
 interface ProductSearchDialogProps {
   open: boolean;
@@ -24,6 +25,8 @@ export function ProductSearchDialog({
   onOpenChange,
   onNavigate,
 }: ProductSearchDialogProps) {
+  const { t } = useI18n();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
@@ -76,7 +79,7 @@ export function ProductSearchDialog({
   return (
     <CommandDialog open={open} onOpenChange={handleOpenChange}>
       <CommandInput
-        placeholder="Search products by name, category, or description..."
+        placeholder={t("Search products by name, category, or description...")}
         value={searchQuery}
         onValueChange={setSearchQuery}
       />
@@ -89,9 +92,9 @@ export function ProductSearchDialog({
 
         {error && searchQuery.length >= 2 && !isLoading && (
           <div className="flex flex-col items-center justify-center py-6 text-center">
-            <p className="text-sm text-red-500 mb-2">Error loading results</p>
+            <p className="text-sm text-red-500 mb-2">{t("Error loading results")}</p>
             <p className="text-xs text-gray-400">
-              Unable to load search results
+              {t("Unable to load search results")}
             </p>
           </div>
         )}
@@ -101,7 +104,7 @@ export function ProductSearchDialog({
             <div className="flex flex-col items-center justify-center py-6 text-center">
               <Search className="h-8 w-8 text-gray-300 mb-2" />
               <p className="text-sm text-gray-500">
-                Type at least 2 characters to search
+                {t("Type at least 2 characters to search")}
               </p>
             </div>
           </CommandEmpty>
@@ -114,9 +117,9 @@ export function ProductSearchDialog({
             <CommandEmpty>
               <div className="flex flex-col items-center justify-center py-6 text-center">
                 <Package className="h-8 w-8 text-gray-300 mb-2" />
-                <p className="text-sm text-gray-500">No products found</p>
+                <p className="text-sm text-gray-500">{t("No products found")}</p>
                 <p className="text-xs text-gray-400 mt-1">
-                  Try different keywords
+                  {t("Try different keywords")}
                 </p>
               </div>
             </CommandEmpty>

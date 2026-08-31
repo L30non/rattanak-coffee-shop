@@ -6,6 +6,8 @@
  * a cycle — helpers take the structural shape they need instead of `Product`.
  */
 
+import { msg } from "@/lib/i18n/config";
+
 export type GrindType = "whole" | "ground";
 
 export interface GrindOption {
@@ -17,13 +19,13 @@ export interface GrindOption {
 export const GRIND_OPTIONS: GrindOption[] = [
   {
     value: "whole",
-    label: "Coffee Beans",
-    description: "Whole beans — grind fresh at home",
+    label: msg("Coffee Beans"),
+    description: msg("Whole beans — grind fresh at home"),
   },
   {
     value: "ground",
-    label: "Ground Coffee",
-    description: "Pre-ground powder — ready to brew",
+    label: msg("Ground Coffee"),
+    description: msg("Pre-ground powder — ready to brew"),
   },
 ];
 

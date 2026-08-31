@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 const QR_EXPIRY_SECONDS = 5 * 60; // 5 minutes
 const POLL_INTERVAL_MS = 3000; // Check every 3 seconds
@@ -41,6 +42,8 @@ export function BakongPayment({
   orderId,
   onVerified,
 }: BakongPaymentProps) {
+  const { t } = useI18n();
+
   const [khqrData, setKhqrData] = useState<KHQRData | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
@@ -100,7 +103,7 @@ export function BakongPayment({
         }
 
         setIsVerified(true);
-        toast.success("Payment received! Processing your order...");
+        toast.success(t("Payment received! Processing your order..."));
 
         if (onVerified) {
           onVerified(result.transactionId);
@@ -109,7 +112,7 @@ export function BakongPayment({
     } catch (err) {
       // Continue polling on error - don't show error to user for background checks
     }
-  }, [khqrData, isVerified, isExpired, onVerified]);
+  }, [khqrData, isVerified, isExpired, onVerified, t]);
 
   // Start polling when QR is generated
   useEffect(() => {
@@ -202,7 +205,7 @@ export function BakongPayment({
         <CardContent className="pt-6">
           <div className="flex flex-col items-center justify-center py-8">
             <Loader2 className="h-8 w-8 animate-spin text-[#5F1B2C] mb-4" />
-            <p className="text-gray-600">Generating QR code...</p>
+            <p className="text-gray-600">{t("Generating QR code...")}</p>
           </div>
         </CardContent>
       </Card>
@@ -223,7 +226,7 @@ export function BakongPayment({
             className="w-full mt-4"
             variant="outline"
           >
-            Try Again
+            {t("Try Again")}
           </Button>
         </CardContent>
       </Card>
@@ -236,19 +239,19 @@ export function BakongPayment({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <QrCode className="h-5 w-5 text-[#5F1B2C]" />
-          Bakong KHQR Payment
+          {t("Bakong KHQR Payment")}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Instructions */}
         <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h4 className="font-medium text-blue-900 mb-2">How to Pay</h4>
+          <h4 className="font-medium text-blue-900 mb-2">{t("How to Pay")}</h4>
           <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
-            <li>Open your banking app (ABA, ACLEDA, Wing, etc.)</li>
-            <li>Select &quot;Scan QR&quot; or &quot;Bakong QR&quot;</li>
-            <li>Scan the QR code below</li>
-            <li>Complete the payment in your app</li>
-            <li>Wait for automatic verification (no action needed)</li>
+            <li>{t("Open your banking app (ABA, ACLEDA, Wing, etc.)")}</li>
+            <li>{t("Select \"Scan QR\" or \"Bakong QR\"")}</li>
+            <li>{t("Scan the QR code below")}</li>
+            <li>{t("Complete the payment in your app")}</li>
+            <li>{t("Wait for automatic verification (no action needed)")}</li>
           </ol>
         </div>
 
@@ -267,12 +270,12 @@ export function BakongPayment({
               <Clock className={`h-4 w-4 ${timerColor}`} />
               {isExpired ? (
                 <span className="text-sm font-medium text-red-600">
-                  QR Code Expired
+                  {t("QR Code Expired")}
                 </span>
               ) : (
                 <>
                   <span className={`text-sm font-medium ${timerColor}`}>
-                    Expires in
+                    {t("Expires in")}
                   </span>
                   <span className={`text-lg font-mono font-bold ${timerColor}`}>
                     {formatTime(secondsLeft)}
@@ -298,7 +301,7 @@ export function BakongPayment({
                 />
                 {!isExpired && (
                   <p className="text-xs text-gray-500 mt-2">
-                    Scan with your banking app
+                    {t("Scan with your banking app")}
                   </p>
                 )}
               </div>
@@ -307,18 +310,18 @@ export function BakongPayment({
             {/* Payment Details */}
             <div className="w-full p-4 bg-gray-50 rounded-lg space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Amount:</span>
+                <span className="text-gray-600">{t("Amount:")}</span>
                 <span className="font-bold text-[#5F1B2C]">
                   ${khqrData.amount.toFixed(2)} {khqrData.currency}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Merchant:</span>
-                <span className="font-medium">Rattanak Coffee Shop</span>
+                <span className="text-gray-600">{t("Merchant:")}</span>
+                <span className="font-medium">{t("Rattanak Coffee Shop")}</span>
               </div>
               {orderId && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Order ID:</span>
+                  <span className="text-gray-600">{t("Order ID:")}</span>
                   <span className="font-mono text-xs">
                     {orderId.substring(0, 8)}
                   </span>
@@ -331,7 +334,7 @@ export function BakongPayment({
               <Alert className="bg-green-50 border-green-200 w-full">
                 <CheckCircle className="h-4 w-4 text-green-600" />
                 <AlertDescription className="text-green-800">
-                  Payment verified successfully! Your order is being processed.
+                  {t("Payment verified successfully! Your order is being processed.")}
                 </AlertDescription>
               </Alert>
             ) : isExpired ? (
@@ -339,7 +342,7 @@ export function BakongPayment({
                 <Alert variant="destructive" className="w-full">
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
-                    QR code has expired. Please generate a new one to continue.
+                    {t("QR code has expired. Please generate a new one to continue.")}
                   </AlertDescription>
                 </Alert>
                 <Button
@@ -348,7 +351,7 @@ export function BakongPayment({
                   size="lg"
                 >
                   <RefreshCw className="mr-2 h-4 w-4" />
-                  Generate New QR Code
+                  {t("Generate New QR Code")}
                 </Button>
               </>
             ) : (
@@ -356,8 +359,7 @@ export function BakongPayment({
                 <div className="flex items-center gap-2 text-sm text-blue-800">
                   <Loader2 className="h-4 w-4 animate-spin" />
                   <span>
-                    Waiting for payment... Checking automatically every 3
-                    seconds
+                    {t("Waiting for payment... Checking automatically every 3 seconds")}
                   </span>
                 </div>
               </div>

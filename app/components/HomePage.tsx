@@ -6,6 +6,7 @@ import { useMultipleProducts } from "@/app/hooks/useProducts";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { getImageUrl } from "@/utils/supabase/client";
 import { CATEGORIES, type CategoryValue } from "@/lib/categories";
+import { useI18n } from "@/lib/i18n";
 
 const CATEGORY_ICONS: Record<CategoryValue, string> = {
   machines: "☕",
@@ -19,6 +20,8 @@ interface HomePageProps {
 }
 
 export function HomePage({ onNavigate }: HomePageProps) {
+  const { t } = useI18n();
+
   const { data: products = [], isLoading, error } = useMultipleProducts();
 
   const featuredProducts = products.slice(0, 4);
@@ -31,7 +34,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
         <div className="absolute inset-0 z-0">
           <ImageWithFallback
             src="https://qboxqdnuoqpsrmqtaaaf.supabase.co/storage/v1/object/public/Images/branding/brownroaster.jpg"
-            alt="Coffee background"
+            alt={t("Coffee background")}
             fill
             className="object-cover"
             priority
@@ -44,18 +47,15 @@ export function HomePage({ onNavigate }: HomePageProps) {
         <div className="container relative z-10 mx-auto px-4 py-24">
           <div className="max-w-3xl">
             <p className="uppercase tracking-widest text-sm text-rose-200 mb-3">
-              Roasting greatness since 1997
+              {t("Roasting greatness since 1997")}
             </p>
             <h1 className="text-5xl md:text-6xl mb-6">
-              Roasting coffee
+              {t("Roasting coffee")}
               <br />
-              <span className="text-rose-200">with passion and expertise.</span>
+              <span className="text-rose-200">{t("with passion and expertise.")}</span>
             </h1>
             <p className="text-xl mb-8 text-rose-100">
-              Made locally, distributed globally — Rattanak Coffee is your
-              trusted source and one of Cambodia&apos;s leading suppliers for
-              everything coffee, from beans to machines to business
-              consulting.
+              {t("Made locally, distributed globally — Rattanak Coffee is your trusted source and one of Cambodia's leading suppliers for everything coffee, from beans to machines to business consulting.")}
             </p>
             <div className="flex flex-wrap gap-4">
               <Button
@@ -64,7 +64,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 className="bg-white text-[#3d1620] hover:bg-rose-50"
               >
                 <ShoppingBag className="mr-2 h-5 w-5" />
-                Shop Now
+                {t("Shop Now")}
               </Button>
               <Button
                 size="lg"
@@ -72,7 +72,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 onClick={() => onNavigate("beans")}
                 className="border-white text-white bg-[#5F1B2C]/50 hover:bg-white hover:text-[#3d1620] hover:border-[#3d1620]"
               >
-                Explore Beans
+                {t("Explore Beans")}
               </Button>
             </div>
           </div>
@@ -109,12 +109,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     </div>
                     <div>
                       <h3 className="font-semibold text-lg mb-1">
-                        Coffee Beans
+                        {t("Coffee Beans")}
                       </h3>
                       <p className="text-sm text-gray-600">
-                        Sourced from the hills of Cambodia to specialty
-                        blends from across the globe, we craft coffee for
-                        every palate.
+                        {t("Sourced from the hills of Cambodia to specialty blends from across the globe, we craft coffee for every palate.")}
                       </p>
                     </div>
                   </div>
@@ -136,12 +134,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     </div>
                     <div>
                       <h3 className="font-semibold text-lg mb-1">
-                        Coffee Machines
+                        {t("Coffee Machines")}
                       </h3>
                       <p className="text-sm text-gray-600">
-                        Your one-stop shop for every coffee machine and
-                        accessory — tell us what you need and we&apos;ll
-                        find the perfect choice.
+                        {t("Your one-stop shop for every coffee machine and accessory — tell us what you need and we'll find the perfect choice.")}
                       </p>
                     </div>
                   </div>
@@ -163,11 +159,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     </div>
                     <div>
                       <h3 className="font-semibold text-lg mb-1">
-                        Coffee Business
+                        {t("Coffee Business")}
                       </h3>
                       <p className="text-sm text-gray-600">
-                        Dream of starting your own café? Consult with us and
-                        launch your coffee brand for as low as $3,000.
+                        {t("Dream of starting your own café? Consult with us and launch your coffee brand for as low as $3,000.")}
                       </p>
                     </div>
                   </div>
@@ -182,9 +177,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl mb-4">Featured Products</h2>
+            <h2 className="text-3xl md:text-4xl mb-4">{t("Featured Products")}</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Explore our handpicked selection of premium coffee products
+              {t("Explore our handpicked selection of premium coffee products")}
             </p>
           </div>
 
@@ -226,13 +221,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
             ) : error ? (
               <div className="col-span-full text-center py-12">
                 <p className="text-red-600">
-                  Failed to load products. Please try again later.
+                  {t("Failed to load products. Please try again later.")}
                 </p>
               </div>
             ) : featuredProducts.length === 0 ? (
               <div className="col-span-full text-center py-12">
                 <p className="text-gray-600">
-                  No products available at the moment.
+                  {t("No products available at the moment.")}
                 </p>
               </div>
             ) : (
@@ -283,7 +278,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               onClick={() => onNavigate("products")}
               className="bg-[#5F1B2C] hover:bg-[#4a1523]"
             >
-              View All Products
+              {t("View All Products")}
             </Button>
           </div>
         </div>
@@ -293,9 +288,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
       <section className="py-16 bg-rose-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl mb-4">Shop by Category</h2>
+            <h2 className="text-3xl md:text-4xl mb-4">{t("Shop by Category")}</h2>
             <p className="text-gray-600">
-              Everything you need for the perfect coffee experience
+              {t("Everything you need for the perfect coffee experience")}
             </p>
           </div>
 
@@ -331,7 +326,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                       {CATEGORY_ICONS[category.value]}
                     </div>
                     <h3 className="font-semibold text-xl group-hover:text-[#5F1B2C] transition-colors">
-                      {category.label}
+                      {t(category.label)}
                     </h3>
                   </CardContent>
                 </Card>
@@ -345,18 +340,17 @@ export function HomePage({ onNavigate }: HomePageProps) {
       <section className="py-20 bg-gradient-to-r from-[#4a1523] to-[#5F1B2C] text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl mb-6">
-            Ready to Start Your Coffee Journey?
+            {t("Ready to Start Your Coffee Journey?")}
           </h2>
           <p className="text-xl mb-8 text-rose-100 max-w-2xl mx-auto">
-            Join thousands of coffee enthusiasts who trust us for their daily
-            brew
+            {t("Join thousands of coffee enthusiasts who trust us for their daily brew")}
           </p>
           <Button
             size="lg"
             onClick={() => onNavigate("products")}
             className="bg-white text-[#3d1620] hover:bg-rose-50"
           >
-            Start Shopping
+            {t("Start Shopping")}
           </Button>
         </div>
       </section>

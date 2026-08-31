@@ -13,8 +13,11 @@ import {
 } from "@/app/components/ui/card";
 import { useAuth } from "@/app/hooks/useAuth";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 export function SecurityChangePassword() {
+  const { t } = useI18n();
+
   const { changePassword } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
@@ -35,27 +38,27 @@ export function SecurityChangePassword() {
 
     // Validation
     if (!formData.currentPassword.trim()) {
-      toast.error("Current password is required");
+      toast.error(t("Current password is required"));
       return;
     }
 
     if (!formData.newPassword.trim()) {
-      toast.error("New password is required");
+      toast.error(t("New password is required"));
       return;
     }
 
     if (formData.newPassword.length < 6) {
-      toast.error("New password must be at least 6 characters");
+      toast.error(t("New password must be at least 6 characters"));
       return;
     }
 
     if (formData.newPassword !== formData.confirmPassword) {
-      toast.error("New passwords do not match");
+      toast.error(t("New passwords do not match"));
       return;
     }
 
     if (formData.currentPassword === formData.newPassword) {
-      toast.error("New password must be different from current password");
+      toast.error(t("New password must be different from current password"));
       return;
     }
 
@@ -66,7 +69,7 @@ export function SecurityChangePassword() {
     );
 
     if (result.success) {
-      toast.success("Password changed successfully");
+      toast.success(t("Password changed successfully"));
       setFormData({
         currentPassword: "",
         newPassword: "",
@@ -82,9 +85,9 @@ export function SecurityChangePassword() {
   return (
     <Card className="border-0 shadow-none">
       <CardHeader className="pb-4">
-        <CardTitle className="text-lg">Change Password</CardTitle>
+        <CardTitle className="text-lg">{t("Change Password")}</CardTitle>
         <CardDescription>
-          Update your password to keep your account secure
+          {t("Update your password to keep your account secure")}
         </CardDescription>
       </CardHeader>
 
@@ -92,45 +95,45 @@ export function SecurityChangePassword() {
         <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
           {/* Current Password */}
           <div className="space-y-2">
-            <Label htmlFor="currentPassword">Current Password *</Label>
+            <Label htmlFor="currentPassword">{t("Current Password *")}</Label>
             <Input
               id="currentPassword"
               name="currentPassword"
               type="password"
               value={formData.currentPassword}
               onChange={handleInputChange}
-              placeholder="Enter your current password"
+              placeholder={t("Enter your current password")}
               required
             />
           </div>
 
           {/* New Password */}
           <div className="space-y-2">
-            <Label htmlFor="newPassword">New Password *</Label>
+            <Label htmlFor="newPassword">{t("New Password *")}</Label>
             <Input
               id="newPassword"
               name="newPassword"
               type="password"
               value={formData.newPassword}
               onChange={handleInputChange}
-              placeholder="Enter your new password"
+              placeholder={t("Enter your new password")}
               required
             />
             <p className="text-xs text-gray-500">
-              Must be at least 6 characters
+              {t("Must be at least 6 characters")}
             </p>
           </div>
 
           {/* Confirm Password */}
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm New Password *</Label>
+            <Label htmlFor="confirmPassword">{t("Confirm New Password *")}</Label>
             <Input
               id="confirmPassword"
               name="confirmPassword"
               type="password"
               value={formData.confirmPassword}
               onChange={handleInputChange}
-              placeholder="Confirm your new password"
+              placeholder={t("Confirm your new password")}
               required
             />
           </div>
@@ -149,8 +152,7 @@ export function SecurityChangePassword() {
           {/* Info Box */}
           <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-sm text-blue-900">
-              <strong>Security Tip:</strong> Use a strong password with a mix of
-              uppercase, lowercase, numbers, and special characters.
+              <strong>{t("Security Tip:")}</strong> {t("Use a strong password with a mix of uppercase, lowercase, numbers, and special characters.")}
             </p>
           </div>
         </form>

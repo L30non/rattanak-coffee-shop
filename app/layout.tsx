@@ -1,8 +1,24 @@
 import type { Metadata } from "next";
+import { Noto_Sans_Khmer } from "next/font/google";
 import "../styles/index.css";
 import "../styles/tailwind.css";
 import "../styles/theme.css";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo";
+import { LOCALE_STORAGE_KEY } from "@/lib/i18n/config";
+
+// Khmer script renders as tofu boxes in most default stacks, so the font is
+// loaded up front and applied by the :lang(km) rule in styles/theme.css.
+const notoSansKhmer = Noto_Sans_Khmer({
+  subsets: ["khmer"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-khmer",
+  display: "swap",
+});
+
+// Applies the stored locale to <html lang> before first paint. Without this
+// the page would paint English-fonted markup for a frame before hydration
+// restores Khmer.
+const LOCALE_BOOTSTRAP = `try{var l=localStorage.getItem(${JSON.stringify(LOCALE_STORAGE_KEY)});if(l==="km"){document.documentElement.lang="km"}}catch(e){}`;
 
 const LOGO_URL =
   "https://qboxqdnuoqpsrmqtaaaf.supabase.co/storage/v1/object/public/Images/branding/Rattanak.webp";
@@ -74,8 +90,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={notoSansKhmer.variable}>
       <body>
+        <script dangerouslySetInnerHTML={{ __html: LOCALE_BOOTSTRAP }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}

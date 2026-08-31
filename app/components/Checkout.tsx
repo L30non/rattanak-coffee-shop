@@ -32,12 +32,15 @@ import {
 import { formatVariant } from "@/lib/beans";
 import { useCreateOrder } from "@/app/hooks/useProducts";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 interface CheckoutProps {
   onNavigate: (view: string) => void;
 }
 
 export function Checkout({ onNavigate }: CheckoutProps) {
+  const { t } = useI18n();
+
   const cart = useStore((state) => state.cart);
   const clearCart = useStore((state) => state.clearCart);
   const user = useStore((state) => state.user);
@@ -159,7 +162,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
       !formData.city ||
       !formData.zipCode
     ) {
-      toast.error("Please fill in all shipping information");
+      toast.error(t("Please fill in all shipping information"));
       return;
     }
     setStep("payment");
@@ -175,7 +178,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
 
     // For Bakong, ensure payment is verified first
     if (paymentMethod === "bakong" && !bakongVerified) {
-      toast.error("Please complete and verify your Bakong payment first.");
+      toast.error(t("Please complete and verify your Bakong payment first."));
       return;
     }
 
@@ -207,13 +210,13 @@ export function Checkout({ onNavigate }: CheckoutProps) {
           if (response.ok) {
             const { address: savedAddress } = await response.json();
             addAddress(savedAddress);
-            toast.success("Address saved for future orders!");
+            toast.success(t("Address saved for future orders!"));
           } else {
             throw new Error("Failed to save address");
           }
         } catch (saveError) {
           console.error("Failed to save address:", saveError);
-          toast.warning("Could not save address, but continuing with order...");
+          toast.warning(t("Could not save address, but continuing with order..."));
         }
       }
 
@@ -250,7 +253,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
           : "Order placed successfully!",
       );
     } catch (error) {
-      toast.error("Failed to place order. Please try again.");
+      toast.error(t("Failed to place order. Please try again."));
       console.error("Order error:", error);
     } finally {
       setIsProcessing(false);
@@ -270,8 +273,8 @@ export function Checkout({ onNavigate }: CheckoutProps) {
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center py-20">
-            <p className="text-lg mb-4">Please login to checkout</p>
-            <Button onClick={() => onNavigate("login")}>Login</Button>
+            <p className="text-lg mb-4">{t("Please login to checkout")}</p>
+            <Button onClick={() => onNavigate("login")}>{t("Login")}</Button>
           </div>
         </div>
       </div>
@@ -283,9 +286,9 @@ export function Checkout({ onNavigate }: CheckoutProps) {
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center py-20">
-            <p className="text-lg mb-4">Your cart is empty</p>
+            <p className="text-lg mb-4">{t("Your cart is empty")}</p>
             <Button onClick={() => onNavigate("products")}>
-              Continue Shopping
+              {t("Continue Shopping")}
             </Button>
           </div>
         </div>
@@ -314,20 +317,19 @@ export function Checkout({ onNavigate }: CheckoutProps) {
             >
               <CheckCircle className="h-20 w-20 mx-auto mb-4 text-green-500" />
             </motion.div>
-            <h2 className="text-3xl mb-2">Order Placed Successfully!</h2>
+            <h2 className="text-3xl mb-2">{t("Order Placed Successfully!")}</h2>
             <p className="text-gray-600 mb-6">
-              Thank you for your order. We&apos;ll send you a confirmation email
-              shortly.
+              {t("Thank you for your order. We'll send you a confirmation email shortly.")}
             </p>
             <div className="flex gap-4 justify-center">
               <Button
                 onClick={() => onNavigate("account")}
                 className="bg-[#5F1B2C] hover:bg-[#4a1523]"
               >
-                View Orders
+                {t("View Orders")}
               </Button>
               <Button variant="outline" onClick={() => onNavigate("products")}>
-                Continue Shopping
+                {t("Continue Shopping")}
               </Button>
             </div>
           </div>
@@ -345,7 +347,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
           className="mb-6"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Cart
+          {t("Back to Cart")}
         </Button>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -362,13 +364,13 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                 >
                   <Card>
                     <CardHeader>
-                      <CardTitle>Shipping Information</CardTitle>
+                      <CardTitle>{t("Shipping Information")}</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <form onSubmit={handleSubmitInfo} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <Label htmlFor="fullName">Full Name *</Label>
+                            <Label htmlFor="fullName">{t("Full Name *")}</Label>
                             <Input
                               id="fullName"
                               name="fullName"
@@ -378,7 +380,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                             />
                           </div>
                           <div>
-                            <Label htmlFor="email">Email *</Label>
+                            <Label htmlFor="email">{t("Email *")}</Label>
                             <Input
                               id="email"
                               name="email"
@@ -391,7 +393,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                         </div>
 
                         <div>
-                          <Label htmlFor="phone">Phone Number *</Label>
+                          <Label htmlFor="phone">{t("Phone Number *")}</Label>
                           <Input
                             id="phone"
                             name="phone"
@@ -407,18 +409,18 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                           <div>
                             <Label htmlFor="saved-address">
                               <MapPin className="inline h-4 w-4 mr-1" />
-                              Use Saved Address
+                              {t("Use Saved Address")}
                             </Label>
                             <Select
                               value={selectedAddressId || "manual"}
                               onValueChange={handleAddressSelect}
                             >
                               <SelectTrigger id="saved-address">
-                                <SelectValue placeholder="Select a saved address" />
+                                <SelectValue placeholder={t("Select a saved address")} />
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="manual">
-                                  Enter address manually
+                                  {t("Enter address manually")}
                                 </SelectItem>
                                 {addresses.map((address) => (
                                   <SelectItem
@@ -437,7 +439,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                         )}
 
                         <div>
-                          <Label htmlFor="address">Address *</Label>
+                          <Label htmlFor="address">{t("Address *")}</Label>
                           <Input
                             id="address"
                             name="address"
@@ -449,7 +451,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <Label htmlFor="city">City *</Label>
+                            <Label htmlFor="city">{t("City *")}</Label>
                             <Input
                               id="city"
                               name="city"
@@ -459,7 +461,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                             />
                           </div>
                           <div>
-                            <Label htmlFor="zipCode">ZIP Code *</Label>
+                            <Label htmlFor="zipCode">{t("ZIP Code *")}</Label>
                             <Input
                               id="zipCode"
                               name="zipCode"
@@ -494,7 +496,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                                   htmlFor="saveAddress"
                                   className="text-sm font-medium cursor-pointer"
                                 >
-                                  Save this address for future orders
+                                  {t("Save this address for future orders")}
                                 </Label>
                               </div>
 
@@ -509,11 +511,11 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                                       htmlFor="addressLabel"
                                       className="text-sm"
                                     >
-                                      Address Label (optional)
+                                      {t("Address Label (optional)")}
                                     </Label>
                                     <Input
                                       id="addressLabel"
-                                      placeholder="e.g., Home, Work, Office"
+                                      placeholder={t("e.g., Home, Work, Office")}
                                       value={addressLabel}
                                       onChange={(e) =>
                                         setAddressLabel(e.target.value)
@@ -533,7 +535,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                                       htmlFor="setAsDefault"
                                       className="text-sm cursor-pointer"
                                     >
-                                      Set as default shipping address
+                                      {t("Set as default shipping address")}
                                     </Label>
                                   </div>
                                 </motion.div>
@@ -545,7 +547,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                           type="submit"
                           className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
                         >
-                          Continue to Payment
+                          {t("Continue to Payment")}
                         </Button>
                       </form>
                     </CardContent>
@@ -561,7 +563,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                 >
                   <Card>
                     <CardHeader>
-                      <CardTitle>Payment Method</CardTitle>
+                      <CardTitle>{t("Payment Method")}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
                       {/* Payment Method Selector */}
@@ -595,10 +597,10 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                                     : "text-gray-700"
                                 }`}
                               >
-                                Cash on Delivery
+                                {t("Cash on Delivery")}
                               </p>
                               <p className="text-xs text-gray-500">
-                                Pay when delivered
+                                {t("Pay when delivered")}
                               </p>
                             </div>
                           </div>
@@ -631,10 +633,10 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                                     : "text-gray-700"
                                 }`}
                               >
-                                Bakong KHQR
+                                {t("Bakong KHQR")}
                               </p>
                               <p className="text-xs text-gray-500">
-                                Scan &amp; pay instantly
+                                {t("Scan & pay instantly")}
                               </p>
                             </div>
                           </div>
@@ -652,15 +654,14 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                               <Truck className="h-5 w-5 text-[#5F1B2C] mt-0.5" />
                               <div>
                                 <h4 className="font-medium text-[#3d1620]">
-                                  Cash on Delivery
+                                  {t("Cash on Delivery")}
                                 </h4>
                                 <p className="text-sm text-[#5F1B2C] mt-1">
-                                  Please prepare exact amount:{" "}
+                                  {t("Please prepare exact amount:")}{" "}
                                   <strong>${total.toFixed(2)}</strong>
                                 </p>
                                 <p className="text-xs text-gray-600 mt-2">
-                                  Our delivery partner will collect payment when
-                                  your order arrives.
+                                  {t("Our delivery partner will collect payment when your order arrives.")}
                                 </p>
                               </div>
                             </div>
@@ -674,7 +675,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                               className="flex-1"
                               disabled={isProcessing}
                             >
-                              Back
+                              {t("Back")}
                             </Button>
                             <Button
                               type="submit"
@@ -695,7 +696,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                           {isProcessing && (
                             <div className="flex items-center justify-center gap-2 text-sm text-gray-600 py-2">
                               <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#5F1B2C] border-t-transparent" />
-                              Creating your order...
+                              {t("Creating your order...")}
                             </div>
                           )}
 
@@ -706,7 +707,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                             className="w-full"
                             disabled={isProcessing}
                           >
-                            Back to Shipping Info
+                            {t("Back to Shipping Info")}
                           </Button>
                         </div>
                       )}
@@ -721,7 +722,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
           <div className="lg:col-span-1">
             <Card className="sticky top-24">
               <CardHeader>
-                <CardTitle>Order Summary</CardTitle>
+                <CardTitle>{t("Order Summary")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -752,26 +753,26 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                   <Separator />
 
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Subtotal</span>
+                    <span className="text-gray-600">{t("Subtotal")}</span>
                     <span className="font-medium">${subtotal.toFixed(2)}</span>
                   </div>
 
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Shipping</span>
+                    <span className="text-gray-600">{t("Shipping")}</span>
                     <span className="font-medium">
                       {shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}
                     </span>
                   </div>
 
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Tax (10% VAT)</span>
+                    <span className="text-gray-600">{t("Tax (10% VAT)")}</span>
                     <span className="font-medium">${tax.toFixed(2)}</span>
                   </div>
 
                   <Separator />
 
                   <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
+                    <span>{t("Total")}</span>
                     <span className="text-[#3d1620]">${total.toFixed(2)}</span>
                   </div>
                 </div>

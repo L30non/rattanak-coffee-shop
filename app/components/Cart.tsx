@@ -18,12 +18,15 @@ import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { getImageUrl } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import { PAYMENT_ENABLED } from "@/lib/feature-flags";
+import { useI18n } from "@/lib/i18n";
 
 interface CartProps {
   onNavigate: (view: string) => void;
 }
 
 export function Cart({ onNavigate }: CartProps) {
+  const { t } = useI18n();
+
   const cart = useStore((state) => state.cart);
   const removeFromCart = useStore((state) => state.removeFromCart);
   const updateCartQuantity = useStore((state) => state.updateCartQuantity);
@@ -39,7 +42,7 @@ export function Cart({ onNavigate }: CartProps) {
 
   const handleCheckout = () => {
     if (PAYMENT_ENABLED && !user) {
-      toast.error("Please login to checkout");
+      toast.error(t("Please login to checkout"));
       onNavigate("login");
       return;
     }
@@ -48,7 +51,7 @@ export function Cart({ onNavigate }: CartProps) {
 
   const handleRemove = (itemKey: string, productName: string) => {
     removeFromCart(itemKey);
-    toast.success(`${productName} removed from cart`);
+    toast.success(t("{name} removed from cart", { name: productName }));
   };
 
   if (cart.length === 0) {
@@ -57,15 +60,15 @@ export function Cart({ onNavigate }: CartProps) {
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center py-20">
             <ShoppingBag className="h-20 w-20 mx-auto mb-4 text-gray-300" />
-            <h2 className="text-2xl mb-2">Your cart is empty</h2>
+            <h2 className="text-2xl mb-2">{t("Your cart is empty")}</h2>
             <p className="text-gray-600 mb-6">
-              Add some products to get started!
+              {t("Add some products to get started!")}
             </p>
             <Button
               onClick={() => onNavigate("products")}
               className="bg-[#5F1B2C] hover:bg-[#4a1523]"
             >
-              Continue Shopping
+              {t("Continue Shopping")}
             </Button>
           </div>
         </div>
@@ -76,7 +79,7 @@ export function Cart({ onNavigate }: CartProps) {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
-        <h1 className="text-3xl md:text-4xl mb-8">Shopping Cart</h1>
+        <h1 className="text-3xl md:text-4xl mb-8">{t("Shopping Cart")}</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
@@ -193,37 +196,39 @@ export function Cart({ onNavigate }: CartProps) {
           <div className="lg:col-span-1">
             <Card className="sticky top-24">
               <CardHeader>
-                <CardTitle>Order Summary</CardTitle>
+                <CardTitle>{t("Order Summary")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Subtotal</span>
+                    <span className="text-gray-600">{t("Subtotal")}</span>
                     <span className="font-medium">${subtotal.toFixed(2)}</span>
                   </div>
 
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Shipping</span>
+                    <span className="text-gray-600">{t("Shipping")}</span>
                     <span className="font-medium">
                       {shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}
                     </span>
                   </div>
 
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Tax (8%)</span>
+                    <span className="text-gray-600">{t("Tax (8%)")}</span>
                     <span className="font-medium">${tax.toFixed(2)}</span>
                   </div>
 
                   <Separator />
 
                   <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
+                    <span>{t("Total")}</span>
                     <span className="text-[#3d1620]">${total.toFixed(2)}</span>
                   </div>
 
                   {subtotal < 100 && (
                     <p className="text-xs text-gray-500 text-center">
-                      Add ${(100 - subtotal).toFixed(2)} more for free shipping!
+                      {t("Add ${amount} more for free shipping!", {
+                        amount: (100 - subtotal).toFixed(2),
+                      })}
                     </p>
                   )}
 
@@ -232,7 +237,7 @@ export function Cart({ onNavigate }: CartProps) {
                     size="lg"
                     onClick={handleCheckout}
                   >
-                    Proceed to Checkout
+                    {t("Proceed to Checkout")}
                   </Button>
 
                   <Button
@@ -240,7 +245,7 @@ export function Cart({ onNavigate }: CartProps) {
                     className="w-full"
                     onClick={() => onNavigate("products")}
                   >
-                    Continue Shopping
+                    {t("Continue Shopping")}
                   </Button>
                 </div>
               </CardContent>

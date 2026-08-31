@@ -9,12 +9,15 @@ import {
 import { Separator } from "@/app/components/ui/separator";
 import { Alert, AlertTitle, AlertDescription } from "@/app/components/ui/alert";
 import { useStore } from "@/app/store/useStore";
+import { useI18n } from "@/lib/i18n";
 
 interface CheckoutUnavailableProps {
   onNavigate: (view: string) => void;
 }
 
 export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
+  const { t } = useI18n();
+
   const cart = useStore((state) => state.cart);
 
   const subtotal = cart.reduce(
@@ -27,9 +30,9 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center py-20">
-            <p className="text-lg mb-4">Your cart is empty</p>
+            <p className="text-lg mb-4">{t("Your cart is empty")}</p>
             <Button onClick={() => onNavigate("products")}>
-              Continue Shopping
+              {t("Continue Shopping")}
             </Button>
           </div>
         </div>
@@ -46,7 +49,7 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
           className="mb-6"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Cart
+          {t("Back to Cart")}
         </Button>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -54,18 +57,15 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Contact Us to Place Your Order</CardTitle>
+                <CardTitle>{t("Contact Us to Place Your Order")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <Alert className="bg-amber-50 border-amber-200">
                   <AlertTitle>
-                    Online payment is currently unavailable
+                    {t("Online payment is currently unavailable")}
                   </AlertTitle>
                   <AlertDescription>
-                    We&apos;re not able to take payments through the website
-                    right now. Please reach out to us directly using the items
-                    in your cart below, and we&apos;ll help you complete your
-                    order.
+                    {t("We're not able to take payments through the website right now. Please reach out to us directly using the items in your cart below, and we'll help you complete your order.")}
                   </AlertDescription>
                 </Alert>
 
@@ -90,7 +90,7 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
                       </p>
                       <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
                         <Clock className="h-3.5 w-3.5" />
-                        Mon - Sat, 8AM - 5PM
+                        {t("Mon - Sat, 8AM - 5PM")}
                       </p>
                     </div>
                   </div>
@@ -101,7 +101,7 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
                       href="mailto:info@rattanakcoffee.com"
                       className="font-medium hover:text-[#5F1B2C] transition-colors"
                     >
-                      info@rattanakcoffee.com
+                      {t("info@rattanakcoffee.com")}
                     </a>
                   </div>
 
@@ -112,20 +112,20 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-gray-700 hover:text-[#5F1B2C] transition-colors"
-                        aria-label="Facebook"
+                        aria-label={t("Facebook")}
                       >
                         <Facebook className="h-5 w-5" />
-                        Facebook
+                        {t("Facebook")}
                       </a>
                       <a
                         href="https://t.me/ousenghong"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-gray-700 hover:text-[#5F1B2C] transition-colors"
-                        aria-label="Telegram"
+                        aria-label={t("Telegram")}
                       >
                         <Send className="h-5 w-5" />
-                        Telegram
+                        {t("Telegram")}
                       </a>
                     </div>
                   </div>
@@ -138,7 +138,7 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
           <div className="lg:col-span-1">
             <Card className="sticky top-24">
               <CardHeader>
-                <CardTitle>Your Order</CardTitle>
+                <CardTitle>{t("Your Order")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -161,14 +161,13 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
                   <Separator />
 
                   <div className="flex justify-between text-lg font-bold">
-                    <span>Subtotal</span>
+                    <span>{t("Subtotal")}</span>
                     <span className="text-[#3d1620]">
                       ${subtotal.toFixed(2)}
                     </span>
                   </div>
                   <p className="text-xs text-gray-500">
-                    Final total (including shipping) will be confirmed when we
-                    get in touch with you.
+                    {t("Final total (including shipping) will be confirmed when we get in touch with you.")}
                   </p>
                 </div>
               </CardContent>

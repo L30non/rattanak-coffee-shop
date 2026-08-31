@@ -5,12 +5,15 @@ import { Button } from "@/app/components/ui/button";
 import { User, Lock } from "lucide-react";
 import { ProfileEdit } from "@/app/components/ProfileEdit";
 import { SecurityChangePassword } from "@/app/components/SecurityChangePassword";
+import { useI18n } from "@/lib/i18n";
 
 interface SettingsProps {
   onNavigate: (view: string) => void;
 }
 
 export function Settings({ onNavigate }: SettingsProps) {
+  const { t } = useI18n();
+
   const [activeSection, setActiveSection] = useState<"profile" | "security">(
     "profile",
   );
@@ -25,9 +28,9 @@ export function Settings({ onNavigate }: SettingsProps) {
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Settings</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t("Settings")}</h1>
           <p className="text-gray-600">
-            Manage your account and security settings
+            {t("Manage your account and security settings")}
           </p>
         </div>
 
@@ -71,7 +74,7 @@ export function Settings({ onNavigate }: SettingsProps) {
         {/* Back Button */}
         <div className="mt-8">
           <Button variant="outline" onClick={() => onNavigate("account")}>
-            Back to Account
+            {t("Back to Account")}
           </Button>
         </div>
       </div>

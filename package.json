@@ -7,7 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "i18n:extract": "node scripts/translate-i18n.mjs --dry-run",
+    "i18n:translate": "node scripts/translate-i18n.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

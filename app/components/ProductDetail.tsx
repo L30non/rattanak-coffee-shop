@@ -18,6 +18,7 @@ import {
   type GrindType,
 } from "@/lib/beans";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 interface ProductDetailProps {
   productId: string;
@@ -25,6 +26,8 @@ interface ProductDetailProps {
 }
 
 export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
+  const { t } = useI18n();
+
   const { data: product, isLoading } = useSingleProduct(productId);
   const addToCart = useStore((state) => state.addToCart);
   const [quantity, setQuantity] = useState(1);
@@ -35,15 +38,15 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
   const [grindChoice, setGrindChoice] = useState<GrindType | null>(null);
 
   if (isLoading)
-    return <div className="p-8 text-center">Loading product details...</div>;
+    return <div className="p-8 text-center">{t("Loading product details...")}</div>;
 
   if (!product) {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-lg text-gray-600 mb-4">Product not found</p>
+          <p className="text-lg text-gray-600 mb-4">{t("Product not found")}</p>
           <Button onClick={() => onNavigate("products")}>
-            Back to Products
+            {t("Back to Products")}
           </Button>
         </div>
       </div>
@@ -71,7 +74,10 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
   const handleAddToCart = () => {
     addToCart(product, quantity, variant, unitPrice);
     toast.success(
-      `${quantity} ${product.name}${variantSummary ? ` (${variantSummary})` : ""} added to cart!`,
+      t("{quantity} x {name} added to cart!", {
+        quantity,
+        name: `${product.name}${variantSummary ? ` (${variantSummary})` : ""}`,
+      }),
     );
   };
 
@@ -97,7 +103,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
           className="mb-6"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Products
+          {t("Back to Products")}
         </Button>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -139,14 +145,14 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                   variant="outline"
                   className="text-green-600 border-green-600"
                 >
-                  In Stock
+                  {t("In Stock")}
                 </Badge>
               ) : (
                 <Badge
                   variant="outline"
                   className="text-red-600 border-red-600"
                 >
-                  Out of Stock
+                  {t("Out of Stock")}
                 </Badge>
               )}
             </div>
@@ -158,28 +164,28 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
             {/* Product Specifications */}
             <Card className="mb-6">
               <CardContent className="p-4">
-                <h3 className="font-semibold mb-3">Product Details</h3>
+                <h3 className="font-semibold mb-3">{t("Product Details")}</h3>
                 <div className="space-y-2 text-sm">
                   {product.roast_level && (
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Roast Level:</span>
+                      <span className="text-gray-600">{t("Roast Level:")}</span>
                       <span className="font-medium">{product.roast_level}</span>
                     </div>
                   )}
                   {product.origin && (
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Origin:</span>
+                      <span className="text-gray-600">{t("Origin:")}</span>
                       <span className="font-medium">{product.origin}</span>
                     </div>
                   )}
                   {product.weight && weightOptions.length === 0 && (
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Weight/Size:</span>
+                      <span className="text-gray-600">{t("Weight/Size:")}</span>
                       <span className="font-medium">{product.weight}</span>
                     </div>
                   )}
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Category:</span>
+                    <span className="text-gray-600">{t("Category:")}</span>
                     <span className="font-medium capitalize">
                       {product.category}
                     </span>
@@ -191,7 +197,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
             {/* Features */}
             {product.features && product.features.length > 0 && (
               <div className="mb-6">
-                <h3 className="font-semibold mb-3">Key Features</h3>
+                <h3 className="font-semibold mb-3">{t("Key Features")}</h3>
                 <ul className="space-y-2">
                   {product.features.map((feature, index) => (
                     <li key={index} className="flex items-center gap-2 text-sm">
@@ -207,7 +213,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
             {grindOptions.length > 0 && (
               <div className="mb-6">
                 <label className="block text-sm font-medium mb-2">
-                  Grind Type
+                  {t("Grind Type")}
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   {grindOptions.map((option) => {
@@ -225,10 +231,10 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                         }`}
                       >
                         <span className="block text-sm font-medium">
-                          {option.label}
+                          {t(option.label)}
                         </span>
                         <span className="block text-xs text-gray-500 mt-0.5">
-                          {option.description}
+                          {t(option.description)}
                         </span>
                       </button>
                     );
@@ -240,7 +246,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
             {/* Weight — beans only, each weight carries its own price */}
             {weightOptions.length > 0 && (
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">Weight</label>
+                <label className="block text-sm font-medium mb-2">{t("Weight")}</label>
                 <div className="flex flex-wrap gap-3">
                   {weightOptions.map((option) => {
                     const isSelected = selectedWeight === option.label;
@@ -268,7 +274,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
 
             {/* Quantity Selector */}
             <div className="mb-6">
-              <label className="block text-sm font-medium mb-2">Quantity</label>
+              <label className="block text-sm font-medium mb-2">{t("Quantity")}</label>
               <div className="flex items-center gap-4">
                 <div className="flex items-center border rounded-md">
                   <Button

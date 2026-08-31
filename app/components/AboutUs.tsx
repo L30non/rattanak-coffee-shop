@@ -13,6 +13,7 @@ import {
   Eye,
   Compass,
 } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 interface AboutUsProps {
   onNavigate: (view: string) => void;
@@ -64,6 +65,8 @@ const teamMembers: TeamMember[] = [
 ];
 
 export function AboutUs({ onNavigate }: AboutUsProps) {
+  const { t } = useI18n();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white">
       {/* Hero Section */}
@@ -71,7 +74,7 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
         <div className="absolute inset-0 z-0">
           <ImageWithFallback
             src="https://qboxqdnuoqpsrmqtaaaf.supabase.co/storage/v1/object/public/Images/branding/brownroaster.jpg"
-            alt="Coffee roasting background"
+            alt={t("Coffee roasting background")}
             fill
             className="object-cover"
             priority
@@ -87,7 +90,7 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
             className="mb-6 text-white hover:text-rose-200 hover:bg-white/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
+            {t("Back to Home")}
           </Button>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -95,11 +98,9 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
             transition={{ duration: 0.6 }}
             className="max-w-3xl"
           >
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">About Us</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">{t("About Us")}</h1>
             <p className="text-xl text-rose-100">
-              Offering excellence in taste and quality. Rattanak Coffee offers
-              more than just coffee &mdash; since 1997, we&apos;re committed to
-              consistency, genuine taste, and quality in every cup.
+              {t("Offering excellence in taste and quality. Rattanak Coffee offers more than just coffee — since 1997, we're committed to consistency, genuine taste, and quality in every cup.")}
             </p>
           </motion.div>
         </div>
@@ -117,20 +118,11 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
               className="text-center mb-12"
             >
               <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#3d1620]">
-                Who We Are
+                {t("Who We Are")}
               </h2>
               <Separator className="w-24 mx-auto mb-6 bg-[#5F1B2C]" />
               <p className="text-gray-700 text-lg leading-relaxed">
-                Rattanak Coffee offers more than just coffee. We are committed
-                to our customers! Roasting coffee since 1997, we&apos;re known
-                for our consistency of genuine taste and quality. Since 2015,
-                our coffee beans have been certified by the Institute of
-                Standards of Cambodia and recognized as chemical-free,
-                preservative-free, and free of added coloring. Our coffee is
-                made by the people, for the people &mdash; for everyone, and
-                every palate, for the greatness in every sip. Today, Rattanak
-                Coffee provides fully integrated services for all your coffee
-                needs, from beans to machinery to business solutions.
+                {t("Rattanak Coffee offers more than just coffee. We are committed to our customers! Roasting coffee since 1997, we're known for our consistency of genuine taste and quality. Since 2015, our coffee beans have been certified by the Institute of Standards of Cambodia and recognized as chemical-free, preservative-free, and free of added coloring. Our coffee is made by the people, for the people — for everyone, and every palate, for the greatness in every sip. Today, Rattanak Coffee provides fully integrated services for all your coffee needs, from beans to machinery to business solutions.")}
               </p>
             </motion.div>
 
@@ -217,17 +209,10 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
                     <Eye className="h-6 w-6 text-[#5F1B2C]" />
                   </div>
                   <h2 className="text-2xl font-bold mb-3 text-[#3d1620]">
-                    Vision
+                    {t("Vision")}
                   </h2>
                   <p className="text-gray-600 leading-relaxed">
-                    Roasting greatness since 1997 with over 20 years of
-                    experience, Rattanak Coffee is an established coffee roaster
-                    trusted by even the most demanding business partners.
-                    Certified by the Institute of Standards of Cambodia since
-                    2015, our coffee beans meet international standards &mdash;
-                    free from chemicals, flavorings, preservatives, and
-                    colorings. Our three best sellers: Bronze, Titanium, and
-                    Platinum.
+                    {t("Roasting greatness since 1997 with over 20 years of experience, Rattanak Coffee is an established coffee roaster trusted by even the most demanding business partners. Certified by the Institute of Standards of Cambodia since 2015, our coffee beans meet international standards — free from chemicals, flavorings, preservatives, and colorings. Our three best sellers: Bronze, Titanium, and Platinum.")}
                   </p>
                 </CardContent>
               </Card>
@@ -245,17 +230,10 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
                     <Compass className="h-6 w-6 text-[#5F1B2C]" />
                   </div>
                   <h2 className="text-2xl font-bold mb-3 text-[#3d1620]">
-                    Mission
+                    {t("Mission")}
                   </h2>
                   <p className="text-gray-600 leading-relaxed">
-                    The coffee industry is ever-growing, and we want to capture
-                    this opportunity to amplify the competitiveness of local
-                    coffee beans. Using our expertise in roasting and business
-                    connections, we aim to increase the export of local coffee
-                    beans to international markets. We fulfill all your coffee
-                    needs by crafting specialty blends for your signature taste,
-                    distributing coffee machines for every standard, and
-                    providing barista training for businesses.
+                    {t("The coffee industry is ever-growing, and we want to capture this opportunity to amplify the competitiveness of local coffee beans. Using our expertise in roasting and business connections, we aim to increase the export of local coffee beans to international markets. We fulfill all your coffee needs by crafting specialty blends for your signature taste, distributing coffee machines for every standard, and providing barista training for businesses.")}
                   </p>
                 </CardContent>
               </Card>
@@ -274,11 +252,11 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
             className="text-center mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#3d1620]">
-              Our Values
+              {t("Our Values")}
             </h2>
             <Separator className="w-24 mx-auto mb-6 bg-[#5F1B2C]" />
             <p className="text-gray-600 max-w-2xl mx-auto">
-              The principles that guide everything we do at Rattanak Coffee
+              {t("The principles that guide everything we do at Rattanak Coffee")}
             </p>
           </motion.div>
 
@@ -330,11 +308,11 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
             className="text-center mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#3d1620]">
-              Meet The Founder
+              {t("Meet The Founder")}
             </h2>
             <Separator className="w-24 mx-auto mb-6 bg-[#5F1B2C]" />
             <p className="text-gray-600 max-w-2xl mx-auto">
-              The passionate people behind Rattanak Coffee
+              {t("The passionate people behind Rattanak Coffee")}
             </p>
           </motion.div>
 
@@ -406,11 +384,10 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to Start Your Coffee Journey?
+              {t("Ready to Start Your Coffee Journey?")}
             </h2>
             <p className="text-xl mb-8 text-rose-100 max-w-2xl mx-auto">
-              Explore our range of premium coffee products and let us help you
-              build the cafe of your dreams.
+              {t("Explore our range of premium coffee products and let us help you build the cafe of your dreams.")}
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Button
@@ -418,7 +395,7 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
                 onClick={() => onNavigate("products")}
                 className="bg-white text-[#3d1620] hover:bg-rose-50"
               >
-                Shop Products
+                {t("Shop Products")}
               </Button>
               <Button
                 size="lg"
@@ -426,7 +403,7 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
                 onClick={() => onNavigate("contact")}
                 className="border-white text-white bg-white/10 hover:bg-white hover:text-[#3d1620]"
               >
-                Contact Us
+                {t("Contact Us")}
               </Button>
             </div>
           </motion.div>

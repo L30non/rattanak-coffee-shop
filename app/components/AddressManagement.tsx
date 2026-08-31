@@ -18,12 +18,15 @@ import {
   AlertDialogTitle,
 } from "@/app/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 interface AddressManagementProps {
   onNavigate: (view: string) => void;
 }
 
 export function AddressManagement({ onNavigate }: AddressManagementProps) {
+  const { t } = useI18n();
+
   const { addresses, setAddresses, deleteAddress, setDefaultAddress } =
     useStore();
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -45,11 +48,11 @@ export function AddressManagement({ onNavigate }: AddressManagementProps) {
         const data = await response.json();
         setAddresses(data.addresses || []);
       } else {
-        toast.error("Failed to load addresses");
+        toast.error(t("Failed to load addresses"));
       }
     } catch (error) {
       console.error("Error fetching addresses:", error);
-      toast.error("Failed to load addresses");
+      toast.error(t("Failed to load addresses"));
     } finally {
       setIsLoading(false);
     }
@@ -75,13 +78,13 @@ export function AddressManagement({ onNavigate }: AddressManagementProps) {
 
       if (response.ok) {
         deleteAddress(deletingAddressId);
-        toast.success("Address deleted successfully");
+        toast.success(t("Address deleted successfully"));
       } else {
-        toast.error("Failed to delete address");
+        toast.error(t("Failed to delete address"));
       }
     } catch (error) {
       console.error("Error deleting address:", error);
-      toast.error("Failed to delete address");
+      toast.error(t("Failed to delete address"));
     } finally {
       setDeletingAddressId(null);
     }
@@ -97,13 +100,13 @@ export function AddressManagement({ onNavigate }: AddressManagementProps) {
 
       if (response.ok) {
         setDefaultAddress(addressId);
-        toast.success("Default address updated");
+        toast.success(t("Default address updated"));
       } else {
-        toast.error("Failed to set default address");
+        toast.error(t("Failed to set default address"));
       }
     } catch (error) {
       console.error("Error setting default address:", error);
-      toast.error("Failed to set default address");
+      toast.error(t("Failed to set default address"));
     }
   };
 
@@ -125,22 +128,22 @@ export function AddressManagement({ onNavigate }: AddressManagementProps) {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              My Addresses
+              {t("My Addresses")}
             </h1>
             <p className="text-gray-600">
-              Manage your shipping addresses for faster checkout
+              {t("Manage your shipping addresses for faster checkout")}
             </p>
           </div>
           <Button onClick={handleAddNew} className="gap-2">
             <Plus className="h-4 w-4" />
-            Add New Address
+            {t("Add New Address")}
           </Button>
         </div>
 
         {/* Loading State */}
         {isLoading && (
           <div className="text-center py-12">
-            <p className="text-gray-500">Loading addresses...</p>
+            <p className="text-gray-500">{t("Loading addresses...")}</p>
           </div>
         )}
 
@@ -149,13 +152,13 @@ export function AddressManagement({ onNavigate }: AddressManagementProps) {
           <Card className="text-center py-12">
             <CardContent className="pt-6">
               <MapPin className="h-16 w-16 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-semibold mb-2">No addresses saved</h3>
+              <h3 className="text-xl font-semibold mb-2">{t("No addresses saved")}</h3>
               <p className="text-gray-600 mb-6">
-                Add your first address to make checkout faster and easier
+                {t("Add your first address to make checkout faster and easier")}
               </p>
               <Button onClick={handleAddNew} className="gap-2">
                 <Plus className="h-4 w-4" />
-                Add Your First Address
+                {t("Add Your First Address")}
               </Button>
             </CardContent>
           </Card>
@@ -186,7 +189,7 @@ export function AddressManagement({ onNavigate }: AddressManagementProps) {
                         {address.is_default && (
                           <Badge className="bg-[#5F1B2C] hover:bg-[#5F1B2C]">
                             <Star className="h-3 w-3 mr-1" />
-                            Default
+                            {t("Default")}
                           </Badge>
                         )}
                       </div>
@@ -195,7 +198,7 @@ export function AddressManagement({ onNavigate }: AddressManagementProps) {
                       </p>
                       {address.phone && (
                         <p className="text-gray-600 text-sm">
-                          Phone: {address.phone}
+                          {t("Phone: {phone}", { phone: address.phone ?? "" })}
                         </p>
                       )}
                     </div>
@@ -207,7 +210,7 @@ export function AddressManagement({ onNavigate }: AddressManagementProps) {
                           variant="outline"
                           size="sm"
                           onClick={() => handleSetDefault(address.id)}
-                          title="Set as default"
+                          title={t("Set as default")}
                         >
                           <Star className="h-4 w-4" />
                         </Button>
@@ -238,7 +241,7 @@ export function AddressManagement({ onNavigate }: AddressManagementProps) {
         {/* Back Button */}
         <div className="mt-8">
           <Button variant="outline" onClick={() => onNavigate("account")}>
-            Back to Account
+            {t("Back to Account")}
           </Button>
         </div>
       </div>
@@ -258,19 +261,18 @@ export function AddressManagement({ onNavigate }: AddressManagementProps) {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Address</AlertDialogTitle>
+            <AlertDialogTitle>{t("Delete Address")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this address? This action cannot
-              be undone.
+              {t("Are you sure you want to delete this address? This action cannot be undone.")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               className="bg-red-600 hover:bg-red-700"
             >
-              Delete
+              {t("Delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

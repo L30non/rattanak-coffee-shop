@@ -8,6 +8,7 @@ import {
   Wrench,
   Truck,
 } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 interface BusinessProps {
   onNavigate: (view: string) => void;
@@ -41,6 +42,8 @@ const businessOfferings = [
 ];
 
 export function Business({ onNavigate }: BusinessProps) {
+  const { t } = useI18n();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white">
       {/* Hero Section */}
@@ -52,7 +55,7 @@ export function Business({ onNavigate }: BusinessProps) {
             className="mb-6 text-white hover:text-rose-200 hover:bg-white/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
+            {t("Back to Home")}
           </Button>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -60,10 +63,10 @@ export function Business({ onNavigate }: BusinessProps) {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Equipped with Everything to Help You Brew a Lucrative Business
+              {t("Equipped with Everything to Help You Brew a Lucrative Business")}
             </h1>
             <p className="text-xl text-rose-100 max-w-2xl">
-              Product. Service. Consulting.
+              {t("Product. Service. Consulting.")}
             </p>
           </motion.div>
         </div>
@@ -121,11 +124,10 @@ export function Business({ onNavigate }: BusinessProps) {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl font-bold mb-4">
-              Ready to Grow Your Coffee Business?
+              {t("Ready to Grow Your Coffee Business?")}
             </h2>
             <p className="text-rose-100 mb-8 max-w-xl mx-auto">
-              Follow us on social media for the latest updates, or get in
-              touch to learn more about our products and services.
+              {t("Follow us on social media for the latest updates, or get in touch to learn more about our products and services.")}
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <a
@@ -137,7 +139,7 @@ export function Business({ onNavigate }: BusinessProps) {
                   size="lg"
                   className="bg-white text-[#3d1620] hover:bg-rose-50"
                 >
-                  Follow on Facebook
+                  {t("Follow on Facebook")}
                 </Button>
               </a>
               <a
@@ -150,7 +152,7 @@ export function Business({ onNavigate }: BusinessProps) {
                   variant="outline"
                   className="border-white text-white bg-white/10 hover:bg-white hover:text-[#3d1620]"
                 >
-                  Join Telegram
+                  {t("Join Telegram")}
                 </Button>
               </a>
             </div>

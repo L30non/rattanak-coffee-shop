@@ -179,3 +179,43 @@
     line-height: 1.5;
   }
 }
+
+/*
+ * Khmer typography. Only applies when the language toggle has set
+ * <html lang="km"> — English rendering is untouched.
+ *
+ * Khmer has no spaces between words and stacks diacritics above and below the
+ * baseline, so it needs a real Khmer face plus extra line-height to keep
+ * subscripts from colliding with the line below.
+ */
+:lang(km) {
+  font-family:
+    var(--font-khmer),
+    "Noto Sans Khmer",
+    "Khmer OS",
+    sans-serif;
+  line-height: 1.8;
+}
+
+/*
+ * Headings set at display sizes already have enough room for Khmer's stacked
+ * diacritics, so they keep a tight leading — the 1.8 above is for body copy.
+ */
+:lang(km) h1,
+:lang(km) h2,
+:lang(km) h3 {
+  line-height: 1.35;
+}
+
+/* Khmer words can't be hyphenated or broken mid-cluster. */
+:lang(km) h1,
+:lang(km) h2,
+:lang(km) h3,
+:lang(km) h4,
+:lang(km) p,
+:lang(km) span,
+:lang(km) button,
+:lang(km) a {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}

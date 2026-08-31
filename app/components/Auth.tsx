@@ -12,12 +12,15 @@ import {
 } from "@/app/components/ui/tabs";
 import { useAuth } from "@/app/hooks/useAuth";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 interface AuthProps {
   onNavigate: (view: string) => void;
 }
 
 export function Auth({ onNavigate }: AuthProps) {
+  const { t } = useI18n();
+
   const { signIn, signUp } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
@@ -34,17 +37,17 @@ export function Auth({ onNavigate }: AuthProps) {
     e.preventDefault();
 
     if (!loginData.email.trim()) {
-      toast.error("Email is required");
+      toast.error(t("Email is required"));
       return;
     }
 
     if (!emailRegex.test(loginData.email.trim())) {
-      toast.error("Please enter a valid email address");
+      toast.error(t("Please enter a valid email address"));
       return;
     }
 
     if (!loginData.password) {
-      toast.error("Password is required");
+      toast.error(t("Password is required"));
       return;
     }
 
@@ -53,7 +56,7 @@ export function Auth({ onNavigate }: AuthProps) {
     const result = await signIn(loginData.email, loginData.password);
 
     if (result.success) {
-      toast.success("Login successful!");
+      toast.success(t("Login successful!"));
       onNavigate("home");
     } else {
       toast.error(result.error || "Invalid email or password");
@@ -65,47 +68,47 @@ export function Auth({ onNavigate }: AuthProps) {
     e.preventDefault();
 
     if (!registerData.name.trim()) {
-      toast.error("Full name is required");
+      toast.error(t("Full name is required"));
       return;
     }
 
     if (registerData.name.trim().length < 2) {
-      toast.error("Full name must be at least 2 characters");
+      toast.error(t("Full name must be at least 2 characters"));
       return;
     }
 
     if (!registerData.email.trim()) {
-      toast.error("Email is required");
+      toast.error(t("Email is required"));
       return;
     }
 
     if (!emailRegex.test(registerData.email.trim())) {
-      toast.error("Please enter a valid email address");
+      toast.error(t("Please enter a valid email address"));
       return;
     }
 
     if (registerData.password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+      toast.error(t("Password must be at least 6 characters"));
       return;
     }
 
     if (!/[A-Z]/.test(registerData.password)) {
-      toast.error("Password must contain at least one uppercase letter");
+      toast.error(t("Password must contain at least one uppercase letter"));
       return;
     }
 
     if (!/[a-z]/.test(registerData.password)) {
-      toast.error("Password must contain at least one lowercase letter");
+      toast.error(t("Password must contain at least one lowercase letter"));
       return;
     }
 
     if (!/[0-9]/.test(registerData.password)) {
-      toast.error("Password must contain at least one number");
+      toast.error(t("Password must contain at least one number"));
       return;
     }
 
     if (registerData.password !== registerData.confirmPassword) {
-      toast.error("Passwords do not match");
+      toast.error(t("Passwords do not match"));
       return;
     }
 
@@ -118,7 +121,7 @@ export function Auth({ onNavigate }: AuthProps) {
 
     if (result.success) {
       toast.success(
-        "Registration successful! Please check your email to verify your account.",
+        t("Registration successful! Please check your email to verify your account."),
       );
       onNavigate("home");
     } else {
@@ -135,9 +138,9 @@ export function Auth({ onNavigate }: AuthProps) {
             <div className="flex justify-center mb-4">
               <Coffee className="h-12 w-12 text-[#5F1B2C]" />
             </div>
-            <h1 className="text-3xl mb-2">Welcome to Rattanak Coffee</h1>
+            <h1 className="text-3xl mb-2">{t("Welcome to Rattanak Coffee")}</h1>
             <p className="text-gray-600">
-              Sign in or create an account to continue
+              {t("Sign in or create an account to continue")}
             </p>
           </div>
 
@@ -147,22 +150,22 @@ export function Auth({ onNavigate }: AuthProps) {
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="login">
                     <LogIn className="h-4 w-4 mr-2" />
-                    Login
+                    {t("Login")}
                   </TabsTrigger>
                   <TabsTrigger value="register">
                     <UserPlus className="h-4 w-4 mr-2" />
-                    Register
+                    {t("Register")}
                   </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="login">
                   <form onSubmit={handleLogin} className="space-y-4">
                     <div>
-                      <Label htmlFor="login-email">Email</Label>
+                      <Label htmlFor="login-email">{t("Email")}</Label>
                       <Input
                         id="login-email"
                         type="email"
-                        placeholder="your@email.com"
+                        placeholder={t("your@email.com")}
                         value={loginData.email}
                         onChange={(e) =>
                           setLoginData({ ...loginData, email: e.target.value })
@@ -172,7 +175,7 @@ export function Auth({ onNavigate }: AuthProps) {
                     </div>
 
                     <div>
-                      <Label htmlFor="login-password">Password</Label>
+                      <Label htmlFor="login-password">{t("Password")}</Label>
                       <Input
                         id="login-password"
                         type="password"
@@ -196,7 +199,7 @@ export function Auth({ onNavigate }: AuthProps) {
                       {isSubmitting ? (
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Logging in...
+                          {t("Logging in...")}
                         </>
                       ) : (
                         "Login"
@@ -208,10 +211,10 @@ export function Auth({ onNavigate }: AuthProps) {
                 <TabsContent value="register">
                   <form onSubmit={handleRegister} className="space-y-4">
                     <div>
-                      <Label htmlFor="register-name">Full Name</Label>
+                      <Label htmlFor="register-name">{t("Full Name")}</Label>
                       <Input
                         id="register-name"
-                        placeholder="John Doe"
+                        placeholder={t("John Doe")}
                         value={registerData.name}
                         onChange={(e) =>
                           setRegisterData({
@@ -224,11 +227,11 @@ export function Auth({ onNavigate }: AuthProps) {
                     </div>
 
                     <div>
-                      <Label htmlFor="register-email">Email</Label>
+                      <Label htmlFor="register-email">{t("Email")}</Label>
                       <Input
                         id="register-email"
                         type="email"
-                        placeholder="your@email.com"
+                        placeholder={t("your@email.com")}
                         value={registerData.email}
                         onChange={(e) =>
                           setRegisterData({
@@ -241,7 +244,7 @@ export function Auth({ onNavigate }: AuthProps) {
                     </div>
 
                     <div>
-                      <Label htmlFor="register-password">Password</Label>
+                      <Label htmlFor="register-password">{t("Password")}</Label>
                       <Input
                         id="register-password"
                         type="password"
@@ -258,7 +261,7 @@ export function Auth({ onNavigate }: AuthProps) {
                     </div>
 
                     <div>
-                      <Label htmlFor="register-confirm">Confirm Password</Label>
+                      <Label htmlFor="register-confirm">{t("Confirm Password")}</Label>
                       <Input
                         id="register-confirm"
                         type="password"
@@ -282,7 +285,7 @@ export function Auth({ onNavigate }: AuthProps) {
                       {isSubmitting ? (
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Creating Account...
+                          {t("Creating Account...")}
                         </>
                       ) : (
                         "Create Account"
@@ -296,7 +299,7 @@ export function Auth({ onNavigate }: AuthProps) {
 
           <div className="text-center mt-6">
             <Button variant="ghost" onClick={() => onNavigate("home")}>
-              Continue as Guest
+              {t("Continue as Guest")}
             </Button>
           </div>
         </div>

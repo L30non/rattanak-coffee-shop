@@ -11,12 +11,15 @@ import { Separator } from "@/app/components/ui/separator";
 import { useAuth } from "@/app/hooks/useAuth";
 import { useOrders, useDeleteOrder } from "@/app/hooks/useProducts";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 interface AccountProps {
   onNavigate: (view: string) => void;
 }
 
 export function Account({ onNavigate }: AccountProps) {
+  const { t } = useI18n();
+
   const { user } = useAuth();
   const { data: orders = [], isLoading } = useOrders(user?.id);
   const deleteOrderMutation = useDeleteOrder();
@@ -24,7 +27,7 @@ export function Account({ onNavigate }: AccountProps) {
   const handleDeleteOrder = async (orderId: string) => {
     try {
       await deleteOrderMutation.mutateAsync(orderId);
-      toast.success("Order deleted successfully");
+      toast.success(t("Order deleted successfully"));
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Failed to delete order",
@@ -37,8 +40,8 @@ export function Account({ onNavigate }: AccountProps) {
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center py-20">
-            <p className="text-lg mb-4">Please login to view your orders</p>
-            <Button onClick={() => onNavigate("login")}>Login</Button>
+            <p className="text-lg mb-4">{t("Please login to view your orders")}</p>
+            <Button onClick={() => onNavigate("login")}>{t("Login")}</Button>
           </div>
         </div>
       </div>
@@ -67,7 +70,7 @@ export function Account({ onNavigate }: AccountProps) {
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center py-20">
-            <p className="text-lg">Loading orders...</p>
+            <p className="text-lg">{t("Loading orders...")}</p>
           </div>
         </div>
       </div>
@@ -79,23 +82,23 @@ export function Account({ onNavigate }: AccountProps) {
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-3xl md:text-4xl mb-2">My Orders</h1>
-            <p className="text-gray-600">View and track your order history</p>
+            <h1 className="text-3xl md:text-4xl mb-2">{t("My Orders")}</h1>
+            <p className="text-gray-600">{t("View and track your order history")}</p>
           </div>
 
           {orders.length === 0 ? (
             <Card>
               <CardContent className="text-center py-12">
                 <Package className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                <h3 className="text-xl mb-2">No orders yet</h3>
+                <h3 className="text-xl mb-2">{t("No orders yet")}</h3>
                 <p className="text-gray-600 mb-6">
-                  Start shopping to see your orders here!
+                  {t("Start shopping to see your orders here!")}
                 </p>
                 <Button
                   onClick={() => onNavigate("products")}
                   className="bg-[#5F1B2C] hover:bg-[#4a1523]"
                 >
-                  Start Shopping
+                  {t("Start Shopping")}
                 </Button>
               </CardContent>
             </Card>
@@ -107,7 +110,7 @@ export function Account({ onNavigate }: AccountProps) {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div>
                         <CardTitle className="text-lg">
-                          Order #{order.id}
+                          {t("Order #{id}", { id: order.id })}
                         </CardTitle>
                         <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
                           <Clock className="h-4 w-4" />
@@ -141,35 +144,35 @@ export function Account({ onNavigate }: AccountProps) {
                       ))}
                       <Separator />
                       <div className="flex justify-between">
-                        <span className="font-semibold">Total</span>
+                        <span className="font-semibold">{t("Total")}</span>
                         <span className="font-bold text-[#3d1620]">
                           ${order.total.toFixed(2)}
                         </span>
                       </div>
 
                       <div className="text-sm text-gray-600 mt-4">
-                        <p className="font-medium mb-1">Shipping Address:</p>
+                        <p className="font-medium mb-1">{t("Shipping Address:")}</p>
                         <p>{order.shipping_address}</p>
                       </div>
 
                       {order.tracking_number && (
                         <div className="text-sm mt-3">
                           <p className="font-medium mb-1 text-gray-700">
-                            Tracking Number:
+                            {t("Tracking Number:")}
                           </p>
                           <Badge variant="outline" className="font-mono">
                             {order.tracking_number}
                           </Badge>
                           {order.shipping_carrier && (
                             <span className="text-gray-600 ml-2">
-                              via {order.shipping_carrier}
+                              {t("via {carrier}", { carrier: order.shipping_carrier ?? "" })}
                             </span>
                           )}
                         </div>
                       )}
 
                       <div className="text-sm text-gray-600 mt-3">
-                        <p className="font-medium mb-1">Payment Method:</p>
+                        <p className="font-medium mb-1">{t("Payment Method:")}</p>
                         <p className="flex items-center gap-1 capitalize">
                           {order.payment_method === "bakong" ? (
                             <>
@@ -189,11 +192,11 @@ export function Account({ onNavigate }: AccountProps) {
                                 />
                                 <path d="M7 8h10M7 12h10M7 16h10" />
                               </svg>
-                              Bakong KHQR
+                              {t("Bakong KHQR")}
                             </>
                           ) : (
                             <>
-                              <Truck className="h-4 w-4" /> Cash on Delivery
+                              <Truck className="h-4 w-4" /> {t("Cash on Delivery")}
                             </>
                           )}
                         </p>

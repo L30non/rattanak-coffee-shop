@@ -1,21 +1,23 @@
 import { Clock, Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react";
 import { Separator } from "@/app/components/ui/separator";
+import { useI18n } from "@/lib/i18n";
 
 interface FooterProps {
   onNavigate: (view: string) => void;
 }
 
 export function Footer({ onNavigate }: FooterProps) {
+  const { t } = useI18n();
+
   return (
     <footer className="bg-[#3d1620] text-white mt-auto">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
-            <h3 className="text-xl font-bold mb-4">Rattanak Coffee Shop</h3>
+            <h3 className="text-xl font-bold mb-4">{t("Rattanak Coffee Shop")}</h3>
             <p className="text-sm text-gray-300 mb-4">
-              Premium coffee beans, machines, and accessories for the perfect
-              brew.
+              {t("Premium coffee beans, machines, and accessories for the perfect brew.")}
             </p>
             <div className="flex gap-4">
               <a
@@ -35,14 +37,14 @@ export function Footer({ onNavigate }: FooterProps) {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold mb-4">Quick Links</h4>
+            <h4 className="font-semibold mb-4">{t("Quick Links")}</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <button
                   onClick={() => onNavigate("about")}
                   className="hover:text-[#D4AF37] transition-colors"
                 >
-                  About Us
+                  {t("About Us")}
                 </button>
               </li>
               <li>
@@ -50,7 +52,7 @@ export function Footer({ onNavigate }: FooterProps) {
                   onClick={() => onNavigate("products")}
                   className="hover:text-[#D4AF37] transition-colors"
                 >
-                  Shop Products
+                  {t("Shop Products")}
                 </button>
               </li>
               <li>
@@ -58,7 +60,7 @@ export function Footer({ onNavigate }: FooterProps) {
                   onClick={() => onNavigate("contact")}
                   className="hover:text-[#D4AF37] transition-colors"
                 >
-                  Contact
+                  {t("Contact")}
                 </button>
               </li>
               <li>
@@ -66,7 +68,7 @@ export function Footer({ onNavigate }: FooterProps) {
                   onClick={() => onNavigate("business")}
                   className="hover:text-[#D4AF37] transition-colors"
                 >
-                  Business
+                  {t("Business")}
                 </button>
               </li>
             </ul>
@@ -74,14 +76,14 @@ export function Footer({ onNavigate }: FooterProps) {
 
           {/* Store Hours */}
           <div>
-            <h4 className="font-semibold mb-4">Store Hours</h4>
+            <h4 className="font-semibold mb-4">{t("Store Hours")}</h4>
             <ul className="space-y-2 text-sm">
               <li className="flex items-start gap-2">
                 <Clock className="h-4 w-4 mt-0.5 flex-shrink-0" />
                 <span>
-                  Mon &ndash; Sat: 8:00 AM &ndash; 5:00 PM
+                  {t("Mon – Sat: 8:00 AM – 5:00 PM")}
                   <br />
-                  Sunday: Closed
+                  {t("Sunday: Closed")}
                 </span>
               </li>
             </ul>
@@ -89,12 +91,12 @@ export function Footer({ onNavigate }: FooterProps) {
 
           {/* Contact Info */}
           <div>
-            <h4 className="font-semibold mb-4">Contact Us</h4>
+            <h4 className="font-semibold mb-4">{t("Contact Us")}</h4>
             <ul className="space-y-2 text-sm">
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
                 <span>
-                  #09 107BT, Sangkat Boeung Tumpun, Khan Mean Chey, Phnom Penh
+                  {t("#09 107BT, Sangkat Boeung Tumpun, Khan Mean Chey, Phnom Penh")}
                 </span>
               </li>
               <li className="flex items-center gap-2">
@@ -103,7 +105,7 @@ export function Footer({ onNavigate }: FooterProps) {
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 flex-shrink-0" />
-                <span>info@rattanakcoffee.com</span>
+                <span>{t("info@rattanakcoffee.com")}</span>
               </li>
             </ul>
           </div>
@@ -113,29 +115,30 @@ export function Footer({ onNavigate }: FooterProps) {
 
         <div className="text-center text-sm text-gray-400 space-y-2">
           <p>
-            © {new Date().getFullYear()} Rattanak Coffee Shop. All rights
-            reserved.
+            {t("© {year} Rattanak Coffee Shop. All rights reserved.", {
+              year: new Date().getFullYear(),
+            })}
           </p>
           <p className="flex items-center justify-center gap-2 flex-wrap">
             <button
               onClick={() => onNavigate("privacy")}
               className="hover:text-[#D4AF37] transition-colors"
             >
-              Privacy Policy
+              {t("Privacy Policy")}
             </button>
             <span aria-hidden="true">·</span>
             <button
               onClick={() => onNavigate("terms")}
               className="hover:text-[#D4AF37] transition-colors"
             >
-              Terms of Service
+              {t("Terms of Service")}
             </button>
             <span aria-hidden="true">·</span>
             <button
               onClick={() => onNavigate("refund")}
               className="hover:text-[#D4AF37] transition-colors"
             >
-              Refund Policy
+              {t("Refund Policy")}
             </button>
           </p>
         </div>

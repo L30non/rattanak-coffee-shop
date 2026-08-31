@@ -87,12 +87,15 @@ import {
   type GrindType,
   type WeightOption,
 } from "@/lib/beans";
+import { useI18n } from "@/lib/i18n";
 
 interface AdminDashboardProps {
   onNavigate: (view: string) => void;
 }
 
 export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
+  const { t } = useI18n();
+
   const { user } = useAuth();
   const { data: orders = [] } = useOrders(); // Fetch all orders from API for admin
   const updateOrderMutation = useUpdateOrder();
@@ -134,13 +137,13 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
-      toast.error("Please select an image file");
+      toast.error(t("Please select an image file"));
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image size must be less than 5MB");
+      toast.error(t("Image size must be less than 5MB"));
       return;
     }
 
@@ -149,7 +152,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
     setIsUploading(false);
 
     if (error) {
-      toast.error(`Upload failed: ${error}`);
+      toast.error(t("Upload failed: {error}", { error: String(error) }));
       return;
     }
 
@@ -159,7 +162,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
       } else {
         setNewProduct({ ...newProduct, image: path });
       }
-      toast.success("Image uploaded successfully");
+      toast.success(t("Image uploaded successfully"));
     }
   };
 
@@ -168,8 +171,8 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center py-20">
-            <p className="text-lg mb-4">Access Denied</p>
-            <Button onClick={() => onNavigate("home")}>Go Home</Button>
+            <p className="text-lg mb-4">{t("Access Denied")}</p>
+            <Button onClick={() => onNavigate("home")}>{t("Go Home")}</Button>
           </div>
         </div>
       </div>
@@ -206,7 +209,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
     addProductMutation.mutate(productData, {
       onSuccess: () => {
-        toast.success("Product added successfully");
+        toast.success(t("Product added successfully"));
         setIsAddDialogOpen(false);
         setNewProduct({
           name: "",
@@ -224,7 +227,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
         });
       },
       onError: (error) => {
-        toast.error(`Failed to add product: ${error.message}`);
+        toast.error(t("Failed to add product: {error}", { error: error.message }));
       },
     });
   };
@@ -242,12 +245,12 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
         },
         {
           onSuccess: () => {
-            toast.success("Product updated successfully");
+            toast.success(t("Product updated successfully"));
             setIsEditDialogOpen(false);
             setEditingProduct(null);
           },
           onError: (error) => {
-            toast.error(`Failed to update product: ${error.message}`);
+            toast.error(t("Failed to update product: {error}", { error: error.message }));
           },
         },
       );
@@ -263,11 +266,11 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
     deleteProductMutation.mutate(productToDelete.id, {
       onSuccess: () => {
-        toast.success("Product deleted successfully");
+        toast.success(t("Product deleted successfully"));
         setProductToDelete(null);
       },
       onError: (error) => {
-        toast.error(`Failed to delete product: ${error.message}`);
+        toast.error(t("Failed to delete product: {error}", { error: error.message }));
       },
     });
   };
@@ -316,9 +319,9 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
         status,
         updated_at: new Date().toISOString(),
       });
-      toast.success("Order status updated!");
+      toast.success(t("Order status updated!"));
     } catch (error) {
-      toast.error("Failed to update order status");
+      toast.error(t("Failed to update order status"));
       console.error("Order status update error:", error);
     }
   };
@@ -327,9 +330,9 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl mb-2">Admin Dashboard</h1>
+          <h1 className="text-3xl md:text-4xl mb-2">{t("Admin Dashboard")}</h1>
           <p className="text-gray-600">
-            Manage your store, products, and orders
+            {t("Manage your store, products, and orders")}
           </p>
         </div>
 
@@ -339,7 +342,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Total Revenue</p>
+                  <p className="text-sm text-gray-600 mb-1">{t("Total Revenue")}</p>
                   <p className="text-2xl font-bold">
                     ${totalRevenue.toFixed(2)}
                   </p>
@@ -355,7 +358,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Total Orders</p>
+                  <p className="text-sm text-gray-600 mb-1">{t("Total Orders")}</p>
                   <p className="text-2xl font-bold">{totalOrders}</p>
                 </div>
                 <div className="bg-blue-100 p-3 rounded-full">
@@ -369,7 +372,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Total Products</p>
+                  <p className="text-sm text-gray-600 mb-1">{t("Total Products")}</p>
                   <p className="text-2xl font-bold">{totalProducts}</p>
                 </div>
                 <div className="bg-purple-100 p-3 rounded-full">
@@ -383,7 +386,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Low Stock Items</p>
+                  <p className="text-sm text-gray-600 mb-1">{t("Low Stock Items")}</p>
                   <p className="text-2xl font-bold">{lowStockProducts}</p>
                 </div>
                 <div className="bg-orange-100 p-3 rounded-full">
@@ -399,11 +402,11 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
           <TabsList>
             <TabsTrigger value="products">
               <Package className="h-4 w-4 mr-2" />
-              Products
+              {t("Products")}
             </TabsTrigger>
             <TabsTrigger value="orders">
               <ShoppingBag className="h-4 w-4 mr-2" />
-              Orders
+              {t("Orders")}
             </TabsTrigger>
           </TabsList>
 
@@ -411,7 +414,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>Product Management</CardTitle>
+                  <CardTitle>{t("Product Management")}</CardTitle>
                   <Dialog
                     open={isAddDialogOpen}
                     onOpenChange={setIsAddDialogOpen}
@@ -419,16 +422,16 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                     <DialogTrigger asChild>
                       <Button className="bg-[#5F1B2C] hover:bg-[#4a1523]">
                         <Plus className="h-4 w-4 mr-2" />
-                        Add Product
+                        {t("Add Product")}
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                       <DialogHeader>
-                        <DialogTitle>Add New Product</DialogTitle>
+                        <DialogTitle>{t("Add New Product")}</DialogTitle>
                       </DialogHeader>
                       <form onSubmit={handleAddProduct} className="space-y-4">
                         <div>
-                          <Label htmlFor="name">Product Name *</Label>
+                          <Label htmlFor="name">{t("Product Name *")}</Label>
                           <Input
                             id="name"
                             value={newProduct.name}
@@ -443,7 +446,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                         </div>
 
                         <div>
-                          <Label htmlFor="category">Category *</Label>
+                          <Label htmlFor="category">{t("Category *")}</Label>
                           <Select
                             value={newProduct.category}
                             onValueChange={(value: CategoryValue) =>
@@ -460,7 +463,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                             <SelectContent>
                               {CATEGORIES.map((cat) => (
                                 <SelectItem key={cat.value} value={cat.value}>
-                                  {cat.label}
+                                  {t(cat.label)}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -469,7 +472,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
                         {getSubcategories(newProduct.category).length > 0 && (
                           <div>
-                            <Label htmlFor="subcategory">Sub-category</Label>
+                            <Label htmlFor="subcategory">{t("Sub-category")}</Label>
                             <Select
                               value={newProduct.subcategory ?? "none"}
                               onValueChange={(value: string) =>
@@ -486,11 +489,11 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="none">None</SelectItem>
+                                <SelectItem value="none">{t("None")}</SelectItem>
                                 {getSubcategories(newProduct.category).map(
                                   (sub) => (
                                     <SelectItem key={sub.value} value={sub.value}>
-                                      {sub.label}
+                                      {t(sub.label)}
                                     </SelectItem>
                                   ),
                                 )}
@@ -501,7 +504,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <Label htmlFor="price">Price *</Label>
+                            <Label htmlFor="price">{t("Price *")}</Label>
                             <Input
                               id="price"
                               type="number"
@@ -517,7 +520,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                             />
                           </div>
                           <div>
-                            <Label htmlFor="stock">Stock *</Label>
+                            <Label htmlFor="stock">{t("Stock *")}</Label>
                             <Input
                               id="stock"
                               type="number"
@@ -534,7 +537,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                         </div>
 
                         <div>
-                          <Label htmlFor="description">Description *</Label>
+                          <Label htmlFor="description">{t("Description *")}</Label>
                           <Textarea
                             id="description"
                             value={newProduct.description}
@@ -549,7 +552,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                         </div>
 
                         <div>
-                          <Label htmlFor="image">Product Image</Label>
+                          <Label htmlFor="image">{t("Product Image")}</Label>
                           <div className="space-y-2">
                             <div className="flex items-center gap-2">
                               <Input
@@ -569,7 +572,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                                 <div className="relative h-16 w-16 rounded overflow-hidden">
                                   <Image
                                     src={getImageUrl(newProduct.image) || ""}
-                                    alt="Preview"
+                                    alt={t("Preview")}
                                     fill
                                     className="object-cover"
                                   />
@@ -597,7 +600,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
                         <div className="grid grid-cols-3 gap-4">
                           <div>
-                            <Label htmlFor="roastLevel">Roast Level</Label>
+                            <Label htmlFor="roastLevel">{t("Roast Level")}</Label>
                             <Input
                               id="roastLevel"
                               value={newProduct.roast_level}
@@ -610,7 +613,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                             />
                           </div>
                           <div>
-                            <Label htmlFor="origin">Origin</Label>
+                            <Label htmlFor="origin">{t("Origin")}</Label>
                             <Input
                               id="origin"
                               value={newProduct.origin}
@@ -623,7 +626,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                             />
                           </div>
                           <div>
-                            <Label htmlFor="weight">Weight/Size</Label>
+                            <Label htmlFor="weight">{t("Weight/Size")}</Label>
                             <Input
                               id="weight"
                               value={newProduct.weight}
@@ -652,7 +655,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                           type="submit"
                           className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
                         >
-                          Add Product
+                          {t("Add Product")}
                         </Button>
                       </form>
                     </DialogContent>
@@ -664,12 +667,12 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Sub-category</TableHead>
-                        <TableHead>Price</TableHead>
-                        <TableHead>Stock</TableHead>
-                        <TableHead>Actions</TableHead>
+                        <TableHead>{t("Name")}</TableHead>
+                        <TableHead>{t("Category")}</TableHead>
+                        <TableHead>{t("Sub-category")}</TableHead>
+                        <TableHead>{t("Price")}</TableHead>
+                        <TableHead>{t("Stock")}</TableHead>
+                        <TableHead>{t("Actions")}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -687,8 +690,8 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                           </TableCell>
                           <TableCell>
                             {getWeightOptions(product).length > 1 ? (
-                              <span title="Price varies by weight">
-                                from ${lowestPrice(product).toFixed(2)}
+                              <span title={t("Price varies by weight")}>
+                                {t("from ${price}", { price: lowestPrice(product).toFixed(2) })}
                               </span>
                             ) : (
                               `$${lowestPrice(product).toFixed(2)}`
@@ -733,23 +736,21 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                                 <AlertDialogContent>
                                   <AlertDialogHeader>
                                     <AlertDialogTitle>
-                                      Delete Product
+                                      {t("Delete Product")}
                                     </AlertDialogTitle>
                                     <AlertDialogDescription>
-                                      Are you sure you want to delete &quot;
-                                      {product.name}&quot;? This action cannot
-                                      be undone.
+                                      {t('Are you sure you want to delete "{name}"? This action cannot be undone.', { name: product.name })}
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
                                     <AlertDialogCancel>
-                                      Cancel
+                                      {t("Cancel")}
                                     </AlertDialogCancel>
                                     <AlertDialogAction
                                       onClick={confirmDelete}
                                       className="bg-red-600 hover:bg-red-700"
                                     >
-                                      Delete
+                                      {t("Delete")}
                                     </AlertDialogAction>
                                   </AlertDialogFooter>
                                 </AlertDialogContent>
@@ -768,12 +769,12 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
           <TabsContent value="orders" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Order Management</CardTitle>
+                <CardTitle>{t("Order Management")}</CardTitle>
               </CardHeader>
               <CardContent>
                 {orders.length === 0 ? (
                   <p className="text-center text-gray-600 py-8">
-                    No orders yet
+                    {t("No orders yet")}
                   </p>
                 ) : (
                   <div className="space-y-4">
@@ -783,7 +784,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
                             <div>
                               <h3 className="font-semibold text-lg">
-                                Order #{order.id.substring(0, 8)}
+                                {t("Order #{id}", { id: order.id.substring(0, 8) })}
                               </h3>
                               <p className="text-sm text-gray-600">
                                 {new Date(
@@ -792,7 +793,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                               </p>
                               {order.profiles && (
                                 <p className="text-sm text-gray-600 mt-1">
-                                  <span className="font-medium">Customer:</span>{" "}
+                                  <span className="font-medium">{t("Customer:")}</span>{" "}
                                   {order.profiles.name || order.profiles.email}
                                 </p>
                               )}
@@ -822,31 +823,31 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                                     value="pending"
                                     className="bg-yellow-50 text-yellow-700"
                                   >
-                                    Pending
+                                    {t("Pending")}
                                   </SelectItem>
                                   <SelectItem
                                     value="processing"
                                     className="bg-blue-50 text-blue-700"
                                   >
-                                    Processing
+                                    {t("Processing")}
                                   </SelectItem>
                                   <SelectItem
                                     value="shipped"
                                     className="bg-purple-50 text-purple-700"
                                   >
-                                    Shipped
+                                    {t("Shipped")}
                                   </SelectItem>
                                   <SelectItem
                                     value="delivered"
                                     className="bg-green-50 text-green-700"
                                   >
-                                    Delivered
+                                    {t("Delivered")}
                                   </SelectItem>
                                   <SelectItem
                                     value="cancelled"
                                     className="bg-red-50 text-red-700"
                                   >
-                                    Cancelled
+                                    {t("Cancelled")}
                                   </SelectItem>
                                 </SelectContent>
                               </Select>
@@ -855,7 +856,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
                           <div className="text-sm space-y-2">
                             <div>
-                              <span className="font-medium">Items:</span>
+                              <span className="font-medium">{t("Items:")}</span>
                               {order.items?.map((item, index) => {
                                 const variantSummary =
                                   cartItemVariantLabel(item);
@@ -877,7 +878,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                             </div>
                             {order.tracking_number && (
                               <div>
-                                <span className="font-medium">Tracking:</span>
+                                <span className="font-medium">{t("Tracking:")}</span>
                                 <p className="text-gray-600 font-mono text-xs">
                                   {order.tracking_number}
                                   {order.shipping_carrier &&
@@ -886,7 +887,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                               </div>
                             )}
                             <div>
-                              <span className="font-medium">Payment:</span>
+                              <span className="font-medium">{t("Payment:")}</span>
                               <p className="text-gray-600 flex items-center gap-1 capitalize">
                                 {order.payment_method === "bakong" ? (
                                   <>
@@ -906,12 +907,11 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                                       />
                                       <path d="M7 8h10M7 12h10M7 16h10" />
                                     </svg>
-                                    Bakong KHQR
+                                    {t("Bakong KHQR")}
                                   </>
                                 ) : (
                                   <>
-                                    <Truck className="h-4 w-4" /> Cash on
-                                    Delivery
+                                    <Truck className="h-4 w-4" /> {t("Cash on Delivery")}
                                   </>
                                 )}
                               </p>
@@ -932,11 +932,11 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Edit Product</DialogTitle>
+                <DialogTitle>{t("Edit Product")}</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleUpdateProduct} className="space-y-4">
                 <div>
-                  <Label htmlFor="edit-name">Product Name *</Label>
+                  <Label htmlFor="edit-name">{t("Product Name *")}</Label>
                   <Input
                     id="edit-name"
                     value={editingProduct.name}
@@ -951,7 +951,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="edit-category">Category *</Label>
+                  <Label htmlFor="edit-category">{t("Category *")}</Label>
                   <Select
                     value={editingProduct.category}
                     onValueChange={(value: CategoryValue) =>
@@ -968,7 +968,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                     <SelectContent>
                       {CATEGORIES.map((cat) => (
                         <SelectItem key={cat.value} value={cat.value}>
-                          {cat.label}
+                          {t(cat.label)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -977,7 +977,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
                 {getSubcategories(editingProduct.category).length > 0 && (
                   <div>
-                    <Label htmlFor="edit-subcategory">Sub-category</Label>
+                    <Label htmlFor="edit-subcategory">{t("Sub-category")}</Label>
                     <Select
                       value={editingProduct.subcategory ?? "none"}
                       onValueChange={(value: string) =>
@@ -994,11 +994,11 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="none">None</SelectItem>
+                        <SelectItem value="none">{t("None")}</SelectItem>
                         {getSubcategories(editingProduct.category).map(
                           (sub) => (
                             <SelectItem key={sub.value} value={sub.value}>
-                              {sub.label}
+                              {t(sub.label)}
                             </SelectItem>
                           ),
                         )}
@@ -1009,7 +1009,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="edit-price">Price *</Label>
+                    <Label htmlFor="edit-price">{t("Price *")}</Label>
                     <Input
                       id="edit-price"
                       type="number"
@@ -1025,7 +1025,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="edit-stock">Stock *</Label>
+                    <Label htmlFor="edit-stock">{t("Stock *")}</Label>
                     <Input
                       id="edit-stock"
                       type="number"
@@ -1042,7 +1042,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="edit-description">Description *</Label>
+                  <Label htmlFor="edit-description">{t("Description *")}</Label>
                   <Textarea
                     id="edit-description"
                     value={editingProduct.description}
@@ -1057,7 +1057,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="edit-image">Product Image</Label>
+                  <Label htmlFor="edit-image">{t("Product Image")}</Label>
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <Input
@@ -1077,7 +1077,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                         <div className="relative h-16 w-16 rounded overflow-hidden">
                           <Image
                             src={getImageUrl(editingProduct.image) || ""}
-                            alt="Preview"
+                            alt={t("Preview")}
                             fill
                             className="object-cover"
                           />
@@ -1121,7 +1121,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                   type="submit"
                   className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
                 >
-                  Update Product
+                  {t("Update Product")}
                 </Button>
               </form>
             </DialogContent>

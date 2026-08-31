@@ -37,6 +37,8 @@ import {
   catalogView,
   parseCatalogView,
 } from "@/lib/categories";
+import { useI18n } from "@/lib/i18n";
+import { LanguageToggle } from "@/app/components/LanguageToggle";
 
 interface HeaderProps {
   onNavigate: (view: string) => void;
@@ -49,6 +51,8 @@ export function Header({
   currentView,
   onSearchChange,
 }: HeaderProps) {
+  const { t } = useI18n();
+
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
@@ -80,21 +84,23 @@ export function Header({
   const handleLogout = async () => {
     const result = await signOut();
     if (result.success) {
-      toast.success("Logged out successfully");
+      toast.success(t("Logged out successfully"));
       onNavigate("home");
     } else {
-      toast.error("Failed to logout");
+      toast.error(t("Failed to logout"));
     }
   };
 
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
+  // Labels are translated at definition so both the desktop nav and the
+  // mobile sheet render them localized from the same array.
   const navItems = [
-    { label: "Home", value: "home" },
-    { label: "About Us", value: "about" },
-    { label: "Business", value: "business" },
-    { label: "Gallery", value: "gallery" },
-    { label: "Contact", value: "contact" },
+    { label: t("Home"), value: "home" },
+    { label: t("About Us"), value: "about" },
+    { label: t("Business"), value: "business" },
+    { label: t("Gallery"), value: "gallery" },
+    { label: t("Contact"), value: "contact" },
   ];
 
   return (
@@ -107,7 +113,7 @@ export function Header({
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
-                <span>#20E0, St.85BT, Phum Chamroeun Phal</span>
+                <span>{t("#20E0, St.85BT, Phum Chamroeun Phal")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
@@ -115,7 +121,7 @@ export function Header({
                   href="mailto:info@rattanakcoffee.com"
                   className="hover:text-rose-200 transition-colors"
                 >
-                  info@rattanakcoffee.com
+                  {t("info@rattanakcoffee.com")}
                 </a>
               </div>
             </div>
@@ -127,7 +133,7 @@ export function Header({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-rose-200 transition-colors"
-                aria-label="Facebook"
+                aria-label={t("Facebook")}
               >
                 <Facebook className="h-4 w-4" />
               </a>
@@ -136,7 +142,7 @@ export function Header({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-rose-200 transition-colors"
-                aria-label="Telegram"
+                aria-label={t("Telegram")}
               >
                 <Send className="h-4 w-4" />
               </a>
@@ -145,7 +151,7 @@ export function Header({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-rose-200 transition-colors"
-                aria-label="TikTok"
+                aria-label={t("TikTok")}
               >
                 <svg
                   className="h-4 w-4"
@@ -176,14 +182,14 @@ export function Header({
                       "https://qboxqdnuoqpsrmqtaaaf.supabase.co/storage/v1/object/public/Images/branding/Rattanak.webp",
                     ) || "/Rattanak.webp"
                   }
-                  alt="Rattanak Coffee Logo"
+                  alt={t("Rattanak Coffee Logo")}
                   fill
                   className="object-contain"
                   priority
                 />
               </div>
               <span className="font-bold text-xl text-[#5F1B2C] hidden sm:inline">
-                RATTANAK COFFEE
+                {t("RATTANAK COFFEE")}
               </span>
             </button>
 
@@ -220,7 +226,7 @@ export function Header({
                         : "text-gray-600"
                     }`}
                   >
-                    Products
+                    {t("Products")}
                     <ChevronDown className="h-4 w-4" />
                   </button>
                 </DropdownMenuTrigger>
@@ -234,7 +240,7 @@ export function Header({
                     className="cursor-pointer"
                     onClick={() => onNavigate("products")}
                   >
-                    All Products
+                    {t("All Products")}
                   </DropdownMenuItem>
                   {CATEGORIES.map((category) => {
                     const subcategories = getSubcategories(category.value);
@@ -249,7 +255,7 @@ export function Header({
                           className="cursor-pointer"
                           onClick={() => onNavigate(category.value)}
                         >
-                          {category.label}
+                          {t(category.label)}
                         </DropdownMenuItem>
                         {subcategories.length > 0 && (
                           <AnimatePresence>
@@ -271,7 +277,7 @@ export function Header({
                                       )
                                     }
                                   >
-                                    {sub.label}
+                                    {t(sub.label)}
                                   </DropdownMenuItem>
                                 ))}
                               </motion.div>
@@ -293,13 +299,15 @@ export function Header({
                       : "text-gray-600"
                   }`}
                 >
-                  Admin
+                  {t("Admin")}
                 </button>
               )}
             </nav>
 
             {/* Right Actions */}
             <div className="flex items-center gap-2">
+              <LanguageToggle />
+
               {/* Search - Desktop */}
               <Button
                 variant="ghost"
@@ -342,7 +350,7 @@ export function Header({
                       className="bg-rose-50 text-[#5F1B2C]"
                     >
                       <Shield className="h-3 w-3 mr-1" />
-                      Admin
+                      {t("Admin")}
                     </Badge>
                   )}
                   <DropdownMenu>
@@ -377,7 +385,7 @@ export function Header({
                           className="cursor-pointer"
                         >
                           <ShoppingCart className="mr-2 h-4 w-4" />
-                          <span>Orders</span>
+                          <span>{t("Orders")}</span>
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuItem
@@ -385,7 +393,7 @@ export function Header({
                         className="cursor-pointer"
                       >
                         <MapPin className="mr-2 h-4 w-4" />
-                        <span>Address</span>
+                        <span>{t("Address")}</span>
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => onNavigate("settings")}
@@ -411,7 +419,7 @@ export function Header({
                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                           />
                         </svg>
-                        <span>Settings</span>
+                        <span>{t("Settings")}</span>
                       </DropdownMenuItem>
                       {user.is_admin && (
                         <>
@@ -421,7 +429,7 @@ export function Header({
                             className="cursor-pointer"
                           >
                             <Shield className="mr-2 h-4 w-4" />
-                            <span>Admin Dashboard</span>
+                            <span>{t("Admin Dashboard")}</span>
                           </DropdownMenuItem>
                         </>
                       )}
@@ -444,7 +452,7 @@ export function Header({
                             d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                           />
                         </svg>
-                        <span>Logout</span>
+                        <span>{t("Logout")}</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -456,7 +464,7 @@ export function Header({
                   onClick={() => onNavigate("login")}
                   className="hidden md:flex bg-[#5F1B2C] hover:bg-[#4a1523]"
                 >
-                  Login
+                  {t("Login")}
                 </Button>
               )}
 
@@ -469,12 +477,17 @@ export function Header({
                 </SheetTrigger>
                 <SheetContent>
                   <div className="flex flex-col gap-4 mt-8">
+                    {/* Language */}
+                    <div className="px-4 pb-2 border-b">
+                      <LanguageToggle variant="full" className="py-2" />
+                    </div>
+
                     {/* Mobile Search */}
                     <div className="relative">
                       <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                       <input
                         type="text"
-                        placeholder="Search products..."
+                        placeholder={t("Search products...")}
                         onChange={(e) => handleSearchChange(e.target.value)}
                         className="w-full pl-8 pr-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#5F1B2C]"
                       />
@@ -498,7 +511,7 @@ export function Header({
                     {/* Mobile Products Menu */}
                     <div className="border-t pt-2">
                       <p className="px-4 py-2 text-sm font-semibold text-gray-500">
-                        Products
+                        {t("Products")}
                       </p>
                       <button
                         onClick={() => onNavigate("products")}
@@ -508,7 +521,7 @@ export function Header({
                             : "hover:bg-gray-100"
                         }`}
                       >
-                        All Products
+                        {t("All Products")}
                       </button>
                       {CATEGORIES.map((category) => (
                         <div key={category.value}>
@@ -520,7 +533,7 @@ export function Header({
                                 : "hover:bg-gray-100"
                             }`}
                           >
-                            {category.label}
+                            {t(category.label)}
                           </button>
                           {getSubcategories(category.value).map((sub) => {
                             const subView = catalogView(
@@ -537,7 +550,7 @@ export function Header({
                                     : "hover:bg-gray-100 text-gray-600"
                                 }`}
                               >
-                                {sub.label}
+                                {t(sub.label)}
                               </button>
                             );
                           })}
@@ -554,7 +567,7 @@ export function Header({
                             : "hover:bg-gray-100"
                         }`}
                       >
-                        Admin Dashboard
+                        {t("Admin Dashboard")}
                       </button>
                     )}
 
@@ -582,7 +595,7 @@ export function Header({
                           className="w-full justify-start"
                         >
                           <User className="h-4 w-4 mr-2" />
-                          Profile
+                          {t("Profile")}
                         </Button>
                         <Button
                           variant="outline"
@@ -590,7 +603,7 @@ export function Header({
                           className="w-full justify-start"
                         >
                           <ShoppingCart className="h-4 w-4 mr-2" />
-                          Orders
+                          {t("Orders")}
                         </Button>
                         <Button
                           variant="outline"
@@ -598,7 +611,7 @@ export function Header({
                           className="w-full justify-start"
                         >
                           <MapPin className="h-4 w-4 mr-2" />
-                          Address
+                          {t("Address")}
                         </Button>
                         <Button
                           variant="outline"
@@ -624,7 +637,7 @@ export function Header({
                               d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                             />
                           </svg>
-                          Settings
+                          {t("Settings")}
                         </Button>
                         {user.is_admin && (
                           <Button
@@ -633,7 +646,7 @@ export function Header({
                             className="w-full justify-start"
                           >
                             <Shield className="h-4 w-4 mr-2" />
-                            Admin Dashboard
+                            {t("Admin Dashboard")}
                           </Button>
                         )}
                         <Button
@@ -654,7 +667,7 @@ export function Header({
                               d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                             />
                           </svg>
-                          Logout
+                          {t("Logout")}
                         </Button>
                       </div>
                     ) : (
@@ -663,7 +676,7 @@ export function Header({
                         onClick={() => onNavigate("login")}
                         className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
                       >
-                        Login
+                        {t("Login")}
                       </Button>
                     )}
                   </div>
@@ -680,7 +693,7 @@ export function Header({
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search products..."
+                    placeholder={t("Search products...")}
                     onChange={(e) => handleSearchChange(e.target.value)}
                     autoFocus
                     className="w-full pl-10 pr-4 py-2.5 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#5F1B2C]"
@@ -690,7 +703,7 @@ export function Header({
                   onClick={() => onNavigate("products")}
                   className="bg-[#5F1B2C] hover:bg-[#4a1523] px-6"
                 >
-                  Go
+                  {t("Go")}
                 </Button>
                 <Button
                   variant="ghost"

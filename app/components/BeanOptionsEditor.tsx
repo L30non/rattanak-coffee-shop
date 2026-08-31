@@ -5,6 +5,7 @@ import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { Checkbox } from "@/app/components/ui/checkbox";
 import { GRIND_OPTIONS, type GrindType, type WeightOption } from "@/lib/beans";
+import { useI18n } from "@/lib/i18n";
 
 interface BeanOptionsEditorProps {
   /** Keeps input ids unique when both dialogs are mounted ("add" / "edit"). */
@@ -47,6 +48,8 @@ export function BeanOptionsEditor({
   grindOptions,
   onChange,
 }: BeanOptionsEditorProps) {
+  const { t } = useI18n();
+
   const [rows, setRows] = useState<WeightRow[]>(() => toRows(weightOptions));
 
   const commit = (nextRows: WeightRow[], nextGrinds: GrindType[]) => {
@@ -86,14 +89,14 @@ export function BeanOptionsEditor({
   return (
     <div className="space-y-4 rounded-md border border-dashed p-4">
       <div>
-        <Label className="text-sm font-semibold">Bean Options</Label>
+        <Label className="text-sm font-semibold">{t("Bean Options")}</Label>
         <p className="text-xs text-gray-500 mt-1">
-          Only used for products in the Beans category.
+          {t("Only used for products in the Beans category.")}
         </p>
       </div>
 
       <div>
-        <Label className="text-sm">Grind Types Offered</Label>
+        <Label className="text-sm">{t("Grind Types Offered")}</Label>
         <div className="mt-2 space-y-2">
           {GRIND_OPTIONS.map((option) => (
             <div key={option.value} className="flex items-center gap-2">
@@ -108,8 +111,8 @@ export function BeanOptionsEditor({
                 htmlFor={`${idPrefix}-grind-${option.value}`}
                 className="text-sm font-normal"
               >
-                {option.label}
-                <span className="text-gray-500"> — {option.description}</span>
+                {t(option.label)}
+                <span className="text-gray-500"> — {t(option.description)}</span>
               </Label>
             </div>
           ))}
@@ -117,17 +120,16 @@ export function BeanOptionsEditor({
       </div>
 
       <div>
-        <Label className="text-sm">Weights &amp; Prices</Label>
+        <Label className="text-sm">{t("Weights & Prices")}</Label>
         <p className="text-xs text-gray-500 mt-1 mb-2">
-          The first weight is pre-selected on the product page. Leave empty to
-          sell at the flat price above.
+          {t("The first weight is pre-selected on the product page. Leave empty to sell at the flat price above.")}
         </p>
         <div className="space-y-2">
           {rows.map((row, index) => (
             <div key={index} className="flex items-center gap-2">
               <Input
                 id={`${idPrefix}-weight-label-${index}`}
-                placeholder="250g"
+                placeholder={t("250g")}
                 value={row.label}
                 onChange={(e) => updateRow(index, { label: e.target.value })}
                 className="flex-1"
@@ -152,7 +154,7 @@ export function BeanOptionsEditor({
                 variant="ghost"
                 size="icon"
                 onClick={() => removeRow(index)}
-                aria-label={`Remove weight option ${index + 1}`}
+                aria-label={t("Remove weight option {number}", { number: index + 1 })}
               >
                 <Trash2 className="h-4 w-4 text-red-500" />
               </Button>
@@ -167,7 +169,7 @@ export function BeanOptionsEditor({
           className="mt-2"
         >
           <Plus className="h-4 w-4 mr-1" />
-          Add Weight
+          {t("Add Weight")}
         </Button>
       </div>
     </div>

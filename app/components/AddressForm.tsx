@@ -15,6 +15,7 @@ import { Label } from "@/app/components/ui/label";
 import { Checkbox } from "@/app/components/ui/checkbox";
 import { Address, useStore } from "@/app/store/useStore";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 interface AddressFormProps {
   open: boolean;
@@ -29,6 +30,8 @@ export function AddressForm({
   address,
   onSuccess,
 }: AddressFormProps) {
+  const { t } = useI18n();
+
   const { addAddress, updateAddress } = useStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -76,15 +79,15 @@ export function AddressForm({
 
     // Validation
     if (!formData.street_line_1.trim()) {
-      toast.error("Street address is required");
+      toast.error(t("Street address is required"));
       return;
     }
     if (!formData.city.trim()) {
-      toast.error("City is required");
+      toast.error(t("City is required"));
       return;
     }
     if (!formData.zip_code.trim()) {
-      toast.error("ZIP code is required");
+      toast.error(t("ZIP code is required"));
       return;
     }
 
@@ -102,11 +105,11 @@ export function AddressForm({
         if (response.ok) {
           const data = await response.json();
           updateAddress(address.id, data.address);
-          toast.success("Address updated successfully");
+          toast.success(t("Address updated successfully"));
           onOpenChange(false);
           onSuccess?.();
         } else {
-          toast.error("Failed to update address");
+          toast.error(t("Failed to update address"));
         }
       } else {
         // Create new address
@@ -119,16 +122,16 @@ export function AddressForm({
         if (response.ok) {
           const data = await response.json();
           addAddress(data.address);
-          toast.success("Address added successfully");
+          toast.success(t("Address added successfully"));
           onOpenChange(false);
           onSuccess?.();
         } else {
-          toast.error("Failed to add address");
+          toast.error(t("Failed to add address"));
         }
       }
     } catch (error) {
       console.error("Error saving address:", error);
-      toast.error("Failed to save address");
+      toast.error(t("Failed to save address"));
     } finally {
       setIsSubmitting(false);
     }
@@ -157,11 +160,11 @@ export function AddressForm({
             {/* Label */}
             <div className="grid gap-2">
               <Label htmlFor="label">
-                Label <span className="text-gray-500 text-sm">(optional)</span>
+                {t("Label")} <span className="text-gray-500 text-sm">{t("(optional)")}</span>
               </Label>
               <Input
                 id="label"
-                placeholder="e.g., Home, Work, Office"
+                placeholder={t("e.g., Home, Work, Office")}
                 value={formData.label}
                 onChange={(e) => handleChange("label", e.target.value)}
               />
@@ -170,11 +173,11 @@ export function AddressForm({
             {/* Street Line 1 */}
             <div className="grid gap-2">
               <Label htmlFor="street_line_1">
-                Street Address <span className="text-red-500">*</span>
+                {t("Street Address")} <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="street_line_1"
-                placeholder="123 Main Street"
+                placeholder={t("123 Main Street")}
                 value={formData.street_line_1}
                 onChange={(e) => handleChange("street_line_1", e.target.value)}
                 required
@@ -184,12 +187,12 @@ export function AddressForm({
             {/* Street Line 2 */}
             <div className="grid gap-2">
               <Label htmlFor="street_line_2">
-                Apartment, suite, etc.{" "}
-                <span className="text-gray-500 text-sm">(optional)</span>
+                {t("Apartment, suite, etc.")}{" "}
+                <span className="text-gray-500 text-sm">{t("(optional)")}</span>
               </Label>
               <Input
                 id="street_line_2"
-                placeholder="Apt 4B"
+                placeholder={t("Apt 4B")}
                 value={formData.street_line_2}
                 onChange={(e) => handleChange("street_line_2", e.target.value)}
               />
@@ -199,21 +202,21 @@ export function AddressForm({
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="city">
-                  City <span className="text-red-500">*</span>
+                  {t("City")} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="city"
-                  placeholder="Boston"
+                  placeholder={t("Boston")}
                   value={formData.city}
                   onChange={(e) => handleChange("city", e.target.value)}
                   required
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="state">State</Label>
+                <Label htmlFor="state">{t("State")}</Label>
                 <Input
                   id="state"
-                  placeholder="MA"
+                  placeholder={t("MA")}
                   value={formData.state}
                   onChange={(e) => handleChange("state", e.target.value)}
                 />
@@ -223,7 +226,7 @@ export function AddressForm({
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="zip_code">
-                  ZIP Code <span className="text-red-500">*</span>
+                  {t("ZIP Code")} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="zip_code"
@@ -234,7 +237,7 @@ export function AddressForm({
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="country">Country</Label>
+                <Label htmlFor="country">{t("Country")}</Label>
                 <Input
                   id="country"
                   value={formData.country}
@@ -246,8 +249,8 @@ export function AddressForm({
             {/* Phone */}
             <div className="grid gap-2">
               <Label htmlFor="phone">
-                Phone Number{" "}
-                <span className="text-gray-500 text-sm">(optional)</span>
+                {t("Phone Number")}{" "}
+                <span className="text-gray-500 text-sm">{t("(optional)")}</span>
               </Label>
               <Input
                 id="phone"
@@ -271,7 +274,7 @@ export function AddressForm({
                 htmlFor="is_default"
                 className="text-sm font-normal cursor-pointer"
               >
-                Set as default shipping address
+                {t("Set as default shipping address")}
               </Label>
             </div>
           </div>
@@ -283,7 +286,7 @@ export function AddressForm({
               onClick={() => onOpenChange(false)}
               disabled={isSubmitting}
             >
-              Cancel
+              {t("Cancel")}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting

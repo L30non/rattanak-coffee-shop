@@ -14,12 +14,15 @@ import {
   Send,
   MessageSquare,
 } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 interface ContactProps {
   onNavigate: (view: string) => void;
 }
 
 export function Contact({ onNavigate }: ContactProps) {
+  const { t } = useI18n();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -34,7 +37,7 @@ export function Contact({ onNavigate }: ContactProps) {
 
     // Simulate form submission
     setTimeout(() => {
-      toast.success("Message sent! We'll get back to you soon.");
+      toast.success(t("Message sent! We'll get back to you soon."));
       setFormData({ name: "", email: "", subject: "", message: "" });
       setIsSubmitting(false);
     }, 1000);
@@ -60,17 +63,16 @@ export function Contact({ onNavigate }: ContactProps) {
             className="mb-6 text-white hover:text-rose-200 hover:bg-white/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
+            {t("Back to Home")}
           </Button>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">{t("Contact Us")}</h1>
             <p className="text-xl text-rose-100 max-w-2xl">
-              Have questions about our products or need help starting your cafe?
-              We&apos;d love to hear from you.
+              {t("Have questions about our products or need help starting your cafe? We'd love to hear from you.")}
             </p>
           </motion.div>
         </div>
@@ -160,7 +162,7 @@ export function Contact({ onNavigate }: ContactProps) {
                   <div className="flex items-center gap-3 mb-6">
                     <MessageSquare className="h-6 w-6 text-[#5F1B2C]" />
                     <h2 className="text-2xl font-bold text-[#3d1620]">
-                      Send Us a Message
+                      {t("Send Us a Message")}
                     </h2>
                   </div>
                   <Separator className="mb-6" />
@@ -172,7 +174,7 @@ export function Contact({ onNavigate }: ContactProps) {
                           htmlFor="name"
                           className="block text-sm font-medium text-gray-700 mb-1.5"
                         >
-                          Your Name
+                          {t("Your Name")}
                         </label>
                         <input
                           type="text"
@@ -182,7 +184,7 @@ export function Contact({ onNavigate }: ContactProps) {
                           onChange={handleChange}
                           required
                           className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5F1B2C] focus:border-transparent"
-                          placeholder="John Doe"
+                          placeholder={t("John Doe")}
                         />
                       </div>
                       <div>
@@ -190,7 +192,7 @@ export function Contact({ onNavigate }: ContactProps) {
                           htmlFor="email"
                           className="block text-sm font-medium text-gray-700 mb-1.5"
                         >
-                          Email Address
+                          {t("Email Address")}
                         </label>
                         <input
                           type="email"
@@ -200,7 +202,7 @@ export function Contact({ onNavigate }: ContactProps) {
                           onChange={handleChange}
                           required
                           className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5F1B2C] focus:border-transparent"
-                          placeholder="john@example.com"
+                          placeholder={t("john@example.com")}
                         />
                       </div>
                     </div>
@@ -209,7 +211,7 @@ export function Contact({ onNavigate }: ContactProps) {
                         htmlFor="subject"
                         className="block text-sm font-medium text-gray-700 mb-1.5"
                       >
-                        Subject
+                        {t("Subject")}
                       </label>
                       <input
                         type="text"
@@ -219,7 +221,7 @@ export function Contact({ onNavigate }: ContactProps) {
                         onChange={handleChange}
                         required
                         className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5F1B2C] focus:border-transparent"
-                        placeholder="How can we help?"
+                        placeholder={t("How can we help?")}
                       />
                     </div>
                     <div>
@@ -227,7 +229,7 @@ export function Contact({ onNavigate }: ContactProps) {
                         htmlFor="message"
                         className="block text-sm font-medium text-gray-700 mb-1.5"
                       >
-                        Message
+                        {t("Message")}
                       </label>
                       <textarea
                         id="message"
@@ -237,7 +239,7 @@ export function Contact({ onNavigate }: ContactProps) {
                         required
                         rows={5}
                         className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5F1B2C] focus:border-transparent resize-none"
-                        placeholder="Tell us about your inquiry..."
+                        placeholder={t("Tell us about your inquiry...")}
                       />
                     </div>
                     <Button
@@ -264,7 +266,7 @@ export function Contact({ onNavigate }: ContactProps) {
               <Card className="border-none shadow-lg flex-1 overflow-hidden">
                 <CardContent className="p-0 h-full min-h-[400px]">
                   <iframe
-                    title="Rattanak Coffee Shop Location"
+                    title={t("Rattanak Coffee Shop Location")}
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d393.4334456707434!2d104.9024206555716!3d11.536029783254826!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x310950fadfd7b241%3A0x3de01509c6a9a539!2sRATTANAK%20COFFEE%20ROASTER!5e1!3m2!1sen!2sat!4v1785314647657!5m2!1sen!2sat"
                     width="100%"
                     height="100%"
@@ -281,7 +283,7 @@ export function Contact({ onNavigate }: ContactProps) {
               <Card className="border-none shadow-lg">
                 <CardContent className="p-6">
                   <h3 className="font-semibold text-lg text-[#3d1620] mb-4">
-                    Connect With Us
+                    {t("Connect With Us")}
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <a
@@ -292,7 +294,7 @@ export function Contact({ onNavigate }: ContactProps) {
                     >
                       <Facebook className="h-5 w-5 text-blue-600" />
                       <span className="text-sm font-medium text-blue-700">
-                        Facebook
+                        {t("Facebook")}
                       </span>
                     </a>
                     <a
@@ -303,7 +305,7 @@ export function Contact({ onNavigate }: ContactProps) {
                     >
                       <Send className="h-5 w-5 text-sky-600" />
                       <span className="text-sm font-medium text-sky-700">
-                        Telegram
+                        {t("Telegram")}
                       </span>
                     </a>
                     <a
@@ -320,7 +322,7 @@ export function Contact({ onNavigate }: ContactProps) {
                         <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
                       </svg>
                       <span className="text-sm font-medium text-gray-700">
-                        TikTok
+                        {t("TikTok")}
                       </span>
                     </a>
                   </div>

@@ -1,3 +1,5 @@
+import { msg } from "@/lib/i18n/config";
+
 export type CategoryValue = "machines" | "beans" | "accessories" | "ingredients";
 export type SubcategoryValue =
   | "1-group"
@@ -25,38 +27,38 @@ export interface Category {
 export const CATEGORIES: Category[] = [
   {
     value: "machines",
-    label: "Machines",
-    title: "Coffee Machines",
+    label: msg("Machines"),
+    title: msg("Coffee Machines"),
     description:
-      "Coffee machines and accessories for every taste and budget — for your home, office, and commercial use.",
+      msg("Coffee machines and accessories for every taste and budget — for your home, office, and commercial use."),
     subcategories: [
-      { value: "1-group", label: "1-Group Machine", title: "1-Group Machines" },
-      { value: "2-group", label: "2-Group Machine", title: "2-Group Machines" },
-      { value: "grinder", label: "Grinder", title: "Grinders" },
-      { value: "blender", label: "Blender", title: "Blenders" },
+      { value: "1-group", label: msg("1-Group Machine"), title: msg("1-Group Machines") },
+      { value: "2-group", label: msg("2-Group Machine"), title: msg("2-Group Machines") },
+      { value: "grinder", label: msg("Grinder"), title: msg("Grinders") },
+      { value: "blender", label: msg("Blender"), title: msg("Blenders") },
     ],
   },
   {
     value: "beans",
-    label: "Beans",
-    title: "Coffee Beans",
+    label: msg("Beans"),
+    title: msg("Coffee Beans"),
     description:
-      "Sourcing quality beans for the perfect signature taste. We source quality green beans from across Cambodia and the globe, roasting them in-house for true Robusta and Arabica greatness.",
+      msg("Sourcing quality beans for the perfect signature taste. We source quality green beans from across Cambodia and the globe, roasting them in-house for true Robusta and Arabica greatness."),
     subcategories: [
-      { value: "roasted", label: "Roasted Beans", title: "Roasted Beans" },
-      { value: "green", label: "Green Beans", title: "Green Beans" },
+      { value: "roasted", label: msg("Roasted Beans"), title: msg("Roasted Beans") },
+      { value: "green", label: msg("Green Beans"), title: msg("Green Beans") },
     ],
   },
   {
     value: "accessories",
-    label: "Accessories",
-    title: "Accessories",
+    label: msg("Accessories"),
+    title: msg("Accessories"),
     subcategories: [],
   },
   {
     value: "ingredients",
-    label: "Ingredients",
-    title: "Ingredients",
+    label: msg("Ingredients"),
+    title: msg("Ingredients"),
     subcategories: [],
   },
 ];

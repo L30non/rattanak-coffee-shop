@@ -54,6 +54,7 @@ import {
 import type { Gallery as GalleryImage } from "@/app/store/useStore";
 import { uploadImage, getImageUrl } from "@/utils/supabase/client";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 interface GalleryProps {
   onNavigate: (view: string) => void;
@@ -71,6 +72,8 @@ const galleryCategories = [
 ];
 
 export function Gallery({ onNavigate }: GalleryProps) {
+  const { t } = useI18n();
+
   const { user } = useAuth();
   const isAdmin = !!user?.is_admin;
 
@@ -127,12 +130,12 @@ export function Gallery({ onNavigate }: GalleryProps) {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      toast.error("Please select an image file");
+      toast.error(t("Please select an image file"));
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image size must be less than 5MB");
+      toast.error(t("Image size must be less than 5MB"));
       return;
     }
 
@@ -141,7 +144,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
     setIsUploading(false);
 
     if (error) {
-      toast.error(`Upload failed: ${error}`);
+      toast.error(t("Upload failed: {error}", { error: String(error) }));
       return;
     }
 
@@ -151,14 +154,14 @@ export function Gallery({ onNavigate }: GalleryProps) {
       } else {
         setNewImage({ ...newImage, src: path });
       }
-      toast.success("Image uploaded successfully");
+      toast.success(t("Image uploaded successfully"));
     }
   };
 
   const handleAddImage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newImage.src) {
-      toast.error("Please upload an image");
+      toast.error(t("Please upload an image"));
       return;
     }
 
@@ -171,12 +174,12 @@ export function Gallery({ onNavigate }: GalleryProps) {
       },
       {
         onSuccess: () => {
-          toast.success("Image added to gallery");
+          toast.success(t("Image added to gallery"));
           setIsAddDialogOpen(false);
           setNewImage({ src: null, alt: "", category: "Roastery" });
         },
         onError: (error) => {
-          toast.error(`Failed to add image: ${error.message}`);
+          toast.error(t("Failed to add image: {error}", { error: error.message }));
         },
       },
     );
@@ -195,12 +198,12 @@ export function Gallery({ onNavigate }: GalleryProps) {
       },
       {
         onSuccess: () => {
-          toast.success("Gallery image updated");
+          toast.success(t("Gallery image updated"));
           setIsEditDialogOpen(false);
           setEditingImage(null);
         },
         onError: (error) => {
-          toast.error(`Failed to update image: ${error.message}`);
+          toast.error(t("Failed to update image: {error}", { error: error.message }));
         },
       },
     );
@@ -211,11 +214,11 @@ export function Gallery({ onNavigate }: GalleryProps) {
 
     deleteGalleryMutation.mutate(imageToDelete.id, {
       onSuccess: () => {
-        toast.success("Image removed from gallery");
+        toast.success(t("Image removed from gallery"));
         setImageToDelete(null);
       },
       onError: (error) => {
-        toast.error(`Failed to delete image: ${error.message}`);
+        toast.error(t("Failed to delete image: {error}", { error: error.message }));
       },
     });
   };
@@ -231,7 +234,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
             className="mb-6 text-white hover:text-rose-200 hover:bg-white/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
+            {t("Back to Home")}
           </Button>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -239,10 +242,10 @@ export function Gallery({ onNavigate }: GalleryProps) {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              See What We&apos;ve Been Up To
+              {t("See What We've Been Up To")}
             </h1>
             <p className="text-xl text-rose-100 max-w-2xl">
-              From our barista training to our roastery.
+              {t("From our barista training to our roastery.")}
             </p>
           </motion.div>
         </div>
@@ -291,16 +294,16 @@ export function Gallery({ onNavigate }: GalleryProps) {
                 <DialogTrigger asChild>
                   <Button className="bg-[#5F1B2C] hover:bg-[#4a1523]">
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Image
+                    {t("Add Image")}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>Add Gallery Image</DialogTitle>
+                    <DialogTitle>{t("Add Gallery Image")}</DialogTitle>
                   </DialogHeader>
                   <form onSubmit={handleAddImage} className="space-y-4">
                     <div>
-                      <Label htmlFor="galleryImageUpload">Image *</Label>
+                      <Label htmlFor="galleryImageUpload">{t("Image *")}</Label>
                       <div className="space-y-2">
                         <div className="flex items-center gap-2">
                           <Input
@@ -320,7 +323,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
                             <div className="relative h-16 w-16 rounded overflow-hidden">
                               <Image
                                 src={getImageUrl(newImage.src) || ""}
-                                alt="Preview"
+                                alt={t("Preview")}
                                 fill
                                 className="object-cover"
                               />
@@ -336,7 +339,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
                                 setNewImage({ ...newImage, src: null })
                               }
                             >
-                              Remove
+                              {t("Remove")}
                             </Button>
                           </div>
                         )}
@@ -344,7 +347,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
                     </div>
 
                     <div>
-                      <Label htmlFor="galleryAlt">Caption *</Label>
+                      <Label htmlFor="galleryAlt">{t("Caption *")}</Label>
                       <Input
                         id="galleryAlt"
                         value={newImage.alt}
@@ -356,7 +359,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
                     </div>
 
                     <div>
-                      <Label htmlFor="galleryCategory">Category *</Label>
+                      <Label htmlFor="galleryCategory">{t("Category *")}</Label>
                       <Select
                         value={newImage.category}
                         onValueChange={(value) =>
@@ -382,7 +385,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
                       type="submit"
                       className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
                     >
-                      Add Image
+                      {t("Add Image")}
                     </Button>
                   </form>
                 </DialogContent>
@@ -419,10 +422,10 @@ export function Gallery({ onNavigate }: GalleryProps) {
               <div className="col-span-full text-center py-16">
                 <Camera className="h-16 w-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-600 mb-2">
-                  No photos in this category
+                  {t("No photos in this category")}
                 </h3>
                 <p className="text-gray-500">
-                  Try selecting a different category to see more photos.
+                  {t("Try selecting a different category to see more photos.")}
                 </p>
               </div>
             ) : (
@@ -455,7 +458,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
                             setIsEditDialogOpen(true);
                           }}
                           className="bg-white/90 hover:bg-white text-gray-700 rounded-full p-1.5 shadow"
-                          aria-label="Edit image"
+                          aria-label={t("Edit image")}
                         >
                           <Pencil className="h-3.5 w-3.5" />
                         </button>
@@ -465,7 +468,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
                             setImageToDelete({ id: image.id, alt: image.alt });
                           }}
                           className="bg-white/90 hover:bg-white text-red-600 rounded-full p-1.5 shadow"
-                          aria-label="Delete image"
+                          aria-label={t("Delete image")}
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
@@ -494,11 +497,11 @@ export function Gallery({ onNavigate }: GalleryProps) {
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Edit Gallery Image</DialogTitle>
+              <DialogTitle>{t("Edit Gallery Image")}</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleUpdateImage} className="space-y-4">
               <div>
-                <Label htmlFor="editGalleryImageUpload">Image</Label>
+                <Label htmlFor="editGalleryImageUpload">{t("Image")}</Label>
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <Input
@@ -518,7 +521,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
                       <div className="relative h-16 w-16 rounded overflow-hidden">
                         <Image
                           src={getImageUrl(editingImage.src) || ""}
-                          alt="Preview"
+                          alt={t("Preview")}
                           fill
                           className="object-cover"
                         />
@@ -532,7 +535,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
               </div>
 
               <div>
-                <Label htmlFor="editGalleryAlt">Caption *</Label>
+                <Label htmlFor="editGalleryAlt">{t("Caption *")}</Label>
                 <Input
                   id="editGalleryAlt"
                   value={editingImage.alt}
@@ -544,7 +547,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
               </div>
 
               <div>
-                <Label htmlFor="editGalleryCategory">Category *</Label>
+                <Label htmlFor="editGalleryCategory">{t("Category *")}</Label>
                 <Select
                   value={editingImage.category}
                   onValueChange={(value) =>
@@ -570,7 +573,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
                 type="submit"
                 className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
               >
-                Save Changes
+                {t("Save Changes")}
               </Button>
             </form>
           </DialogContent>
@@ -584,19 +587,18 @@ export function Gallery({ onNavigate }: GalleryProps) {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete this image?</AlertDialogTitle>
+            <AlertDialogTitle>{t("Delete this image?")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently remove &ldquo;{imageToDelete?.alt}&rdquo;
-              from the gallery. This action cannot be undone.
+              {t('This will permanently remove "{name}" from the gallery. This action cannot be undone.', { name: imageToDelete?.alt ?? "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
               className="bg-red-600 hover:bg-red-700"
             >
-              Delete
+              {t("Delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -680,10 +682,9 @@ export function Gallery({ onNavigate }: GalleryProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl font-bold mb-4">Want to See More?</h2>
+            <h2 className="text-3xl font-bold mb-4">{t("Want to See More?")}</h2>
             <p className="text-rose-100 mb-8 max-w-xl mx-auto">
-              Follow us on social media for daily updates, behind-the-scenes
-              content, and more from Rattanak Coffee.
+              {t("Follow us on social media for daily updates, behind-the-scenes content, and more from Rattanak Coffee.")}
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <a
@@ -695,7 +696,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
                   size="lg"
                   className="bg-white text-[#3d1620] hover:bg-rose-50"
                 >
-                  Follow on Instagram
+                  {t("Follow on Instagram")}
                 </Button>
               </a>
               <a
@@ -708,7 +709,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
                   variant="outline"
                   className="border-white text-white bg-white/10 hover:bg-white hover:text-[#3d1620]"
                 >
-                  Follow on Facebook
+                  {t("Follow on Facebook")}
                 </Button>
               </a>
             </div>
