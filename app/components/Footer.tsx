@@ -10,7 +10,7 @@ export function Footer({ onNavigate }: FooterProps) {
   const { t } = useI18n();
 
   return (
-    <footer className="bg-[#3d1620] text-white mt-auto">
+    <footer className="bg-brand-deep text-white mt-auto">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}

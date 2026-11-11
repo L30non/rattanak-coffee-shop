@@ -172,7 +172,7 @@ export function AddressManagement({ onNavigate }: AddressManagementProps) {
                 key={address.id}
                 className={`transition-all ${
                   address.is_default
-                    ? "border-[#5F1B2C] border-2 shadow-md"
+                    ? "border-brand border-2 shadow-md"
                     : "hover:shadow-md"
                 }`}
               >
@@ -187,7 +187,7 @@ export function AddressManagement({ onNavigate }: AddressManagementProps) {
                           </span>
                         )}
                         {address.is_default && (
-                          <Badge className="bg-[#5F1B2C] hover:bg-[#5F1B2C]">
+                          <Badge className="bg-brand hover:bg-brand">
                             <Star className="h-3 w-3 mr-1" />
                             {t("Default")}
                           </Badge>

@@ -48,19 +48,19 @@ export function PrivacyPolicy({ onNavigate }: PrivacyPolicyProps) {
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 my-8">
                 <Card className="text-center p-4">
-                  <Shield className="h-8 w-8 mx-auto mb-2 text-[#5F1B2C]" />
+                  <Shield className="h-8 w-8 mx-auto mb-2 text-brand" />
                   <p className="text-sm font-medium">{t("Secure Data")}</p>
                 </Card>
                 <Card className="text-center p-4">
-                  <Lock className="h-8 w-8 mx-auto mb-2 text-[#5F1B2C]" />
+                  <Lock className="h-8 w-8 mx-auto mb-2 text-brand" />
                   <p className="text-sm font-medium">{t("Encrypted")}</p>
                 </Card>
                 <Card className="text-center p-4">
-                  <Eye className="h-8 w-8 mx-auto mb-2 text-[#5F1B2C]" />
+                  <Eye className="h-8 w-8 mx-auto mb-2 text-brand" />
                   <p className="text-sm font-medium">{t("Transparent")}</p>
                 </Card>
                 <Card className="text-center p-4">
-                  <Database className="h-8 w-8 mx-auto mb-2 text-[#5F1B2C]" />
+                  <Database className="h-8 w-8 mx-auto mb-2 text-brand" />
                   <p className="text-sm font-medium">{t("Protected")}</p>
                 </Card>
               </div>

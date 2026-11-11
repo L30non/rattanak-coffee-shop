@@ -224,30 +224,26 @@ export function Gallery({ onNavigate }: GalleryProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-brand-tint to-white">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#3d1620] to-[#5F1B2C] text-white py-16">
+      <section className="bg-gradient-to-r from-brand-deep to-brand text-white py-16">
         <div className="container mx-auto px-4">
           <Button
             variant="ghost"
             onClick={() => onNavigate("home")}
-            className="mb-6 text-white hover:text-rose-200 hover:bg-white/10"
+            className="mb-6 text-white hover:text-brand-soft hover:bg-white/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             {t("Back to Home")}
           </Button>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               {t("See What We've Been Up To")}
             </h1>
-            <p className="text-xl text-rose-100 max-w-2xl">
+            <p className="text-xl text-brand-soft max-w-2xl">
               {t("From our barista training to our roastery.")}
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -262,7 +258,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
                   selectedCategory === category
-                    ? "bg-[#5F1B2C] text-white"
+                    ? "bg-brand text-white"
                     : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >
@@ -292,7 +288,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
             {isAdmin && (
               <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-[#5F1B2C] hover:bg-[#4a1523]">
+                  <Button className="bg-brand hover:bg-brand-dark">
                     <Plus className="h-4 w-4 mr-2" />
                     {t("Add Image")}
                   </Button>
@@ -383,7 +379,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
 
                     <Button
                       type="submit"
-                      className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
+                      className="w-full bg-brand hover:bg-brand-dark"
                     >
                       {t("Add Image")}
                     </Button>
@@ -393,30 +389,14 @@ export function Gallery({ onNavigate }: GalleryProps) {
             )}
           </div>
 
-          <motion.div
-            key={isLoading ? "loading" : "loaded"}
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-            initial="hidden"
-            animate="visible"
-            variants={{
-              hidden: { opacity: 0 },
-              visible: {
-                opacity: 1,
-                transition: { staggerChildren: 0.05 },
-              },
-            }}
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {isLoading ? (
               Array.from({ length: 8 }).map((_, index) => (
-                <motion.div
+                <div
                   key={`skeleton-${index}`}
-                  variants={{
-                    hidden: { opacity: 0, scale: 0.9 },
-                    visible: { opacity: 1, scale: 1 },
-                  }}
                 >
                   <div className="aspect-square rounded-lg bg-gray-200 animate-pulse" />
-                </motion.div>
+                </div>
               ))
             ) : filteredImages.length === 0 ? (
               <div className="col-span-full text-center py-16">
@@ -430,14 +410,8 @@ export function Gallery({ onNavigate }: GalleryProps) {
               </div>
             ) : (
               filteredImages.map((image, index) => (
-                <motion.div
+                <div
                   key={image.id}
-                  variants={{
-                    hidden: { opacity: 0, scale: 0.9 },
-                    visible: { opacity: 1, scale: 1 },
-                  }}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
                   className="group cursor-pointer"
                   onClick={() => openLightbox(index)}
                 >
@@ -485,10 +459,10 @@ export function Gallery({ onNavigate }: GalleryProps) {
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               ))
             )}
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -571,7 +545,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
 
               <Button
                 type="submit"
-                className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
+                className="w-full bg-brand hover:bg-brand-dark"
               >
                 {t("Save Changes")}
               </Button>
@@ -675,15 +649,11 @@ export function Gallery({ onNavigate }: GalleryProps) {
       </AnimatePresence>
 
       {/* CTA */}
-      <section className="py-16 bg-gradient-to-r from-[#4a1523] to-[#5F1B2C] text-white">
+      <section className="py-16 bg-gradient-to-r from-brand-dark to-brand text-white">
         <div className="container mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
+          <div>
             <h2 className="text-3xl font-bold mb-4">{t("Want to See More?")}</h2>
-            <p className="text-rose-100 mb-8 max-w-xl mx-auto">
+            <p className="text-brand-soft mb-8 max-w-xl mx-auto">
               {t("Follow us on social media for daily updates, behind-the-scenes content, and more from Rattanak Coffee.")}
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
@@ -694,7 +664,7 @@ export function Gallery({ onNavigate }: GalleryProps) {
               >
                 <Button
                   size="lg"
-                  className="bg-white text-[#3d1620] hover:bg-rose-50"
+                  className="bg-white text-brand-deep hover:bg-brand-tint"
                 >
                   {t("Follow on Instagram")}
                 </Button>
@@ -707,13 +677,13 @@ export function Gallery({ onNavigate }: GalleryProps) {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-white text-white bg-white/10 hover:bg-white hover:text-[#3d1620]"
+                  className="border-white text-white bg-white/10 hover:bg-white hover:text-brand-deep"
                 >
                   {t("Follow on Facebook")}
                 </Button>
               </a>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </div>

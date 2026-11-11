@@ -70,7 +70,7 @@ export function Profile({ onNavigate }: ProfileProps) {
                   <p className="text-lg capitalize flex items-center gap-2">
                     {user.is_admin ? (
                       <>
-                        <Shield className="h-5 w-5 text-[#5F1B2C]" />
+                        <Shield className="h-5 w-5 text-brand" />
                         {t("Administrator")}
                       </>
                     ) : (
@@ -84,7 +84,7 @@ export function Profile({ onNavigate }: ProfileProps) {
                     <Separator />
                     <Button
                       onClick={() => onNavigate("admin")}
-                      className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
+                      className="w-full bg-brand hover:bg-brand-dark"
                     >
                       {t("Go to Admin Dashboard")}
                     </Button>

@@ -204,7 +204,7 @@ export function BakongPayment({
       <Card>
         <CardContent className="pt-6">
           <div className="flex flex-col items-center justify-center py-8">
-            <Loader2 className="h-8 w-8 animate-spin text-[#5F1B2C] mb-4" />
+            <Loader2 className="h-8 w-8 animate-spin text-brand mb-4" />
             <p className="text-gray-600">{t("Generating QR code...")}</p>
           </div>
         </CardContent>
@@ -238,7 +238,7 @@ export function BakongPayment({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <QrCode className="h-5 w-5 text-[#5F1B2C]" />
+          <QrCode className="h-5 w-5 text-brand" />
           {t("Bakong KHQR Payment")}
         </CardTitle>
       </CardHeader>
@@ -311,7 +311,7 @@ export function BakongPayment({
             <div className="w-full p-4 bg-gray-50 rounded-lg space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">{t("Amount:")}</span>
-                <span className="font-bold text-[#5F1B2C]">
+                <span className="font-bold text-brand">
                   ${khqrData.amount.toFixed(2)} {khqrData.currency}
                 </span>
               </div>
@@ -347,7 +347,7 @@ export function BakongPayment({
                 </Alert>
                 <Button
                   onClick={generateQRCode}
-                  className="w-full bg-[#5F1B2C] hover:bg-[#3d1620]"
+                  className="w-full bg-brand hover:bg-brand-deep"
                   size="lg"
                 >
                   <RefreshCw className="mr-2 h-4 w-4" />

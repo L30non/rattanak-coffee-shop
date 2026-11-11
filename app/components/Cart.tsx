@@ -19,6 +19,7 @@ import { getImageUrl } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import { PAYMENT_ENABLED } from "@/lib/feature-flags";
 import { useI18n } from "@/lib/i18n";
+import { formatPrice } from "@/lib/format";
 
 interface CartProps {
   onNavigate: (view: string) => void;
@@ -66,7 +67,7 @@ export function Cart({ onNavigate }: CartProps) {
             </p>
             <Button
               onClick={() => onNavigate("products")}
-              className="bg-[#5F1B2C] hover:bg-[#4a1523]"
+              className="bg-brand hover:bg-brand-dark"
             >
               {t("Continue Shopping")}
             </Button>
@@ -119,7 +120,7 @@ export function Cart({ onNavigate }: CartProps) {
                         {/* Product Info */}
                         <div className="flex-1 min-w-0">
                           <h3
-                            className="font-semibold mb-1 cursor-pointer hover:text-[#5F1B2C]"
+                            className="font-semibold mb-1 cursor-pointer hover:text-brand"
                             onClick={() =>
                               onNavigate(`product-${item.product.id}`)
                             }
@@ -134,8 +135,8 @@ export function Cart({ onNavigate }: CartProps) {
                               {variantSummary}
                             </p>
                           )}
-                          <p className="text-lg font-bold text-[#3d1620]">
-                            ${unitPrice.toFixed(2)}
+                          <p className="text-lg font-bold text-brand-deep">
+                            {formatPrice(unitPrice)}
                           </p>
                         </div>
 
@@ -180,7 +181,7 @@ export function Cart({ onNavigate }: CartProps) {
                           </div>
 
                           <p className="text-sm font-semibold">
-                            ${(unitPrice * item.quantity).toFixed(2)}
+                            {formatPrice((unitPrice * item.quantity))}
                           </p>
                         </div>
                       </div>
@@ -202,26 +203,26 @@ export function Cart({ onNavigate }: CartProps) {
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">{t("Subtotal")}</span>
-                    <span className="font-medium">${subtotal.toFixed(2)}</span>
+                    <span className="font-medium">{formatPrice(subtotal)}</span>
                   </div>
 
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">{t("Shipping")}</span>
                     <span className="font-medium">
-                      {shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}
+                      {shipping === 0 ? "FREE" : formatPrice(shipping)}
                     </span>
                   </div>
 
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">{t("Tax (8%)")}</span>
-                    <span className="font-medium">${tax.toFixed(2)}</span>
+                    <span className="font-medium">{formatPrice(tax)}</span>
                   </div>
 
                   <Separator />
 
                   <div className="flex justify-between text-lg font-bold">
                     <span>{t("Total")}</span>
-                    <span className="text-[#3d1620]">${total.toFixed(2)}</span>
+                    <span className="text-brand-deep">{formatPrice(total)}</span>
                   </div>
 
                   {subtotal < 100 && (
@@ -233,7 +234,7 @@ export function Cart({ onNavigate }: CartProps) {
                   )}
 
                   <Button
-                    className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
+                    className="w-full bg-brand hover:bg-brand-dark"
                     size="lg"
                     onClick={handleCheckout}
                   >

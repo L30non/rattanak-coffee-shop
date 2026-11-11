@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans_Khmer } from "next/font/google";
+import { Big_Shoulders, Noto_Sans_Khmer } from "next/font/google";
 import "../styles/index.css";
 import "../styles/tailwind.css";
 import "../styles/theme.css";
@@ -12,6 +12,16 @@ const notoSansKhmer = Noto_Sans_Khmer({
   subsets: ["khmer"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-khmer",
+  display: "swap",
+});
+
+// Display face for h1/h2 and the wordmark: a condensed industrial grotesque
+// in the spirit of stencilled coffee sacks. It has no Khmer glyphs, so the
+// --font-display stack in styles/theme.css falls back to Noto Sans Khmer.
+const bigShoulders = Big_Shoulders({
+  subsets: ["latin"],
+  weight: ["700", "800"],
+  variable: "--font-big-shoulders",
   display: "swap",
 });
 
@@ -90,7 +100,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={notoSansKhmer.variable}>
+    <html lang="en" className={`${notoSansKhmer.variable} ${bigShoulders.variable}`}>
       <body>
         <script dangerouslySetInnerHTML={{ __html: LOCALE_BOOTSTRAP }} />
         <script

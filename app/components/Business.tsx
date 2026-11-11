@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { Button } from "@/app/components/ui/button";
 import { Card, CardContent } from "@/app/components/ui/card";
 import {
@@ -45,63 +44,41 @@ export function Business({ onNavigate }: BusinessProps) {
   const { t } = useI18n();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-brand-tint to-white">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#3d1620] to-[#5F1B2C] text-white py-16">
+      <section className="bg-gradient-to-r from-brand-deep to-brand text-white py-16">
         <div className="container mx-auto px-4">
           <Button
             variant="ghost"
             onClick={() => onNavigate("home")}
-            className="mb-6 text-white hover:text-rose-200 hover:bg-white/10"
+            className="mb-6 text-white hover:text-brand-soft hover:bg-white/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             {t("Back to Home")}
           </Button>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               {t("Equipped with Everything to Help You Brew a Lucrative Business")}
             </h1>
-            <p className="text-xl text-rose-100 max-w-2xl">
+            <p className="text-xl text-brand-soft max-w-2xl">
               {t("Product. Service. Consulting.")}
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Business Offerings */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto"
-            initial="hidden"
-            animate="visible"
-            variants={{
-              hidden: { opacity: 0 },
-              visible: {
-                opacity: 1,
-                transition: { staggerChildren: 0.1 },
-              },
-            }}
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {businessOfferings.map((offering) => (
-              <motion.div
-                key={offering.title}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-                whileHover={{ y: -5 }}
-              >
+              <div key={offering.title}>
                 <Card className="h-full border-none shadow-md hover:shadow-xl transition-shadow">
                   <CardContent className="pt-8 pb-6">
-                    <div className="bg-rose-50 p-3 rounded-full w-fit mb-4">
-                      <offering.icon className="h-6 w-6 text-[#5F1B2C]" />
+                    <div className="bg-brand-tint p-3 rounded-full w-fit mb-4">
+                      <offering.icon className="h-6 w-6 text-brand" />
                     </div>
-                    <h3 className="font-semibold text-lg mb-2 text-[#3d1620]">
+                    <h3 className="font-semibold text-lg mb-2 text-brand-deep">
                       {offering.title}
                     </h3>
                     <p className="text-sm text-gray-600">
@@ -109,24 +86,20 @@ export function Business({ onNavigate }: BusinessProps) {
                     </p>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-gradient-to-r from-[#4a1523] to-[#5F1B2C] text-white">
+      <section className="py-16 bg-gradient-to-r from-brand-dark to-brand text-white">
         <div className="container mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
+          <div>
             <h2 className="text-3xl font-bold mb-4">
               {t("Ready to Grow Your Coffee Business?")}
             </h2>
-            <p className="text-rose-100 mb-8 max-w-xl mx-auto">
+            <p className="text-brand-soft mb-8 max-w-xl mx-auto">
               {t("Follow us on social media for the latest updates, or get in touch to learn more about our products and services.")}
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
@@ -137,26 +110,26 @@ export function Business({ onNavigate }: BusinessProps) {
               >
                 <Button
                   size="lg"
-                  className="bg-white text-[#3d1620] hover:bg-rose-50"
+                  className="bg-white text-brand-deep hover:bg-brand-tint"
                 >
                   {t("Follow on Facebook")}
                 </Button>
               </a>
               <a
-                href="https://t.me/rattanakcoffee"
+                href="https://t.me/rattanak_coffee"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-white text-white bg-white/10 hover:bg-white hover:text-[#3d1620]"
+                  className="border-white text-white bg-white/10 hover:bg-white hover:text-brand-deep"
                 >
                   {t("Join Telegram")}
                 </Button>
               </a>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </div>

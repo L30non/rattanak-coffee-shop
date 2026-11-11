@@ -12,6 +12,7 @@ import { useAuth } from "@/app/hooks/useAuth";
 import { useOrders, useDeleteOrder } from "@/app/hooks/useProducts";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
+import { formatPrice } from "@/lib/format";
 
 interface AccountProps {
   onNavigate: (view: string) => void;
@@ -96,7 +97,7 @@ export function Account({ onNavigate }: AccountProps) {
                 </p>
                 <Button
                   onClick={() => onNavigate("products")}
-                  className="bg-[#5F1B2C] hover:bg-[#4a1523]"
+                  className="bg-brand hover:bg-brand-dark"
                 >
                   {t("Start Shopping")}
                 </Button>
@@ -138,15 +139,15 @@ export function Account({ onNavigate }: AccountProps) {
                             {item.product.name} x{item.quantity}
                           </span>
                           <span className="font-medium">
-                            ${(item.product.price * item.quantity).toFixed(2)}
+                            {formatPrice((item.product.price * item.quantity))}
                           </span>
                         </div>
                       ))}
                       <Separator />
                       <div className="flex justify-between">
                         <span className="font-semibold">{t("Total")}</span>
-                        <span className="font-bold text-[#3d1620]">
-                          ${order.total.toFixed(2)}
+                        <span className="font-bold text-brand-deep">
+                          {formatPrice(order.total)}
                         </span>
                       </div>
 

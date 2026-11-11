@@ -10,6 +10,7 @@ import { Separator } from "@/app/components/ui/separator";
 import { Alert, AlertTitle, AlertDescription } from "@/app/components/ui/alert";
 import { useStore } from "@/app/store/useStore";
 import { useI18n } from "@/lib/i18n";
+import { formatPrice } from "@/lib/format";
 
 interface CheckoutUnavailableProps {
   onNavigate: (view: string) => void;
@@ -71,19 +72,12 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
 
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <Phone className="h-5 w-5 text-[#5F1B2C] mt-0.5" />
+                    <Phone className="h-5 w-5 text-brand mt-0.5" />
                     <div>
                       <p className="font-medium">
                         <a
-                          href="tel:+85517667778"
-                          className="hover:text-[#5F1B2C] transition-colors"
-                        >
-                          +855 17 667 778
-                        </a>
-                        {" / "}
-                        <a
                           href="tel:+85512667778"
-                          className="hover:text-[#5F1B2C] transition-colors"
+                          className="hover:text-brand transition-colors"
                         >
                           +855 12 667 778
                         </a>
@@ -96,10 +90,10 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <Mail className="h-5 w-5 text-[#5F1B2C] mt-0.5" />
+                    <Mail className="h-5 w-5 text-brand mt-0.5" />
                     <a
                       href="mailto:info@rattanakcoffee.com"
-                      className="font-medium hover:text-[#5F1B2C] transition-colors"
+                      className="font-medium hover:text-brand transition-colors"
                     >
                       {t("info@rattanakcoffee.com")}
                     </a>
@@ -111,17 +105,17 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
                         href="https://www.facebook.com/rattanakcoffeeroaster"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-gray-700 hover:text-[#5F1B2C] transition-colors"
+                        className="flex items-center gap-2 text-gray-700 hover:text-brand transition-colors"
                         aria-label={t("Facebook")}
                       >
                         <Facebook className="h-5 w-5" />
                         {t("Facebook")}
                       </a>
                       <a
-                        href="https://t.me/ousenghong"
+                        href="https://t.me/rattanak_coffee"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-gray-700 hover:text-[#5F1B2C] transition-colors"
+                        className="flex items-center gap-2 text-gray-700 hover:text-brand transition-colors"
                         aria-label={t("Telegram")}
                       >
                         <Send className="h-5 w-5" />
@@ -152,7 +146,7 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
                           {item.product.name} x{item.quantity}
                         </span>
                         <span className="font-medium">
-                          ${(item.product.price * item.quantity).toFixed(2)}
+                          {formatPrice((item.product.price * item.quantity))}
                         </span>
                       </div>
                     ))}
@@ -162,8 +156,8 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
 
                   <div className="flex justify-between text-lg font-bold">
                     <span>{t("Subtotal")}</span>
-                    <span className="text-[#3d1620]">
-                      ${subtotal.toFixed(2)}
+                    <span className="text-brand-deep">
+                      {formatPrice(subtotal)}
                     </span>
                   </div>
                   <p className="text-xs text-gray-500">

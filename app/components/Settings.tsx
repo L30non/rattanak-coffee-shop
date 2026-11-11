@@ -50,7 +50,7 @@ export function Settings({ onNavigate }: SettingsProps) {
                     }
                     className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
                       isActive
-                        ? "bg-[#5F1B2C] text-white"
+                        ? "bg-brand text-white"
                         : "text-gray-700 hover:bg-gray-50"
                     }`}
                   >

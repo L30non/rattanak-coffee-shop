@@ -19,6 +19,8 @@ import {
 } from "@/lib/beans";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
+import { formatPrice } from "@/lib/format";
+import { categoryLabel } from "@/lib/categories";
 
 interface ProductDetailProps {
   productId: string;
@@ -129,16 +131,16 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
           <div>
             <Badge
               variant="outline"
-              className="mb-4 text-[#5F1B2C] border-[#5F1B2C]"
+              className="mb-4 text-brand border-brand"
             >
-              {product.category}
+              {t(categoryLabel(product.category))}
             </Badge>
 
             <h1 className="text-3xl md:text-4xl mb-4">{product.name}</h1>
 
             <div className="flex items-center gap-4 mb-6">
-              <p className="text-3xl font-bold text-[#3d1620]">
-                ${unitPrice.toFixed(2)}
+              <p className="text-3xl font-bold text-brand-deep">
+                {formatPrice(unitPrice)}
               </p>
               {product.stock > 0 ? (
                 <Badge
@@ -186,8 +188,8 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                   )}
                   <div className="flex justify-between">
                     <span className="text-gray-600">{t("Category:")}</span>
-                    <span className="font-medium capitalize">
-                      {product.category}
+                    <span className="font-medium">
+                      {t(categoryLabel(product.category))}
                     </span>
                   </div>
                 </div>
@@ -201,7 +203,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                 <ul className="space-y-2">
                   {product.features.map((feature, index) => (
                     <li key={index} className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 bg-[#5F1B2C] rounded-full" />
+                      <div className="w-1.5 h-1.5 bg-brand rounded-full" />
                       {feature}
                     </li>
                   ))}
@@ -226,7 +228,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                         aria-pressed={isSelected}
                         className={`rounded-md border p-3 text-left transition-colors ${
                           isSelected
-                            ? "border-[#5F1B2C] bg-[#5F1B2C]/5 ring-1 ring-[#5F1B2C]"
+                            ? "border-brand bg-brand/5 ring-1 ring-brand"
                             : "border-gray-200 hover:border-gray-300"
                         }`}
                       >
@@ -258,7 +260,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                         aria-pressed={isSelected}
                         className={`rounded-md border px-4 py-2 text-left transition-colors ${
                           isSelected
-                            ? "border-[#5F1B2C] bg-[#5F1B2C]/5 ring-1 ring-[#5F1B2C]"
+                            ? "border-brand bg-brand/5 ring-1 ring-brand"
                             : "border-gray-200 hover:border-gray-300"
                         }`}
                       >
@@ -305,8 +307,8 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                   {variantSummary || "Total"}
                   {quantity > 1 && ` x${quantity}`}
                 </span>
-                <span className="text-lg font-bold text-[#3d1620]">
-                  ${(unitPrice * quantity).toFixed(2)}
+                <span className="text-lg font-bold text-brand-deep">
+                  {formatPrice((unitPrice * quantity))}
                 </span>
               </div>
             )}
@@ -314,7 +316,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
             {/* Add to Cart Button */}
             <Button
               size="lg"
-              className="w-full mb-6 bg-[#5F1B2C] hover:bg-[#4a1523]"
+              className="w-full mb-6 bg-brand hover:bg-brand-dark"
               onClick={handleAddToCart}
               disabled={product.stock === 0}
             >

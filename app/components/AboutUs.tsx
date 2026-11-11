@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { Button } from "@/app/components/ui/button";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Separator } from "@/app/components/ui/separator";
@@ -68,9 +67,9 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
   const { t } = useI18n();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-brand-tint to-white">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-[#3d1620] to-[#5F1B2C] text-white">
+      <section className="relative overflow-hidden bg-gradient-to-r from-brand-deep to-brand text-white">
         <div className="absolute inset-0 z-0">
           <ImageWithFallback
             src="https://qboxqdnuoqpsrmqtaaaf.supabase.co/storage/v1/object/public/Images/branding/brownroaster.jpg"
@@ -80,29 +79,24 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
             priority
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#3d1620]/90 to-[#5F1B2C]/85" />
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-deep/90 to-brand/85" />
         </div>
 
         <div className="container relative z-10 mx-auto px-4 py-20">
           <Button
             variant="ghost"
             onClick={() => onNavigate("home")}
-            className="mb-6 text-white hover:text-rose-200 hover:bg-white/10"
+            className="mb-6 text-white hover:text-brand-soft hover:bg-white/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             {t("Back to Home")}
           </Button>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-3xl"
-          >
+          <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">{t("About Us")}</h1>
-            <p className="text-xl text-rose-100">
+            <p className="text-xl text-brand-soft">
               {t("Offering excellence in taste and quality. Rattanak Coffee offers more than just coffee — since 1997, we're committed to consistency, genuine taste, and quality in every cup.")}
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -110,35 +104,17 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="text-center mb-12"
-            >
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#3d1620]">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-brand-deep">
                 {t("Who We Are")}
               </h2>
-              <Separator className="w-24 mx-auto mb-6 bg-[#5F1B2C]" />
+              <Separator className="w-24 mx-auto mb-6 bg-brand" />
               <p className="text-gray-700 text-lg leading-relaxed">
                 {t("Rattanak Coffee offers more than just coffee. We are committed to our customers! Roasting coffee since 1997, we're known for our consistency of genuine taste and quality. Since 2015, our coffee beans have been certified by the Institute of Standards of Cambodia and recognized as chemical-free, preservative-free, and free of added coloring. Our coffee is made by the people, for the people — for everyone, and every palate, for the greatness in every sip. Today, Rattanak Coffee provides fully integrated services for all your coffee needs, from beans to machinery to business solutions.")}
               </p>
-            </motion.div>
+            </div>
 
-            <motion.div
-              className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={{
-                hidden: { opacity: 0 },
-                visible: {
-                  opacity: 1,
-                  transition: { staggerChildren: 0.15 },
-                },
-              }}
-            >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
               {[
                 {
                   icon: Award,
@@ -156,27 +132,21 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
                   label: "Products Available",
                 },
               ].map((item) => (
-                <motion.div
-                  key={item.label}
-                  variants={{
-                    hidden: { opacity: 0, y: 20 },
-                    visible: { opacity: 1, y: 0 },
-                  }}
-                >
+                <div key={item.label}>
                   <Card className="text-center border-none shadow-md hover:shadow-lg transition-shadow">
                     <CardContent className="pt-8 pb-6">
-                      <div className="bg-rose-50 p-4 rounded-full w-fit mx-auto mb-4">
-                        <item.icon className="h-8 w-8 text-[#5F1B2C]" />
+                      <div className="bg-brand-tint p-4 rounded-full w-fit mx-auto mb-4">
+                        <item.icon className="h-8 w-8 text-brand" />
                       </div>
-                      <p className="text-3xl font-bold text-[#5F1B2C] mb-1">
+                      <p className="text-3xl font-bold text-brand mb-1">
                         {item.stat}
                       </p>
                       <p className="text-gray-600">{item.label}</p>
                     </CardContent>
                   </Card>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -184,31 +154,14 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
       {/* Vision & Mission */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={{
-              hidden: { opacity: 0 },
-              visible: {
-                opacity: 1,
-                transition: { staggerChildren: 0.15 },
-              },
-            }}
-          >
-            <motion.div
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
-            >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <div>
               <Card className="h-full border-none shadow-md hover:shadow-lg transition-shadow">
                 <CardContent className="pt-8 pb-6">
-                  <div className="bg-rose-50 p-3 rounded-full w-fit mb-4">
-                    <Eye className="h-6 w-6 text-[#5F1B2C]" />
+                  <div className="bg-brand-tint p-3 rounded-full w-fit mb-4">
+                    <Eye className="h-6 w-6 text-brand" />
                   </div>
-                  <h2 className="text-2xl font-bold mb-3 text-[#3d1620]">
+                  <h2 className="text-2xl font-bold mb-3 text-brand-deep">
                     {t("Vision")}
                   </h2>
                   <p className="text-gray-600 leading-relaxed">
@@ -216,20 +169,15 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
                   </p>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
 
-            <motion.div
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
-            >
+            <div>
               <Card className="h-full border-none shadow-md hover:shadow-lg transition-shadow">
                 <CardContent className="pt-8 pb-6">
-                  <div className="bg-rose-50 p-3 rounded-full w-fit mb-4">
-                    <Compass className="h-6 w-6 text-[#5F1B2C]" />
+                  <div className="bg-brand-tint p-3 rounded-full w-fit mb-4">
+                    <Compass className="h-6 w-6 text-brand" />
                   </div>
-                  <h2 className="text-2xl font-bold mb-3 text-[#3d1620]">
+                  <h2 className="text-2xl font-bold mb-3 text-brand-deep">
                     {t("Mission")}
                   </h2>
                   <p className="text-gray-600 leading-relaxed">
@@ -237,54 +185,31 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
                   </p>
                 </CardContent>
               </Card>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Our Values */}
-      <section className="py-16 bg-rose-50">
+      <section className="py-16 bg-brand-tint">
         <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#3d1620]">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-brand-deep">
               {t("Our Values")}
             </h2>
-            <Separator className="w-24 mx-auto mb-6 bg-[#5F1B2C]" />
+            <Separator className="w-24 mx-auto mb-6 bg-brand" />
             <p className="text-gray-600 max-w-2xl mx-auto">
               {t("The principles that guide everything we do at Rattanak Coffee")}
             </p>
-          </motion.div>
+          </div>
 
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={{
-              hidden: { opacity: 0 },
-              visible: {
-                opacity: 1,
-                transition: { staggerChildren: 0.1 },
-              },
-            }}
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {values.map((value) => (
-              <motion.div
-                key={value.title}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-              >
+              <div key={value.title}>
                 <Card className="h-full border-none shadow-md hover:shadow-lg transition-shadow">
                   <CardContent className="pt-6 text-center">
-                    <div className="bg-rose-50 p-3 rounded-full w-fit mx-auto mb-4">
-                      <value.icon className="h-6 w-6 text-[#5F1B2C]" />
+                    <div className="bg-brand-tint p-3 rounded-full w-fit mx-auto mb-4">
+                      <value.icon className="h-6 w-6 text-brand" />
                     </div>
                     <h3 className="font-semibold text-lg mb-2">
                       {value.title}
@@ -292,51 +217,30 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
                     <p className="text-sm text-gray-600">{value.description}</p>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Team */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#3d1620]">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-brand-deep">
               {t("Meet The Founder")}
             </h2>
-            <Separator className="w-24 mx-auto mb-6 bg-[#5F1B2C]" />
+            <Separator className="w-24 mx-auto mb-6 bg-brand" />
             <p className="text-gray-600 max-w-2xl mx-auto">
               {t("The passionate people behind Rattanak Coffee")}
             </p>
-          </motion.div>
+          </div>
 
-          <motion.div
-            className="flex flex-wrap justify-center gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={{
-              hidden: { opacity: 0 },
-              visible: {
-                opacity: 1,
-                transition: { staggerChildren: 0.15 },
-              },
-            }}
-          >
+          <div className="flex flex-wrap justify-center gap-8">
             {teamMembers.map((member) => (
-              <motion.div
+              <div
                 key={member.name}
                 className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] max-w-sm"
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 },
-                }}
               >
                 <Card className="group overflow-hidden gap-0 border-none shadow-md hover:shadow-xl transition-shadow h-full">
                   <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
@@ -349,7 +253,7 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
                     ) : (
-                      <div className="w-full h-full bg-[#5F1B2C] text-white flex items-center justify-center">
+                      <div className="w-full h-full bg-brand text-white flex items-center justify-center">
                         <span className="text-5xl font-bold">
                           {member.name.charAt(0)}
                         </span>
@@ -357,43 +261,39 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
                     )}
                   </div>
                   <CardContent className="p-6 text-center">
-                    <h3 className="font-semibold text-xl text-[#3d1620]">
+                    <h3 className="font-semibold text-xl text-brand-deep">
                       {member.name}
                     </h3>
-                    <p className="text-[#5F1B2C] font-medium mb-4">
+                    <p className="text-brand font-medium mb-4">
                       {member.role}
                     </p>
-                    <Separator className="w-16 mx-auto mb-4 bg-[#5F1B2C]" />
+                    <Separator className="w-16 mx-auto mb-4 bg-brand" />
                     <p className="text-sm text-gray-600">
                       {member.description}
                     </p>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-[#4a1523] to-[#5F1B2C] text-white">
+      <section className="py-20 bg-gradient-to-r from-brand-dark to-brand text-white">
         <div className="container mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
+          <div>
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
               {t("Ready to Start Your Coffee Journey?")}
             </h2>
-            <p className="text-xl mb-8 text-rose-100 max-w-2xl mx-auto">
+            <p className="text-xl mb-8 text-brand-soft max-w-2xl mx-auto">
               {t("Explore our range of premium coffee products and let us help you build the cafe of your dreams.")}
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Button
                 size="lg"
                 onClick={() => onNavigate("products")}
-                className="bg-white text-[#3d1620] hover:bg-rose-50"
+                className="bg-white text-brand-deep hover:bg-brand-tint"
               >
                 {t("Shop Products")}
               </Button>
@@ -401,12 +301,12 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
                 size="lg"
                 variant="outline"
                 onClick={() => onNavigate("contact")}
-                className="border-white text-white bg-white/10 hover:bg-white hover:text-[#3d1620]"
+                className="border-white text-white bg-white/10 hover:bg-white hover:text-brand-deep"
               >
                 {t("Contact Us")}
               </Button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </div>

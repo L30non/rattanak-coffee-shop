@@ -113,7 +113,7 @@ export function ProfileEdit() {
               <Button
                 type="submit"
                 disabled={isSaving}
-                className="bg-[#5F1B2C] hover:bg-[#4a1523]"
+                className="bg-brand hover:bg-brand-dark"
               >
                 {isSaving ? "Saving..." : "Save Changes"}
               </Button>
@@ -144,7 +144,7 @@ export function ProfileEdit() {
               <div className="space-y-2">
                 <Label className="text-gray-600">{t("Account Type")}</Label>
                 <p className="text-lg font-medium text-gray-900">
-                  <span className="inline-block px-3 py-1 bg-[#5F1B2C] text-white text-sm rounded-full">
+                  <span className="inline-block px-3 py-1 bg-brand text-white text-sm rounded-full">
                     {t("Administrator")}
                   </span>
                 </p>
@@ -155,7 +155,7 @@ export function ProfileEdit() {
             <div className="pt-4">
               <Button
                 onClick={() => setIsEditing(true)}
-                className="bg-[#5F1B2C] hover:bg-[#4a1523]"
+                className="bg-brand hover:bg-brand-dark"
               >
                 {t("Edit Profile")}
               </Button>

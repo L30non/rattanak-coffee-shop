@@ -67,6 +67,11 @@ export function getCategory(value: string): Category | undefined {
   return CATEGORIES.find((c) => c.value === value);
 }
 
+/** Display label for a stored category value; unknown values pass through. */
+export function categoryLabel(value: string): string {
+  return getCategory(value)?.label ?? value;
+}
+
 export function getSubcategories(value: string): Subcategory[] {
   return getCategory(value)?.subcategories ?? [];
 }

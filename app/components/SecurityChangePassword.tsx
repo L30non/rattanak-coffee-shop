@@ -143,7 +143,7 @@ export function SecurityChangePassword() {
             <Button
               type="submit"
               disabled={isSaving}
-              className="bg-[#5F1B2C] hover:bg-[#4a1523]"
+              className="bg-brand hover:bg-brand-dark"
             >
               {isSaving ? "Updating..." : "Update Password"}
             </Button>

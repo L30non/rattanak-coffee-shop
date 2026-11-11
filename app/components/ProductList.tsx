@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Button } from "@/app/components/ui/button";
 import { Badge } from "@/app/components/ui/badge";
@@ -26,7 +25,11 @@ import type { Product } from "@/app/store/useStore";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { toast } from "sonner";
 import { getImageUrl } from "@/utils/supabase/client";
-import { getCategory, type SubcategoryValue } from "@/lib/categories";
+import {
+  categoryLabel,
+  getCategory,
+  type SubcategoryValue,
+} from "@/lib/categories";
 import {
   defaultVariant,
   formatVariant,
@@ -36,6 +39,7 @@ import {
   resolveUnitPrice,
 } from "@/lib/beans";
 import { useI18n } from "@/lib/i18n";
+import { formatPrice } from "@/lib/format";
 
 interface ProductListProps {
   category?: "machines" | "beans" | "accessories" | "ingredients" | "all";
@@ -277,28 +281,12 @@ export function ProductList({
         </div>
 
         {/* Products Grid */}
-        <motion.div
-          key={isLoading ? "loading" : `page-${currentPage}`}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          variants={{
-            hidden: { opacity: 0 },
-            show: {
-              opacity: 1,
-              transition: { staggerChildren: 0.1 },
-            },
-          }}
-          initial="hidden"
-          animate="show"
-        >
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
           {isLoading ? (
             // Loading skeleton
             Array.from({ length: 8 }).map((_, index) => (
-              <motion.div
+              <div
                 key={`skeleton-${index}`}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  show: { opacity: 1, y: 0 },
-                }}
               >
                 <Card className="animate-pulse h-full">
                   <CardContent className="p-0">
@@ -311,7 +299,7 @@ export function ProductList({
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             ))
           ) : filteredProducts.length === 0 ? (
             <div className="col-span-full text-center py-12">
@@ -322,26 +310,20 @@ export function ProductList({
             </div>
           ) : (
             paginatedProducts.map((product) => (
-              <motion.div
-                key={product.id}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  show: { opacity: 1, y: 0 },
-                }}
-              >
+              <div key={product.id}>
                 <Card
                   className="group cursor-pointer hover:shadow-xl transition-all h-full"
                   onClick={() => onNavigate(`product-${product.id}`)}
                 >
                   <CardContent className="p-0">
-                    <div className="aspect-square overflow-hidden bg-gray-100 relative">
+                    <div className="aspect-square overflow-hidden bg-white relative">
                       <ImageWithFallback
                         src={getImageUrl(product.image)}
                         alt={product.name}
                         fill
                         objectFit="contain"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        className="object-contain group-hover:scale-110 transition-transform duration-500"
+                        className="object-contain"
                       />
                       {product.stock < 10 && product.stock > 0 && (
                         <Badge className="absolute top-2 right-2 bg-orange-500 z-10">
@@ -355,28 +337,30 @@ export function ProductList({
                       )}
                     </div>
 
-                    <div className="p-4">
+                    <div className="p-3 sm:p-4">
                       <Badge
                         variant="outline"
-                        className="mb-2 text-[#5F1B2C] border-[#5F1B2C]"
+                        className="mb-2 text-brand border-brand"
                       >
-                        {product.category}
+                        {t(categoryLabel(product.category))}
                       </Badge>
                       <h3 className="font-semibold mb-2 line-clamp-2 min-h-[3rem]">
                         {product.name}
                       </h3>
-                      <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                      {/* Two-column cards on phones are too narrow for the
+                          description; it's on the product page. */}
+                      <p className="hidden sm:block text-sm text-gray-600 line-clamp-2 mb-3">
                         {product.description}
                       </p>
 
                       {/* Rating */}
-                      {product.average_rating && product.average_rating > 0 && (
+                      {(product.average_rating ?? 0) > 0 && (
                         <div className="flex items-center gap-1 mb-2">
                           <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                           <span className="text-sm font-medium">
-                            {product.average_rating.toFixed(1)}
+                            {product.average_rating?.toFixed(1)}
                           </span>
-                          {product.review_count && (
+                          {(product.review_count ?? 0) > 0 && (
                             <span className="text-xs text-gray-500">
                               ({product.review_count})
                             </span>
@@ -396,34 +380,34 @@ export function ProductList({
                         </p>
                       )}
 
-                      <div className="flex items-center justify-between mt-4">
-                        <p className="text-xl font-bold text-[#3d1620]">
+                      <div className="flex flex-col items-stretch gap-2 mt-3 sm:mt-4 sm:flex-row sm:items-center sm:justify-between">
+                        <p className="text-lg sm:text-xl font-bold text-brand-deep">
                           {getWeightOptions(product).length > 1 && (
                             <span className="text-xs font-normal text-gray-500 mr-1">
                               {t("from")}
                             </span>
                           )}
-                          ${lowestPrice(product).toFixed(2)}
+                          {formatPrice(lowestPrice(product))}
                         </p>
-                        <motion.div whileTap={{ scale: 0.95 }}>
+                        <div>
                           <Button
                             size="sm"
                             onClick={(e) => handleAddToCart(product, e)}
                             disabled={product.stock === 0}
-                            className="bg-[#5F1B2C] hover:bg-[#4a1523]"
+                            className="w-full sm:w-auto bg-brand hover:bg-brand-dark"
                           >
                             <ShoppingCart className="h-4 w-4 mr-1" />
                             {needsSelection(product) ? "Options" : "Add"}
                           </Button>
-                        </motion.div>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             ))
           )}
-        </motion.div>
+        </div>
 
         {/* Pagination */}
         {!isLoading && totalPages > 1 && (

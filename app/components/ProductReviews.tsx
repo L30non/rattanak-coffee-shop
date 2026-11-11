@@ -299,7 +299,7 @@ export function ProductReviews({
               {/* Rating Summary */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-6 border-b">
                 <div className="flex flex-col items-center justify-center">
-                  <div className="text-5xl font-bold text-[#5F1B2C] mb-2">
+                  <div className="text-5xl font-bold text-brand mb-2">
                     {averageRating}
                   </div>
                   {renderStars(Math.round(parseFloat(averageRating)))}
@@ -336,7 +336,7 @@ export function ProductReviews({
                   <div key={review.id}>
                     <div className="flex items-start gap-4">
                       <Avatar>
-                        <AvatarFallback className="bg-[#5F1B2C] text-white">
+                        <AvatarFallback className="bg-brand text-white">
                           {review.user?.name?.charAt(0).toUpperCase() || "U"}
                         </AvatarFallback>
                       </Avatar>

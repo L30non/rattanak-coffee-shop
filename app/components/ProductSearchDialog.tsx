@@ -157,15 +157,15 @@ export function ProductSearchDialog({
                       </Badge>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <span className="font-semibold text-[#5F1B2C]">
+                      <span className="font-semibold text-brand">
                         {formatPrice(product.price)}
                       </span>
-                      {product.average_rating && product.average_rating > 0 && (
+                      {(product.average_rating ?? 0) > 0 && (
                         <>
                           <span>•</span>
                           <span className="flex items-center gap-1">
-                            ⭐ {product.average_rating.toFixed(1)}
-                            {product.review_count && (
+                            ⭐ {product.average_rating?.toFixed(1)}
+                            {(product.review_count ?? 0) > 0 && (
                               <span className="text-gray-400">
                                 ({product.review_count})
                               </span>

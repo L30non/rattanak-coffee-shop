@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Button } from "@/app/components/ui/button";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Separator } from "@/app/components/ui/separator";
@@ -53,46 +52,31 @@ export function Contact({ onNavigate }: ContactProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-brand-tint to-white">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#3d1620] to-[#5F1B2C] text-white py-16">
+      <section className="bg-gradient-to-r from-brand-deep to-brand text-white py-16">
         <div className="container mx-auto px-4">
           <Button
             variant="ghost"
             onClick={() => onNavigate("home")}
-            className="mb-6 text-white hover:text-rose-200 hover:bg-white/10"
+            className="mb-6 text-white hover:text-brand-soft hover:bg-white/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             {t("Back to Home")}
           </Button>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">{t("Contact Us")}</h1>
-            <p className="text-xl text-rose-100 max-w-2xl">
+            <p className="text-xl text-brand-soft max-w-2xl">
               {t("Have questions about our products or need help starting your cafe? We'd love to hear from you.")}
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Contact Info Cards */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto"
-            initial="hidden"
-            animate="visible"
-            variants={{
-              hidden: { opacity: 0 },
-              visible: {
-                opacity: 1,
-                transition: { staggerChildren: 0.1 },
-              },
-            }}
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {[
               {
                 icon: MapPin,
@@ -119,30 +103,24 @@ export function Contact({ onNavigate }: ContactProps) {
                 sub: "Sunday: Closed",
               },
             ].map((item) => (
-              <motion.div
-                key={item.title}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-              >
+              <div key={item.title}>
                 <Card className="text-center border-none shadow-md hover:shadow-lg transition-shadow h-full">
                   <CardContent className="pt-6 pb-5">
-                    <div className="bg-rose-50 p-3 rounded-full w-fit mx-auto mb-3">
-                      <item.icon className="h-6 w-6 text-[#5F1B2C]" />
+                    <div className="bg-brand-tint p-3 rounded-full w-fit mx-auto mb-3">
+                      <item.icon className="h-6 w-6 text-brand" />
                     </div>
                     <h3 className="font-semibold text-sm text-gray-500 uppercase tracking-wide mb-2">
                       {item.title}
                     </h3>
-                    <p className="font-medium text-[#3d1620] text-sm">
+                    <p className="font-medium text-brand-deep text-sm">
                       {item.info}
                     </p>
                     <p className="text-xs text-gray-500 mt-1">{item.sub}</p>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -151,17 +129,12 @@ export function Contact({ onNavigate }: ContactProps) {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
             {/* Contact Form */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
+            <div>
               <Card className="border-none shadow-lg">
                 <CardContent className="p-6 md:p-8">
                   <div className="flex items-center gap-3 mb-6">
-                    <MessageSquare className="h-6 w-6 text-[#5F1B2C]" />
-                    <h2 className="text-2xl font-bold text-[#3d1620]">
+                    <MessageSquare className="h-6 w-6 text-brand" />
+                    <h2 className="text-2xl font-bold text-brand-deep">
                       {t("Send Us a Message")}
                     </h2>
                   </div>
@@ -183,7 +156,7 @@ export function Contact({ onNavigate }: ContactProps) {
                           value={formData.name}
                           onChange={handleChange}
                           required
-                          className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5F1B2C] focus:border-transparent"
+                          className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent"
                           placeholder={t("John Doe")}
                         />
                       </div>
@@ -201,7 +174,7 @@ export function Contact({ onNavigate }: ContactProps) {
                           value={formData.email}
                           onChange={handleChange}
                           required
-                          className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5F1B2C] focus:border-transparent"
+                          className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent"
                           placeholder={t("john@example.com")}
                         />
                       </div>
@@ -220,7 +193,7 @@ export function Contact({ onNavigate }: ContactProps) {
                         value={formData.subject}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5F1B2C] focus:border-transparent"
+                        className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent"
                         placeholder={t("How can we help?")}
                       />
                     </div>
@@ -238,30 +211,24 @@ export function Contact({ onNavigate }: ContactProps) {
                         onChange={handleChange}
                         required
                         rows={5}
-                        className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5F1B2C] focus:border-transparent resize-none"
+                        className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent resize-none"
                         placeholder={t("Tell us about your inquiry...")}
                       />
                     </div>
                     <Button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full bg-[#5F1B2C] hover:bg-[#4a1523] py-5"
+                      className="w-full bg-brand hover:bg-brand-dark py-5"
                     >
                       {isSubmitting ? "Sending..." : "Send Message"}
                     </Button>
                   </form>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
 
             {/* Map + Social Links */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="flex flex-col gap-6"
-            >
+            <div className="flex flex-col gap-6">
               {/* Google Map */}
               <Card className="border-none shadow-lg flex-1 overflow-hidden">
                 <CardContent className="p-0 h-full min-h-[400px]">
@@ -282,7 +249,7 @@ export function Contact({ onNavigate }: ContactProps) {
               {/* Social Media Links */}
               <Card className="border-none shadow-lg">
                 <CardContent className="p-6">
-                  <h3 className="font-semibold text-lg text-[#3d1620] mb-4">
+                  <h3 className="font-semibold text-lg text-brand-deep mb-4">
                     {t("Connect With Us")}
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -298,7 +265,7 @@ export function Contact({ onNavigate }: ContactProps) {
                       </span>
                     </a>
                     <a
-                      href="https://t.me/ousenghong"
+                      href="https://t.me/rattanak_coffee"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-3 p-3 rounded-lg bg-sky-50 hover:bg-sky-100 transition-colors"
@@ -328,7 +295,7 @@ export function Contact({ onNavigate }: ContactProps) {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>

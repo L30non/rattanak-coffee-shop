@@ -9,6 +9,7 @@ import {
   Shield,
   MapPin,
   Mail,
+  Phone,
   Facebook,
   Send,
   ChevronDown,
@@ -39,6 +40,7 @@ import {
 } from "@/lib/categories";
 import { useI18n } from "@/lib/i18n";
 import { LanguageToggle } from "@/app/components/LanguageToggle";
+import { CONTACT_PHONE, CONTACT_PHONE_DISPLAY } from "@/lib/contact";
 
 interface HeaderProps {
   onNavigate: (view: string) => void;
@@ -106,11 +108,20 @@ export function Header({
   return (
     <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
       {/* Top Bar */}
-      <div className="bg-[#5F1B2C] text-white text-sm hidden md:block">
+      <div className="bg-brand text-white text-sm hidden md:block">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between py-2">
             {/* Left: Contact Info */}
             <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4" />
+                <a
+                  href={`tel:${CONTACT_PHONE}`}
+                  className="hover:text-brand-soft transition-colors"
+                >
+                  {CONTACT_PHONE_DISPLAY}
+                </a>
+              </div>
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
                 <span>{t("#20E0, St.85BT, Phum Chamroeun Phal")}</span>
@@ -119,7 +130,7 @@ export function Header({
                 <Mail className="h-4 w-4" />
                 <a
                   href="mailto:info@rattanakcoffee.com"
-                  className="hover:text-rose-200 transition-colors"
+                  className="hover:text-brand-soft transition-colors"
                 >
                   {t("info@rattanakcoffee.com")}
                 </a>
@@ -132,16 +143,16 @@ export function Header({
                 href="https://www.facebook.com/rattanakcoffeeroaster"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-rose-200 transition-colors"
+                className="hover:text-brand-soft transition-colors"
                 aria-label={t("Facebook")}
               >
                 <Facebook className="h-4 w-4" />
               </a>
               <a
-                href="https://t.me/ousenghong"
+                href="https://t.me/rattanak_coffee"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-rose-200 transition-colors"
+                className="hover:text-brand-soft transition-colors"
                 aria-label={t("Telegram")}
               >
                 <Send className="h-4 w-4" />
@@ -150,7 +161,7 @@ export function Header({
                 href="https://www.tiktok.com/@rattanakcoffee"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-rose-200 transition-colors"
+                className="hover:text-brand-soft transition-colors"
                 aria-label={t("TikTok")}
               >
                 <svg
@@ -184,11 +195,12 @@ export function Header({
                   }
                   alt={t("Rattanak Coffee Logo")}
                   fill
+                  sizes="48px"
                   className="object-contain"
                   priority
                 />
               </div>
-              <span className="font-bold text-xl text-[#5F1B2C] hidden sm:inline">
+              <span className="font-display font-extrabold text-2xl tracking-wide text-brand hidden sm:inline">
                 {t("RATTANAK COFFEE")}
               </span>
             </button>
@@ -199,9 +211,9 @@ export function Header({
                 <button
                   key={item.value}
                   onClick={() => onNavigate(item.value)}
-                  className={`text-sm font-medium transition-colors hover:text-[#5F1B2C] ${
+                  className={`text-sm font-medium transition-colors hover:text-brand ${
                     currentView === item.value
-                      ? "text-[#5F1B2C] font-semibold"
+                      ? "text-brand font-semibold"
                       : "text-gray-600"
                   }`}
                 >
@@ -219,10 +231,10 @@ export function Header({
                   <button
                     onMouseEnter={openProductsMenu}
                     onMouseLeave={scheduleCloseProductsMenu}
-                    className={`text-sm font-medium transition-colors hover:text-[#5F1B2C] flex items-center gap-1 ${
+                    className={`text-sm font-medium transition-colors hover:text-brand flex items-center gap-1 ${
                       currentView === "products" ||
                       parseCatalogView(currentView)
-                        ? "text-[#5F1B2C] font-semibold"
+                        ? "text-brand font-semibold"
                         : "text-gray-600"
                     }`}
                   >
@@ -293,9 +305,9 @@ export function Header({
               {user?.is_admin && (
                 <button
                   onClick={() => onNavigate("admin")}
-                  className={`text-sm font-medium transition-colors hover:text-[#5F1B2C] ${
+                  className={`text-sm font-medium transition-colors hover:text-brand ${
                     currentView === "admin"
-                      ? "text-[#5F1B2C] font-semibold"
+                      ? "text-brand font-semibold"
                       : "text-gray-600"
                   }`}
                 >
@@ -307,6 +319,14 @@ export function Header({
             {/* Right Actions */}
             <div className="flex items-center gap-2">
               <LanguageToggle />
+
+              {/* Call to order — phones only; the top bar with the number is
+                  hidden below md. */}
+              <Button asChild variant="ghost" size="icon" className="md:hidden">
+                <a href={`tel:${CONTACT_PHONE}`} aria-label={t("Call to order")}>
+                  <Phone className="h-5 w-5" />
+                </a>
+              </Button>
 
               {/* Search - Desktop */}
               <Button
@@ -334,7 +354,7 @@ export function Header({
                     transition={{ duration: 0.3 }}
                     className="absolute -top-1 -right-1"
                   >
-                    <Badge className="h-5 w-5 flex items-center justify-center p-0 bg-[#5F1B2C]">
+                    <Badge className="h-5 w-5 flex items-center justify-center p-0 bg-brand">
                       {cartItemCount}
                     </Badge>
                   </motion.div>
@@ -347,7 +367,7 @@ export function Header({
                   {user.is_admin && (
                     <Badge
                       variant="secondary"
-                      className="bg-rose-50 text-[#5F1B2C]"
+                      className="bg-brand-tint text-brand"
                     >
                       <Shield className="h-3 w-3 mr-1" />
                       {t("Admin")}
@@ -360,7 +380,7 @@ export function Header({
                         className="flex items-center gap-2"
                       >
                         <Avatar className="h-8 w-8">
-                          <AvatarFallback className="bg-[#5F1B2C] text-white text-sm">
+                          <AvatarFallback className="bg-brand text-white text-sm">
                             {user.name.charAt(0).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
@@ -462,7 +482,7 @@ export function Header({
                   variant="default"
                   size="sm"
                   onClick={() => onNavigate("login")}
-                  className="hidden md:flex bg-[#5F1B2C] hover:bg-[#4a1523]"
+                  className="hidden md:flex bg-brand hover:bg-brand-dark"
                 >
                   {t("Login")}
                 </Button>
@@ -489,7 +509,7 @@ export function Header({
                         type="text"
                         placeholder={t("Search products...")}
                         onChange={(e) => handleSearchChange(e.target.value)}
-                        className="w-full pl-8 pr-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#5F1B2C]"
+                        className="w-full pl-8 pr-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand"
                       />
                     </div>
 
@@ -500,7 +520,7 @@ export function Header({
                         onClick={() => onNavigate(item.value)}
                         className={`text-left px-4 py-2 rounded-md transition-colors ${
                           currentView === item.value
-                            ? "bg-rose-50 text-[#5F1B2C] font-semibold"
+                            ? "bg-brand-tint text-brand font-semibold"
                             : "hover:bg-gray-100"
                         }`}
                       >
@@ -517,7 +537,7 @@ export function Header({
                         onClick={() => onNavigate("products")}
                         className={`text-left px-4 py-2 rounded-md transition-colors w-full ${
                           currentView === "products"
-                            ? "bg-rose-50 text-[#5F1B2C] font-semibold"
+                            ? "bg-brand-tint text-brand font-semibold"
                             : "hover:bg-gray-100"
                         }`}
                       >
@@ -529,7 +549,7 @@ export function Header({
                             onClick={() => onNavigate(category.value)}
                             className={`text-left px-4 py-2 rounded-md transition-colors w-full ${
                               currentView === category.value
-                                ? "bg-rose-50 text-[#5F1B2C] font-semibold"
+                                ? "bg-brand-tint text-brand font-semibold"
                                 : "hover:bg-gray-100"
                             }`}
                           >
@@ -546,7 +566,7 @@ export function Header({
                                 onClick={() => onNavigate(subView)}
                                 className={`text-left pl-8 pr-4 py-2 rounded-md transition-colors w-full text-sm ${
                                   currentView === subView
-                                    ? "bg-rose-50 text-[#5F1B2C] font-semibold"
+                                    ? "bg-brand-tint text-brand font-semibold"
                                     : "hover:bg-gray-100 text-gray-600"
                                 }`}
                               >
@@ -563,7 +583,7 @@ export function Header({
                         onClick={() => onNavigate("admin")}
                         className={`text-left px-4 py-2 rounded-md transition-colors ${
                           currentView === "admin"
-                            ? "bg-rose-50 text-[#5F1B2C] font-semibold"
+                            ? "bg-brand-tint text-brand font-semibold"
                             : "hover:bg-gray-100"
                         }`}
                       >
@@ -576,7 +596,7 @@ export function Header({
                       <div className="space-y-2">
                         <div className="flex items-center gap-3 p-3 border rounded-lg">
                           <Avatar className="h-10 w-10">
-                            <AvatarFallback className="bg-[#5F1B2C] text-white">
+                            <AvatarFallback className="bg-brand text-white">
                               {user.name.charAt(0).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
@@ -674,7 +694,7 @@ export function Header({
                       <Button
                         variant="default"
                         onClick={() => onNavigate("login")}
-                        className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
+                        className="w-full bg-brand hover:bg-brand-dark"
                       >
                         {t("Login")}
                       </Button>
@@ -696,12 +716,12 @@ export function Header({
                     placeholder={t("Search products...")}
                     onChange={(e) => handleSearchChange(e.target.value)}
                     autoFocus
-                    className="w-full pl-10 pr-4 py-2.5 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#5F1B2C]"
+                    className="w-full pl-10 pr-4 py-2.5 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand"
                   />
                 </div>
                 <Button
                   onClick={() => onNavigate("products")}
-                  className="bg-[#5F1B2C] hover:bg-[#4a1523] px-6"
+                  className="bg-brand hover:bg-brand-dark px-6"
                 >
                   {t("Go")}
                 </Button>

@@ -48,22 +48,22 @@ export function RefundPolicy({ onNavigate }: RefundPolicyProps) {
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 my-8">
                 <Card className="text-center p-4">
-                  <Clock className="h-8 w-8 mx-auto mb-2 text-[#5F1B2C]" />
+                  <Clock className="h-8 w-8 mx-auto mb-2 text-brand" />
                   <p className="text-sm font-medium">{t("30 Days")}</p>
                   <p className="text-xs text-gray-600">{t("Return Window")}</p>
                 </Card>
                 <Card className="text-center p-4">
-                  <Package className="h-8 w-8 mx-auto mb-2 text-[#5F1B2C]" />
+                  <Package className="h-8 w-8 mx-auto mb-2 text-brand" />
                   <p className="text-sm font-medium">{t("Unopened")}</p>
                   <p className="text-xs text-gray-600">{t("Products Only")}</p>
                 </Card>
                 <Card className="text-center p-4">
-                  <RefreshCw className="h-8 w-8 mx-auto mb-2 text-[#5F1B2C]" />
+                  <RefreshCw className="h-8 w-8 mx-auto mb-2 text-brand" />
                   <p className="text-sm font-medium">{t("Full Refund")}</p>
                   <p className="text-xs text-gray-600">{t("Or Exchange")}</p>
                 </Card>
                 <Card className="text-center p-4">
-                  <XCircle className="h-8 w-8 mx-auto mb-2 text-[#5F1B2C]" />
+                  <XCircle className="h-8 w-8 mx-auto mb-2 text-brand" />
                   <p className="text-sm font-medium">{t("No Fees")}</p>
                   <p className="text-xs text-gray-600">{t("For Returns")}</p>
                 </Card>

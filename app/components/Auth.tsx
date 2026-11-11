@@ -131,12 +131,12 @@ export function Auth({ onNavigate }: AuthProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white py-12">
+    <div className="min-h-screen bg-gradient-to-b from-brand-tint to-white py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
-              <Coffee className="h-12 w-12 text-[#5F1B2C]" />
+              <Coffee className="h-12 w-12 text-brand" />
             </div>
             <h1 className="text-3xl mb-2">{t("Welcome to Rattanak Coffee")}</h1>
             <p className="text-gray-600">
@@ -193,7 +193,7 @@ export function Auth({ onNavigate }: AuthProps) {
 
                     <Button
                       type="submit"
-                      className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
+                      className="w-full bg-brand hover:bg-brand-dark"
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (
@@ -279,7 +279,7 @@ export function Auth({ onNavigate }: AuthProps) {
 
                     <Button
                       type="submit"
-                      className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
+                      className="w-full bg-brand hover:bg-brand-dark"
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (

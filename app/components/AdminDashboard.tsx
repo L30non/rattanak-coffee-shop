@@ -88,6 +88,7 @@ import {
   type WeightOption,
 } from "@/lib/beans";
 import { useI18n } from "@/lib/i18n";
+import { formatPrice } from "@/lib/format";
 
 interface AdminDashboardProps {
   onNavigate: (view: string) => void;
@@ -344,7 +345,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                 <div>
                   <p className="text-sm text-gray-600 mb-1">{t("Total Revenue")}</p>
                   <p className="text-2xl font-bold">
-                    ${totalRevenue.toFixed(2)}
+                    {formatPrice(totalRevenue)}
                   </p>
                 </div>
                 <div className="bg-green-100 p-3 rounded-full">
@@ -420,7 +421,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                     onOpenChange={setIsAddDialogOpen}
                   >
                     <DialogTrigger asChild>
-                      <Button className="bg-[#5F1B2C] hover:bg-[#4a1523]">
+                      <Button className="bg-brand hover:bg-brand-dark">
                         <Plus className="h-4 w-4 mr-2" />
                         {t("Add Product")}
                       </Button>
@@ -653,7 +654,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
                         <Button
                           type="submit"
-                          className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
+                          className="w-full bg-brand hover:bg-brand-dark"
                         >
                           {t("Add Product")}
                         </Button>
@@ -694,7 +695,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                                 {t("from ${price}", { price: lowestPrice(product).toFixed(2) })}
                               </span>
                             ) : (
-                              `$${lowestPrice(product).toFixed(2)}`
+                              formatPrice(lowestPrice(product))
                             )}
                           </TableCell>
                           <TableCell>
@@ -799,8 +800,8 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                               )}
                             </div>
                             <div className="flex items-center gap-4">
-                              <span className="font-bold text-[#3d1620]">
-                                ${order.total.toFixed(2)}
+                              <span className="font-bold text-brand-deep">
+                                {formatPrice(order.total)}
                               </span>
                               <Select
                                 value={order.status}
@@ -1119,7 +1120,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
                 <Button
                   type="submit"
-                  className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
+                  className="w-full bg-brand hover:bg-brand-dark"
                 >
                   {t("Update Product")}
                 </Button>

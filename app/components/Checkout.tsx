@@ -33,6 +33,7 @@ import { formatVariant } from "@/lib/beans";
 import { useCreateOrder } from "@/app/hooks/useProducts";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
+import { formatPrice } from "@/lib/format";
 
 interface CheckoutProps {
   onNavigate: (view: string) => void;
@@ -324,7 +325,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
             <div className="flex gap-4 justify-center">
               <Button
                 onClick={() => onNavigate("account")}
-                className="bg-[#5F1B2C] hover:bg-[#4a1523]"
+                className="bg-brand hover:bg-brand-dark"
               >
                 {t("View Orders")}
               </Button>
@@ -545,7 +546,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
 
                         <Button
                           type="submit"
-                          className="w-full bg-[#5F1B2C] hover:bg-[#4a1523]"
+                          className="w-full bg-brand hover:bg-brand-dark"
                         >
                           {t("Continue to Payment")}
                         </Button>
@@ -577,7 +578,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                           }}
                           className={`p-4 rounded-lg border-2 text-left transition-all ${
                             paymentMethod === "cash"
-                              ? "border-[#5F1B2C] bg-rose-50"
+                              ? "border-brand bg-brand-tint"
                               : "border-gray-200 hover:border-gray-300"
                           }`}
                         >
@@ -585,7 +586,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                             <Truck
                               className={`h-5 w-5 ${
                                 paymentMethod === "cash"
-                                  ? "text-[#5F1B2C]"
+                                  ? "text-brand"
                                   : "text-gray-400"
                               }`}
                             />
@@ -593,7 +594,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                               <p
                                 className={`font-medium text-sm ${
                                   paymentMethod === "cash"
-                                    ? "text-[#3d1620]"
+                                    ? "text-brand-deep"
                                     : "text-gray-700"
                                 }`}
                               >
@@ -613,7 +614,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                           }}
                           className={`p-4 rounded-lg border-2 text-left transition-all ${
                             paymentMethod === "bakong"
-                              ? "border-[#5F1B2C] bg-rose-50"
+                              ? "border-brand bg-brand-tint"
                               : "border-gray-200 hover:border-gray-300"
                           }`}
                         >
@@ -621,7 +622,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                             <QrCode
                               className={`h-5 w-5 ${
                                 paymentMethod === "bakong"
-                                  ? "text-[#5F1B2C]"
+                                  ? "text-brand"
                                   : "text-gray-400"
                               }`}
                             />
@@ -629,7 +630,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                               <p
                                 className={`font-medium text-sm ${
                                   paymentMethod === "bakong"
-                                    ? "text-[#3d1620]"
+                                    ? "text-brand-deep"
                                     : "text-gray-700"
                                 }`}
                               >
@@ -649,16 +650,16 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                           onSubmit={handleSubmitPayment}
                           className="space-y-6"
                         >
-                          <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg">
+                          <div className="p-4 bg-brand-tint border border-brand-soft rounded-lg">
                             <div className="flex items-start gap-3">
-                              <Truck className="h-5 w-5 text-[#5F1B2C] mt-0.5" />
+                              <Truck className="h-5 w-5 text-brand mt-0.5" />
                               <div>
-                                <h4 className="font-medium text-[#3d1620]">
+                                <h4 className="font-medium text-brand-deep">
                                   {t("Cash on Delivery")}
                                 </h4>
-                                <p className="text-sm text-[#5F1B2C] mt-1">
+                                <p className="text-sm text-brand mt-1">
                                   {t("Please prepare exact amount:")}{" "}
-                                  <strong>${total.toFixed(2)}</strong>
+                                  <strong>{formatPrice(total)}</strong>
                                 </p>
                                 <p className="text-xs text-gray-600 mt-2">
                                   {t("Our delivery partner will collect payment when your order arrives.")}
@@ -679,7 +680,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
                             </Button>
                             <Button
                               type="submit"
-                              className="flex-1 bg-[#5F1B2C] hover:bg-[#4a1523]"
+                              className="flex-1 bg-brand hover:bg-brand-dark"
                               disabled={isProcessing}
                             >
                               {isProcessing ? "Processing..." : "Place Order"}
@@ -695,7 +696,7 @@ export function Checkout({ onNavigate }: CheckoutProps) {
 
                           {isProcessing && (
                             <div className="flex items-center justify-center gap-2 text-sm text-gray-600 py-2">
-                              <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#5F1B2C] border-t-transparent" />
+                              <div className="h-4 w-4 animate-spin rounded-full border-2 border-brand border-t-transparent" />
                               {t("Creating your order...")}
                             </div>
                           )}
@@ -754,26 +755,26 @@ export function Checkout({ onNavigate }: CheckoutProps) {
 
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">{t("Subtotal")}</span>
-                    <span className="font-medium">${subtotal.toFixed(2)}</span>
+                    <span className="font-medium">{formatPrice(subtotal)}</span>
                   </div>
 
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">{t("Shipping")}</span>
                     <span className="font-medium">
-                      {shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}
+                      {shipping === 0 ? "FREE" : formatPrice(shipping)}
                     </span>
                   </div>
 
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">{t("Tax (10% VAT)")}</span>
-                    <span className="font-medium">${tax.toFixed(2)}</span>
+                    <span className="font-medium">{formatPrice(tax)}</span>
                   </div>
 
                   <Separator />
 
                   <div className="flex justify-between text-lg font-bold">
                     <span>{t("Total")}</span>
-                    <span className="text-[#3d1620]">${total.toFixed(2)}</span>
+                    <span className="text-brand-deep">{formatPrice(total)}</span>
                   </div>
                 </div>
               </CardContent>

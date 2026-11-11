@@ -27,7 +27,7 @@ export function LanguageToggle({
     return (
       <button
         onClick={() => setLocale(next)}
-        className={`flex w-full items-center gap-2 text-left transition-colors hover:text-[#5F1B2C] ${className ?? ""}`}
+        className={`flex w-full items-center gap-2 text-left transition-colors hover:text-brand ${className ?? ""}`}
         aria-label={`Switch to ${LOCALE_LABELS[next]}`}
       >
         <Languages className="h-4 w-4" />

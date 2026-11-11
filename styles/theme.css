@@ -2,13 +2,26 @@
 
 :root {
   --font-size: 16px;
+  /*
+   * Rattanak brand palette. Components use these via the `brand-*` utilities
+   * (bg-brand, text-brand-deep, bg-brand-tint, …) rather than raw hex, and
+   * --primary points at --brand so shadcn buttons, badges and focus rings
+   * match without per-component overrides.
+   */
+  --brand: #5f1b2c;
+  --brand-dark: #4a1523;
+  --brand-deep: #3d1620;
+  /* Warm roasted-neutral wash for light section backgrounds. */
+  --brand-tint: #f6eeea;
+  /* Latte tone for secondary text and accents on burgundy backgrounds. */
+  --brand-soft: #e9d3c6;
   --background: #ffffff;
   --foreground: oklch(0.145 0 0);
   --card: #ffffff;
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #030213;
+  --primary: var(--brand);
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.95 0.0058 264.53);
   --secondary-foreground: #030213;
@@ -24,7 +37,7 @@
   --switch-background: #cbced4;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: oklch(0.708 0 0);
+  --ring: var(--brand);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -33,7 +46,7 @@
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: #030213;
+  --sidebar-primary: var(--brand);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
@@ -79,6 +92,12 @@
 }
 
 @theme inline {
+  --font-display: var(--font-big-shoulders), var(--font-khmer), sans-serif;
+  --color-brand: var(--brand);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-tint: var(--brand-tint);
+  --color-brand-soft: var(--brand-soft);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -138,15 +157,17 @@
   }
 
   h1 {
+    font-family: var(--font-display);
     font-size: var(--text-2xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-weight: 700;
+    line-height: 1.1;
   }
 
   h2 {
+    font-family: var(--font-display);
     font-size: var(--text-xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-weight: 700;
+    line-height: 1.15;
   }
 
   h3 {
