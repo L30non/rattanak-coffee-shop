@@ -17,6 +17,60 @@ function getResendClient(): Resend {
   return resendClient;
 }
 
+export const CONTACT_INBOX = "info@rattanakcoffee.com";
+
+export interface ContactMessageData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+// Visitor input goes into HTML email, so it must be escaped.
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/**
+ * Forwards a Contact page message to the shop inbox. Reply-To is the
+ * visitor's address, so replying from the inbox answers them directly.
+ */
+export async function sendContactMessageEmail(data: ContactMessageData) {
+  try {
+    const resend = getResendClient();
+    const { data: emailResult, error } = await resend.emails.send({
+      from: "Rattanak Coffee Website <contact@rattanakcoffee.com>",
+      to: [CONTACT_INBOX],
+      replyTo: data.email,
+      subject: `Website message: ${data.subject}`,
+      text: `From: ${data.name} <${data.email}>\nSubject: ${data.subject}\n\n${data.message}`,
+      html: `
+        <p><strong>From:</strong> ${escapeHtml(data.name)} &lt;${escapeHtml(data.email)}&gt;</p>
+        <p><strong>Subject:</strong> ${escapeHtml(data.subject)}</p>
+        <hr>
+        <p style="white-space: pre-wrap;">${escapeHtml(data.message)}</p>
+        <hr>
+        <p style="color: #6b7280; font-size: 0.9em;">Sent from the Contact page. Reply to this email to answer ${escapeHtml(data.name)}.</p>
+      `,
+    });
+
+    if (error) {
+      console.error("Contact email error:", error);
+      return { success: false, error };
+    }
+
+    return { success: true, data: emailResult };
+  } catch (error) {
+    console.error("Contact email exception:", error);
+    return { success: false, error };
+  }
+}
+
 export interface OrderConfirmationEmailData {
   customerName: string;
   customerEmail: string;

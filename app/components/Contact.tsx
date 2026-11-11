@@ -3,6 +3,7 @@ import { Button } from "@/app/components/ui/button";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Separator } from "@/app/components/ui/separator";
 import { toast } from "sonner";
+import { CONTACT_PHONE_DISPLAY } from "@/lib/contact";
 import {
   ArrowLeft,
   MapPin,
@@ -27,19 +28,35 @@ export function Contact({ onNavigate }: ContactProps) {
     email: "",
     subject: "",
     message: "",
+    // Honeypot, hidden from people; see app/api/contact/route.ts.
+    company: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (!response.ok) throw new Error(`Contact request failed: ${response.status}`);
+
       toast.success(t("Message sent! We'll get back to you soon."));
-      setFormData({ name: "", email: "", subject: "", message: "" });
+      setFormData({ name: "", email: "", subject: "", message: "", company: "" });
+    } catch {
+      // Keep what they typed so they can retry or copy it elsewhere.
+      toast.error(
+        t("Your message wasn't sent. Please try again, or call us on {phone}.", {
+          phone: CONTACT_PHONE_DISPLAY,
+        }),
+      );
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   const handleChange = (
@@ -215,12 +232,24 @@ export function Contact({ onNavigate }: ContactProps) {
                         placeholder={t("Tell us about your inquiry...")}
                       />
                     </div>
+                    {/* Honeypot: off-screen and skipped by keyboard and screen
+                        readers, so only bots fill it in. */}
+                    <input
+                      type="text"
+                      name="company"
+                      value={formData.company}
+                      onChange={handleChange}
+                      tabIndex={-1}
+                      autoComplete="off"
+                      aria-hidden="true"
+                      className="absolute -left-[9999px] h-px w-px overflow-hidden"
+                    />
                     <Button
                       type="submit"
                       disabled={isSubmitting}
                       className="w-full bg-brand hover:bg-brand-dark py-5"
                     >
-                      {isSubmitting ? "Sending..." : "Send Message"}
+                      {isSubmitting ? t("Sending...") : t("Send Message")}
                     </Button>
                   </form>
                 </CardContent>
