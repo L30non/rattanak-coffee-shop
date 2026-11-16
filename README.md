@@ -113,6 +113,16 @@ Create a `.env.local` file with the following variables:
 | `BAKONG_TOKEN`                                 | Bakong API authentication token                 |
 | `RESEND_API_KEY`                               | Resend API key for sending emails               |
 | `NEXT_PUBLIC_APP_URL`                          | Application URL (e.g., `http://localhost:3000`) |
+| `GEMINI_API_KEY`                               | Gemini API key for the website chatbot (server-only) |
+| `GEMINI_MODEL`                                 | Optional Gemini model id (default `gemini-3.8-flash`) |
+
+## Chatbot
+
+The chat button on every page (except admin) answers visitors' questions as a Rattanak Coffee staff member, using Gemini.
+
+- **What it knows:** the company facts in `lib/chat/knowledge.ts` (plain markdown — edit it to change hours, services, policies, etc.) plus the live product list from Supabase, refreshed every 5 minutes.
+- **When it doesn't know:** it says so and points to the phone line, Facebook, and the Contact page.
+- **Code:** `app/api/chat/route.ts` (validation, per-IP rate limit, streaming), `lib/chat/prompt.ts` (system prompt), `app/components/ChatWidget.tsx` (UI).
 
 ## Database Schema
 

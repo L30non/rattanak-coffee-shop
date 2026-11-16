@@ -25,6 +25,7 @@ import { Business } from "@/app/components/Business";
 import { Gallery } from "@/app/components/Gallery";
 import { Contact } from "@/app/components/Contact";
 import { Footer } from "@/app/components/Footer";
+import { ChatWidget } from "@/app/components/ChatWidget";
 import ErrorBoundary from "@/app/components/ErrorBoundary";
 import { toast } from "sonner";
 import { parseCatalogView } from "@/lib/categories";
@@ -190,6 +191,7 @@ function AppContent({ initialView, initialSearchQuery = "" }: AppContentProps) {
         </AnimatePresence>
       </main>
       <Footer onNavigate={navigate} />
+      {currentView !== "admin" && <ChatWidget onNavigate={navigate} />}
       <Toaster position="top-center" closeButton />
     </div>
   );

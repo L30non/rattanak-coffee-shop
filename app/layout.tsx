@@ -76,7 +76,7 @@ const organizationJsonLd = {
   ],
   contactPoint: {
     "@type": "ContactPoint",
-    telephone: "+855-12-667-778",
+    telephone: "+855-93-226-888",
     email: "info@rattanakcoffee.com",
     contactType: "customer service",
   },

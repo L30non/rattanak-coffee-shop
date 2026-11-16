@@ -76,10 +76,10 @@ export function CheckoutUnavailable({ onNavigate }: CheckoutUnavailableProps) {
                     <div>
                       <p className="font-medium">
                         <a
-                          href="tel:+85512667778"
+                          href="tel:+85593226888"
                           className="hover:text-brand transition-colors"
                         >
-                          +855 12 667 778
+                          +855 93 226 888
                         </a>
                       </p>
                       <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
